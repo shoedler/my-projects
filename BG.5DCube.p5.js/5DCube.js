@@ -6,7 +6,7 @@ Source by David faive-macon & daniel shiffman
 
 let dimensions;
 const scale = 190;
-const pageHeightDividor = 3; // 3 = a third
+const pgHeightDiv = 3; // 3 = a third
 let angle = 0.01;
 let thePoints, rotsLabels;
 
@@ -49,14 +49,14 @@ const rotationMatrix = function(rotIndex, a) {
 // Main function
 const sketch = function(p) {
   p.setup = function() {
-    p.createCanvas(window.innerWidth, window.innerHeight / pageHeightDividor);
+    p.createCanvas(window.innerWidth, window.innerHeight / pgHeightDiv);
     dimensions = 5;
     createPointsAndRotationsLabels();
   };
 
   // Update canvas size in case the user resizes his browser window
   window.addEventListener('resize', function(event){
-    p.resizeCanvas(window.innerWidth, window.innerHeight / pageHeightDividor);
+    p.resizeCanvas(window.innerWidth, window.innerHeight / pgHeightDiv);
   });
 
   p.draw = function() {
