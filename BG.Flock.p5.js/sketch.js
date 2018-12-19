@@ -1,7 +1,8 @@
-// Flocking
-// Daniel Shiffman
-// https://thecodingtrain.com/CodingChallenges/124-flocking-boids.html
-// https://youtu.be/mhjuuHl6qHM
+/* Flocking
+Simon Schödler
+Source by daniel shiffman
+19.12.2018
+*/
 
 const flock = [];
 
