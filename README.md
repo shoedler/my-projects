@@ -4,7 +4,7 @@
   ```const scriptname_sketch = function(p) {``` and ```var canvasp5 = new p5(scriptname, 'anim_scriptname');``` where ```scriptname``` is your literal script name*
 - *Scripts must have a unique container identifier such as ```var canvasp5 = new p5(scriptname_sketch, 'anim_scriptname');``` where anim_scriptname is ```anim_``` plus your literal script name*
 
-#Resources
+# Resources
 p5js instance mode: https://github.com/processing/p5.js/wiki/Global-and-instance-mode
 
 # Wordpress Implementation
@@ -26,3 +26,6 @@ p5js instance mode: https://github.com/processing/p5.js/wiki/Global-and-instance
   While you're there, edit your container and add an entry under ```CSS ID``` for example: ```anim_my_sketch```
 
 4. Done!
+
+# Open points
+checkout http://www.joemckaystudio.com/multisketches/
