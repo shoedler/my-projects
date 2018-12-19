@@ -112,9 +112,13 @@ class Boid {
 
   show() {
 		strokeWeight(1);
-		noFill();
+    fill(233, 30, 99);
+    //noFill();
     // CFX Theme Color (red) = #e91e63 = 233, 30, 99
     stroke(233, 30, 99);
-		rect(this.position.x, this.position.y, 5, 5)
+		//rect(this.position.x, this.position.y, 5, 5)
+    triangle(this.position.x, this.position.y,
+             this.position.x + 6, this.position.y + 3,
+             this.position.x, this.position.y + 6);
   }
 }

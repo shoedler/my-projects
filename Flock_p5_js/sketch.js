@@ -18,7 +18,7 @@ window.onresize = function(e) {
 }
 
 function draw() {
-  background(35,35,35);
+  background(53,53,53);
   for (let boid of flock) {
     boid.edges();
     boid.flock(flock);
