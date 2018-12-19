@@ -7,10 +7,10 @@ class Boid {
   constructor() {
     this.position = createVector(random(width), random(height));
     this.velocity = p5.Vector.random2D();
-    this.velocity.setMag(random(2, 4));
+    this.velocity.setMag(random(1, 2));
     this.acceleration = createVector();
     this.maxForce = 0.2;
-    this.maxSpeed = 5;
+    this.maxSpeed = 2;
   }
 
   edges() {
@@ -94,9 +94,9 @@ class Boid {
     let cohesion = this.cohesion(boids);
     let separation = this.separation(boids);
 
-    alignment.mult(alignSlider.value());
-    cohesion.mult(cohesionSlider.value());
-    separation.mult(separationSlider.value());
+    alignment.mult(1.5);
+    cohesion.mult(1);
+    separation.mult(1.5);
 
     this.acceleration.add(alignment);
     this.acceleration.add(cohesion);

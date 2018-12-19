@@ -5,17 +5,16 @@
 
 const flock = [];
 
-let alignSlider, cohesionSlider, separationSlider;
-
 function setup() {
-  createCanvas(640, 360);
-  alignSlider = createSlider(0, 2, 1.5, 0.1);
-  cohesionSlider = createSlider(0, 2, 1, 0.1);
-  separationSlider = createSlider(0, 2, 2, 0.1);
+  createCanvas(window.innerWidth, window.innerHeight);
   for (let i = 0; i < 200; i++) {
     flock.push(new Boid());
   }
+}
 
+// Update canvas size in cas the user resizes his browser window
+window.onresize = function(e) {
+  resizeCanvas(window.innerWidth, window.innerHeight);
 }
 
 function draw() {
