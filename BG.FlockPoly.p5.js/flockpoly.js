@@ -2,17 +2,21 @@
 Simon Schödler
 Source by p5.js examples & daniel shiffman
 19.12.2018
+
+TODO :
+[ ] Max Boid restrictor
+[ ] Boid lifetime
 */
 
 var flock;
-const pgHeightDiv = 3; // 3 = a third
+const pgHeightDiv = 5; // 3 = a third
 
-const sketch = function(p) {
+const flockpoly_sketch = function(p) {
     p.setup = function() {
       p.createCanvas(window.innerWidth, window.innerHeight / pgHeightDiv);
       flock = new Flock();
       // Add an initial set of boids into the system
-      for (var i = 0; i < 100; i++) {
+      for (var i = 0; i < 200; i++) {
         var b = new Boid(window.innerWidth/2,window.innerHeight / (2 * pgHeightDiv) );
         flock.addBoid(b);
       }
@@ -24,7 +28,7 @@ const sketch = function(p) {
     });
 
     p.draw = function() {
-      p.background(51);
+      p.background(53,53,53);
       flock.run();
     };
 
@@ -34,7 +38,7 @@ const sketch = function(p) {
     };
 };
 
-var canvasp5 = new p5(sketch, 'anim_flockpoly');
+var canvasp5 = new p5(flockpoly_sketch, 'anim_flockpoly');
 
 // The Nature of Code
 // Daniel Shiffman
@@ -67,7 +71,7 @@ function Boid(x,y) {
   this.velocity = canvasp5.createVector(canvasp5.random(-1,1),canvasp5.random(-1,1));
   this.position = canvasp5.createVector(x,y);
   this.r = 3.0;
-  this.maxspeed = 3;    // Maximum speed
+  this.maxspeed = 1;    // Maximum speed
   this.maxforce = 0.05; // Maximum steering force
 }
 
@@ -125,8 +129,8 @@ Boid.prototype.seek = function(target) {
 Boid.prototype.render = function() {
   // Draw a triangle rotated in the direction of velocity
   var theta = this.velocity.heading() + canvasp5.radians(90);
-  canvasp5.fill(127);
-  canvasp5.stroke(200);
+  canvasp5.fill(233, 30, 99, 100);
+  canvasp5.stroke(233, 30, 99);
   canvasp5.push();
   canvasp5.translate(this.position.x,this.position.y);
   canvasp5.rotate(theta);

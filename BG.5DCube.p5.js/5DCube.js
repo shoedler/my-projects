@@ -47,7 +47,7 @@ const rotationMatrix = function(rotIndex, a) {
 
 
 // Main function
-const sketch = function(p) {
+const 5dcube_sketch = function(p) {
   p.setup = function() {
     p.createCanvas(window.innerWidth, window.innerHeight / pgHeightDiv);
     dimensions = 5;
@@ -120,7 +120,7 @@ const sketch = function(p) {
   }
 };
 
-new p5(sketch, 'anim_5dcube');
+new p5(5dcube_sketch, 'anim_5dcube');
 
 function combineUnique(n, k) {
   const result = [];
