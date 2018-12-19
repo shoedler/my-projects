@@ -5,7 +5,8 @@ Source by David faive-macon & daniel shiffman
 */
 
 let dimensions;
-const scale = 200;
+const scale = 190;
+const pageHeightDividor = 3; // 3 = a third
 let angle = 0.01;
 let thePoints, rotsLabels;
 
@@ -44,18 +45,19 @@ const rotationMatrix = function(rotIndex, a) {
   return rotationArray;
 };
 
-// Update canvas size in cas the user resizes his browser window
-window.onresize = function(e) {
-  resizeCanvas(window.innerWidth, window.innerHeight);
-}
 
 // Main function
 const sketch = function(p) {
   p.setup = function() {
-    p.createCanvas(window.innerWidth, window.innerHeight);
+    p.createCanvas(window.innerWidth, window.innerHeight / pageHeightDividor);
     dimensions = 5;
     createPointsAndRotationsLabels();
   };
+
+  // Update canvas size in case the user resizes his browser window
+  window.addEventListener('resize', function(event){
+    p.resizeCanvas(window.innerWidth, window.innerHeight / pageHeightDividor);
+  });
 
   p.draw = function() {
     const newDimensions = 5;
@@ -110,7 +112,7 @@ const sketch = function(p) {
     for(let i = 0; i < points2d.length; i++) {
       const x = points2d[i][0][0];
       const y = points2d[i][0][1];
-      const size = Math.pow((points2d[i][1])*6,2);
+      const size = Math.pow((points2d[i][1])*6,2) - 10;
       p.fill(233, 30, 99);
       p.stroke(233, 30, 99);
       p.ellipse(x * scale + p.canvas.width / 2, y * scale + p.canvas.height / 2, size, size);
@@ -118,8 +120,7 @@ const sketch = function(p) {
   }
 };
 
-
-new p5(sketch, 'container');
+new p5(sketch, 'anim_5dcube');
 
 function combineUnique(n, k) {
   const result = [];
