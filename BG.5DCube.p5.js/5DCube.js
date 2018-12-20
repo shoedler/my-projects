@@ -47,7 +47,7 @@ const rotationMatrix = function(rotIndex, a) {
 
 
 // Main function
-const 5dcube_sketch = function(p) {
+const fivedcube_sketch = function(p) {
   p.setup = function() {
     p.createCanvas(window.innerWidth, window.innerHeight / pgHeightDiv);
     dimensions = 5;
@@ -104,7 +104,7 @@ const 5dcube_sketch = function(p) {
           squareSum += Math.pow(thePoints[j][k] - thePoints[i][k], 2);
         }
         const d = Math.sqrt(squareSum);
-        if(d === 2) p.line(points2d[i][0][0] * scale + p.canvas.width / 2, points2d[i][0][1] * scale + p.canvas.height / 2, points2d[j][0][0] * scale + p.canvas.width / 2, points2d[j][0][1] * scale + p.canvas.height / 2);
+        if(d === 2) p.line(points2d[i][0][0] * scale + p.canvas.width / 4, points2d[i][0][1] * scale + p.canvas.height / 4, points2d[j][0][0] * scale + p.canvas.width / 4, points2d[j][0][1] * scale + p.canvas.height / 4);
       }
     }
 
@@ -115,12 +115,12 @@ const 5dcube_sketch = function(p) {
       const size = Math.pow((points2d[i][1])*6,2) - 10;
       p.fill(233, 30, 99);
       p.stroke(233, 30, 99);
-      p.ellipse(x * scale + p.canvas.width / 2, y * scale + p.canvas.height / 2, size, size);
+      p.ellipse(x * scale + p.canvas.width / 4, y * scale + p.canvas.height / 4, size, size);
     }
   }
 };
 
-new p5(5dcube_sketch, 'anim_5dcube');
+new p5(fivedcube_sketch, 'anim_5dcube');
 
 function combineUnique(n, k) {
   const result = [];
