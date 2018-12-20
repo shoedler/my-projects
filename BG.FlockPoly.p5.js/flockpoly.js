@@ -16,8 +16,8 @@ const flockpoly_sketch = function(p) {
       p.createCanvas(window.innerWidth, window.innerHeight / pgHeightDiv);
       flock = new Flock();
       // Add an initial set of boids into the system
-      for (var i = 0; i < 200; i++) {
-        var b = new Boid(window.innerWidth/2,window.innerHeight / (2 * pgHeightDiv) );
+      for (var i = 0; i < 100; i++) {
+        var b = new Boid(window.innerWidth/i,window.innerHeight / (2 * pgHeightDiv) );
         flock.addBoid(b);
       }
     };
@@ -34,11 +34,11 @@ const flockpoly_sketch = function(p) {
 
     // Add a new boid into the System
     p.mouseDragged = function() {
-      flock.addBoid(new Boid(p.mouseX,p.mouseY));
+      //flock.addBoid(new Boid(p.mouseX,p.mouseY));
     };
 };
 
-var canvasp5 = new p5(flockpoly_sketch, 'anim_flockpoly');
+var flockpoly_canvas = new p5(flockpoly_sketch, 'anim_flockpoly');
 
 // The Nature of Code
 // Daniel Shiffman
@@ -67,9 +67,9 @@ Flock.prototype.addBoid = function(b) {
 // Methods for Separation, Cohesion, Alignment added
 
 function Boid(x,y) {
-  this.acceleration = canvasp5.createVector(0,0);
-  this.velocity = canvasp5.createVector(canvasp5.random(-1,1),canvasp5.random(-1,1));
-  this.position = canvasp5.createVector(x,y);
+  this.acceleration = flockpoly_canvas.createVector(0,0);
+  this.velocity = flockpoly_canvas.createVector(flockpoly_canvas.random(-1,1),flockpoly_canvas.random(-1,1));
+  this.position = flockpoly_canvas.createVector(x,y);
   this.r = 3.0;
   this.maxspeed = 1;    // Maximum speed
   this.maxforce = 0.05; // Maximum steering force
@@ -128,18 +128,18 @@ Boid.prototype.seek = function(target) {
 
 Boid.prototype.render = function() {
   // Draw a triangle rotated in the direction of velocity
-  var theta = this.velocity.heading() + canvasp5.radians(90);
-  canvasp5.fill(233, 30, 99, 100);
-  canvasp5.stroke(233, 30, 99);
-  canvasp5.push();
-  canvasp5.translate(this.position.x,this.position.y);
-  canvasp5.rotate(theta);
-  canvasp5.beginShape();
-  canvasp5.vertex(0, -this.r*2);
-  canvasp5.vertex(-this.r, this.r*2);
-  canvasp5.vertex(this.r, this.r*2);
-  canvasp5.endShape(canvasp5.CLOSE);
-  canvasp5.pop();
+  var theta = this.velocity.heading() + flockpoly_canvas.radians(90);
+  flockpoly_canvas.fill(233, 30, 99, 100);
+  flockpoly_canvas.stroke(233, 30, 99);
+  flockpoly_canvas.push();
+  flockpoly_canvas.translate(this.position.x,this.position.y);
+  flockpoly_canvas.rotate(theta);
+  flockpoly_canvas.beginShape();
+  flockpoly_canvas.vertex(0, -this.r*2);
+  flockpoly_canvas.vertex(-this.r, this.r*2);
+  flockpoly_canvas.vertex(this.r, this.r*2);
+  flockpoly_canvas.endShape(flockpoly_canvas.CLOSE);
+  flockpoly_canvas.pop();
 }
 
 // Wraparound
@@ -154,7 +154,7 @@ Boid.prototype.borders = function() {
 // Method checks for nearby boids and steers away
 Boid.prototype.separate = function(boids) {
   var desiredseparation = 25.0;
-  var steer = canvasp5.createVector(0,0);
+  var steer = flockpoly_canvas.createVector(0,0);
   var count = 0;
   // For every boid in the system, check if it's too close
   for (var i = 0; i < boids.length; i++) {
@@ -189,7 +189,7 @@ Boid.prototype.separate = function(boids) {
 // For every nearby boid in the system, calculate the average velocity
 Boid.prototype.align = function(boids) {
   var neighbordist = 50;
-  var sum = canvasp5.createVector(0,0);
+  var sum = flockpoly_canvas.createVector(0,0);
   var count = 0;
   for (var i = 0; i < boids.length; i++) {
     var d = p5.Vector.dist(this.position,boids[i].position);
@@ -206,7 +206,7 @@ Boid.prototype.align = function(boids) {
     steer.limit(this.maxforce);
     return steer;
   } else {
-    return canvasp5.createVector(0,0);
+    return flockpoly_canvas.createVector(0,0);
   }
 }
 
@@ -214,7 +214,7 @@ Boid.prototype.align = function(boids) {
 // For the average location (i.e. center) of all nearby boids, calculate steering vector towards that location
 Boid.prototype.cohesion = function(boids) {
   var neighbordist = 50;
-  var sum = canvasp5.createVector(0,0);   // Start with empty vector to accumulate all locations
+  var sum = flockpoly_canvas.createVector(0,0);   // Start with empty vector to accumulate all locations
   var count = 0;
   for (var i = 0; i < boids.length; i++) {
     var d = p5.Vector.dist(this.position,boids[i].position);
@@ -227,6 +227,6 @@ Boid.prototype.cohesion = function(boids) {
     sum.div(count);
     return this.seek(sum);  // Steer towards the location
   } else {
-    return canvasp5.createVector(0,0);
+    return flockpoly_canvas.createVector(0,0);
   }
 }
