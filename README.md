@@ -1,3 +1,4 @@
+# *>CURRENTLY DEPRECATED, IGNORE*
 # Rules for new scripts using p5js
 - *Scripts must use p5js's instance mode*
 - *Script instances must have a unique sketch var such as
