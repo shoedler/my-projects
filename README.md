@@ -1,8 +1,8 @@
 # Rules for new scripts using p5js
-- *Scripts be written using p5js's instance mode*
+- *Scripts must be written using p5js's instance mode*
 - *Script instances must have a unique sketch var such as
-  ```const scriptname_sketch = function(p) {``` and ```var scriptname_canvas = new p5(scriptname_sketch, 'anim_scriptname');``` where ```scriptname``` is your literal script name*
-- *Scripts must have a unique container identifier (ID) such as ```var scriptname_canvas = new p5(scriptname_sketch, 'anim_scriptname');``` where anim_scriptname is ```anim_``` plus your literal script name*
+  *```const scriptname_sketch = function(p) {```* and *```var scriptname_canvas = new p5(scriptname_sketch, 'anim_scriptname');```* where *```scriptname```* is your literal script name*
+- *Scripts must have a unique container identifier (ID) such as *```var scriptname_canvas = new p5(scriptname_sketch, 'anim_scriptname');```* where *```anim_scriptname```* is *```anim_```* plus your literal script name*
 
 # Resources
 1.  p5js instance mode: https://github.com/processing/p5.js/wiki/Global-and-instance-mode
