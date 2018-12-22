@@ -9,7 +9,7 @@ TODO :
 */
 
 var flock;
-const pgHeightDiv = 5; // 3 = a third
+const pgHeightDiv = 1; // Not needed, because we want the full height of the div we place it in
 
 const flockpoly_sketch = function(p) {
     p.setup = function() {

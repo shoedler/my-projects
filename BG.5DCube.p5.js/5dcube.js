@@ -6,7 +6,7 @@ Source by David faive-macon & daniel shiffman
 
 let dimensions;
 const scale = 190;
-const pgHeightDiv = 3; // 3 = a third
+const pgHeightDiv = 1; // Not needed, because we want the full height of the div we place it in
 let angle = 0.01;
 let thePoints, rotsLabels;
 
