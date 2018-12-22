@@ -8,6 +8,7 @@
 1.  p5js instance mode: https://github.com/processing/p5.js/wiki/Global-and-instance-mode
 2. Create jsdelivr link to github content https://stackoverflow.com/a/18049842
 
+3. Customize canvas https://github.com/processing/p5.js/wiki/Positioning-your-canvas
 # Wordpress Implementation
 ### Using Avada
 1. Get jsdelivr link to wanted js file (Point 2 in Resources)
