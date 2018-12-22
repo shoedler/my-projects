@@ -48,7 +48,7 @@ const rotationMatrix = function(rotIndex, a) {
 
 const fivedcube_sketch = function(p) {
   p.setup = function() {
-    var cnv = p.createCanvas("anim_5dcube").offsetWidth, document.getElementById("anim_5dcube").offsetHeight / pgHeightDiv);
+    var cnv = p.createCanvas(document.getElementById("anim_5dcube").offsetWidth, document.getElementById("anim_5dcube").offsetHeight / pgHeightDiv);
     cnv.style('display', 'block');
     dimensions = 5;
     createPointsAndRotationsLabels();
@@ -56,7 +56,7 @@ const fivedcube_sketch = function(p) {
 
   // Update canvas size in case the user resizes his browser window
   window.addEventListener('resize', function(event){
-    p.resizeCanvas("anim_5dcube").offsetWidth, document.getElementById("anim_5dcube").offsetHeight / pgHeightDiv);
+    p.resizeCanvas(document.getElementById("anim_5dcube").offsetWidth, document.getElementById("anim_5dcube").offsetHeight / pgHeightDiv);
   });
 
   p.draw = function() {

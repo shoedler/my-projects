@@ -13,18 +13,18 @@ const pgHeightDiv = 5; // 3 = a third
 
 const flockpoly_sketch = function(p) {
     p.setup = function() {
-      p.createCanvas(window.innerWidth, window.innerHeight / pgHeightDiv);
+      p.createCanvas(document.getElementById("anim_flockpoly").offsetWidth, document.getElementById("anim_flockpoly").offsetHeight / pgHeightDiv);
       flock = new Flock();
       // Add an initial set of boids into the system
       for (var i = 0; i < 100; i++) {
-        var b = new Boid(window.innerWidth/i,window.innerHeight / (2 * pgHeightDiv) );
+        var b = new Boid(document.getElementById("anim_flockpoly").offsetWidth/i,document.getElementById("anim_flockpoly").offsetHeight / (2 * pgHeightDiv) );
         flock.addBoid(b);
       }
     };
 
     // Update canvas size in case the user resizes his browser window
     window.addEventListener('resize', function(event){
-      p.resizeCanvas(window.innerWidth, window.innerHeight / pgHeightDiv);
+      p.resizeCanvas(document.getElementById("anim_flockpoly").offsetWidth, document.getElementById("anim_flockpoly").offsetHeight / pgHeightDiv);
     });
 
     p.draw = function() {
@@ -144,10 +144,10 @@ Boid.prototype.render = function() {
 
 // Wraparound
 Boid.prototype.borders = function() {
-  if (this.position.x < -this.r)  this.position.x = window.innerWidth +this.r;
-  if (this.position.y < -this.r)  this.position.y = (window.innerHeight / pgHeightDiv)+this.r;
-  if (this.position.x > window.innerWidth +this.r) this.position.x = -this.r;
-  if (this.position.y > (window.innerHeight / pgHeightDiv)+this.r) this.position.y = -this.r;
+  if (this.position.x < -this.r)  this.position.x = document.getElementById("anim_flockpoly").offsetWidth +this.r;
+  if (this.position.y < -this.r)  this.position.y = (document.getElementById("anim_flockpoly").offsetHeight / pgHeightDiv)+this.r;
+  if (this.position.x > document.getElementById("anim_flockpoly").offsetWidth +this.r) this.position.x = -this.r;
+  if (this.position.y > (document.getElementById("anim_flockpoly").offsetHeight / pgHeightDiv)+this.r) this.position.y = -this.r;
 }
 
 // Separation
