@@ -49,7 +49,8 @@ const rotationMatrix = function(rotIndex, a) {
 // Main function
 const fivedcube_sketch = function(p) {
   p.setup = function() {
-    p.createCanvas(window.innerWidth, window.innerHeight / pgHeightDiv);
+    var cnv = p.createCanvas(window.innerWidth, window.innerHeight / pgHeightDiv);
+    cnv.style('display', 'block');
     dimensions = 5;
     createPointsAndRotationsLabels();
   };
