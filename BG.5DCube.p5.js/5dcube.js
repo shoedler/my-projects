@@ -120,7 +120,7 @@ const fivedcube_sketch = function(p) {
   }
 };
 
-new p5(fivedcube_sketch, 'anim_5dcube');
+var fivedcube_canvas = new p5(fivedcube_sketch, 'anim_5dcube');
 
 function combineUnique(n, k) {
   const result = [];
