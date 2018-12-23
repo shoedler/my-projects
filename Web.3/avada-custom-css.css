@@ -1,0 +1,68 @@
+/* All custom CSS needs to be in this file. WP's "Additional CSS"
+shall not be used */
+
+/* Style Avada components */
+/* ----------------------------------------------------------- */
+/* Style tags on the right hand side of the proj view */
+.project-info-box h4 {
+    font-size: 12px !important;
+    text-transform :uppercase !important;
+}
+
+/* Style ctaegory and tag labels */
+.project-terms a {
+    text-transform: uppercase !important;
+    letter-spacing: 2px !important;
+}
+
+/* Style share label */
+.fusion-sharing-box.fusion-single-sharing-box.share-box h4 {
+    text-transform :uppercase !important;
+    letter-spacing: 2px !important;
+}
+
+/* Share project preview title */
+.fusion-rollover-categories a {
+    text-transform: uppercase !important;
+    letter-spacing: 2px !important;
+}
+
+/* Style Contact Form 7 components */
+/* ----------------------------------------------------------- */
+/* Labels, over the input boxes */
+.wpcf7 label {
+    color: #ffffff !important;
+    font-weight: 300 !important;
+}
+
+/* Message input box */
+.wpcf7 textarea {
+    color: #353535 !important;
+    font-weight: 300 !important;
+    font-size: 18px !important;
+    letter-spacing: 2px !important;
+    font-family: 'Roboto' !important;
+}
+
+/* Email and text input boxes */
+.wpcf7 input[type="email"], input[type="text"] {
+    color: #353535 !important;
+    font-weight: 300 !important;
+    font-size: 18px !important;
+    letter-spacing: 2px !important;
+    font-family: 'Roboto' !important;
+}
+
+/* Add border to submit button */
+.wpcf7 input[type="submit"] {
+    border-width: 1px !important;
+}
+
+/* Style Cookie-noticer components */
+/* ----------------------------------------------------------- */
+/* Change style of "OK" button */
+.cookie-notice-container span {
+    text-transform :uppercase !important;
+    letter-spacing: 2px !important;
+    font-weight: 300 !important;
+}
