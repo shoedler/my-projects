@@ -51,6 +51,7 @@ const fivedcube_sketch = function(p) {
     var cnv = p.createCanvas(document.getElementById("anim_5dcube").offsetWidth, document.getElementById("anim_5dcube").offsetHeight / pgHeightDiv);
     cnv.style('display', 'block');
     dimensions = 5;
+    p.frameRate(30);
     createPointsAndRotationsLabels();
   };
 
@@ -59,12 +60,23 @@ const fivedcube_sketch = function(p) {
     p.resizeCanvas(document.getElementById("anim_5dcube").offsetWidth, document.getElementById("anim_5dcube").offsetHeight / pgHeightDiv);
   });
 
+
+
   p.draw = function() {
     const newDimensions = 5;
     if(dimensions !== newDimensions) {
       dimensions = 5;
       createPointsAndRotationsLabels();
     }
+
+    var isMobile = {
+      Android: function() { return navigator.userAgent.match(/Android/i); },
+      BlackBerry: function() { return navigator.userAgent.match(/BlackBerry/i); },
+      iOS: function() { return navigator.userAgent.match(/iPhone|iPad|iPod/i); },
+      Opera: function() { return navigator.userAgent.match(/Opera Mini/i); },
+      Windows: function() { return navigator.userAgent.match(/IEMobile/i); },
+      any: function() { return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows()); } };
+
 
     p.background(53,53,53);
     p.fill(0);

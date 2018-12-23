@@ -9,14 +9,19 @@ TODO :
 */
 
 var flock;
+var flock_amount;
 const pgHeightDiv = 1; // Not needed, because we want the full height of the div we place it in
 
 const flockpoly_sketch = function(p) {
     p.setup = function() {
       p.createCanvas(document.getElementById("anim_flockpoly").offsetWidth, document.getElementById("anim_flockpoly").offsetHeight / pgHeightDiv);
       flock = new Flock();
+
+      if(isMobile.any() === null) {flock_amount = 150} else {flock_amount = 50};
+      console.log(isMobile.any());
+
       // Add an initial set of boids into the system
-      for (var i = 0; i < 100; i++) {
+      for (var i = 0; i < flock_amount; i++) {
         var b = new Boid(document.getElementById("anim_flockpoly").offsetWidth/i,document.getElementById("anim_flockpoly").offsetHeight / (2 * pgHeightDiv) );
         flock.addBoid(b);
       }
@@ -26,6 +31,14 @@ const flockpoly_sketch = function(p) {
     window.addEventListener('resize', function(event){
       p.resizeCanvas(document.getElementById("anim_flockpoly").offsetWidth, document.getElementById("anim_flockpoly").offsetHeight / pgHeightDiv);
     });
+
+    var isMobile = {
+      Android: function() { return navigator.userAgent.match(/Android/i); },
+      BlackBerry: function() { return navigator.userAgent.match(/BlackBerry/i); },
+      iOS: function() { return navigator.userAgent.match(/iPhone|iPad|iPod/i); },
+      Opera: function() { return navigator.userAgent.match(/Opera Mini/i); },
+      Windows: function() { return navigator.userAgent.match(/IEMobile/i); },
+      any: function() { return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows()); } };
 
     p.draw = function() {
       p.background(53,53,53);
