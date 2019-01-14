@@ -5,15 +5,23 @@ Simon Schödler
 
 let r, g, b;
 let ap_r, ap_g, ap_b;
-let range = 10;             // amount of + & - range around the rgb component approximation. e.g. ap_r = 45 => range 10 = from 35 to 55
-let iterations = 10;        // amount of iterations in getting a random approximation of every rgb component
+let customColor = 0;        // if set, it will overwrite the random generator
+let only_grayscale = 0;     // if set, it will only produce grayscale "colors"
+let range = 8;              // amount of + & - range around the rgb component approximation. e.g. ap_r = 45 => range 10 = from 35 to 55
+let iterations = 2;         // amount of iterations in getting a random approximation of every rgb component
 
 function setup() {
   createCanvas(window.innerWidth, window.innerHeight);
-  approximateColors();
+
+  if (customColor != 0) {
+    setCustomColor();
+  } else {
+    approximateColors();
+  }
+
   pickColor();
-  console.log(ap_r, ap_g, ap_b);
   createTiles();
+  drawStats();
 }
 
 function draw() {}
@@ -29,6 +37,7 @@ function approximateColors() {
     sum_g += random(255);
     sum_b += random(255);
   }
+
   ap_r = round(sum_r / iterations);
   ap_g = round(sum_g / iterations);
   ap_b = round(sum_b / iterations);
@@ -36,8 +45,20 @@ function approximateColors() {
 
 function pickColor() {
   r = random(ap_r - range, ap_r + range);
-  g = random(ap_g - range, ap_g + range);
-  b = random(ap_b - range, ap_b + range);
+
+  if (only_grayscale == 0) {
+    g = random(ap_g - range, ap_g + range);
+    b = random(ap_b - range, ap_b + range);
+  } else {
+    g = r;
+    b = r;
+  }
+}
+
+function setCustomColor() {
+  ap_r = 35;
+  ap_g = 35;
+  ap_b = 35;
 }
 
 function createTiles() {
@@ -51,4 +72,35 @@ function createTiles() {
       pickColor();
     }
   }
+}
+
+function drawStats() {
+  let div = 20;
+  let w = window.innerWidth;
+  let h = window.innerHeight;
+  noStroke();
+
+  // first rect: rgb values chosen
+  fill(0);
+  rect(w/div, (h/div)-(div/2), (w/div)*(div*0.5), div);
+  fill(ap_r, ap_g, ap_b);
+  textFont('Roboto');
+  textAlign(LEFT, CENTER);
+  textSize(div/1.5);
+  text("rgb values [r, g, b]", (w/div)+(div/10), h/div);
+  text(round(r), (w/div)*(div*0.3), h/div);
+  text(round(g), (w/div)*(div*0.4), h/div);
+  text(round(b), (w/div)*(div*0.5), h/div);
+
+  // second rect:
+  fill(0);
+  rect(w/div, (h/div*2)-(div/2), (w/div)*(div*0.5), div);
+  fill(ap_r, ap_g, ap_b);
+  textFont('Roboto');
+  textAlign(LEFT, CENTER);
+  textSize(div/1.5);
+  text("screen size [w, h]px", (w/div)+(div/10), h/div*2);
+  text(window.innerWidth, (w/div)*(div*0.3), h/div*2);
+  text(window.innerHeight, (w/div)*(div*0.4), h/div*2);
+
 }
