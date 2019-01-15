@@ -1,5 +1,5 @@
 /* Style Tiles
-Simon Schödler
+Simon Schï¿½dler
 14.01.2019
 */
 

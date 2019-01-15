@@ -10,7 +10,7 @@ function setup() {
   // new neural netork instance, 3 Inputs, 3 Hidden Nodes, 2 outputs
   brain = new NeuralNetwork(3, 3, 2);
 
-  // train neural nework, i generations
+  // train neural nework, i times
   for (let i = 0; i < 10000; i++) {
     let r = random(255);
     let g = random(255);
