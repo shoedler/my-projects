@@ -3,37 +3,59 @@
 // 15.01.2019
 
 // var def
-let wTiles = 6;
-let wTileSize;
-let hTiles = 6;
-let hTileSize;
+let tileAmountWidth = 6;
+let tileWidth;
+let tileAmountHeight = 6;
+let tileHeight;
+let tileRadius = 1;
 var imgBg;
 var mainC;
 var borderC;
 
-function preload() {
-  imgBg = loadImage('/RockFace.jpg');
-}
-
 function setup() {
   createCanvas(window.innerWidth, window.innerHeight);
-  background(imgBg);
 
-  calcTiles();
+  // create background image. make background 51 while loading
+  background(51);
+  loadImage("RockFace.jpg", function(imgBg) {
+    image(imgBg, 0, 0);
+  });
 
-  mainC = color(010,010,010,90);
-  borderC = color(000,000,000,100);     // transparent
+  // calculate tile size according to inner dimensions
+  calcTileSize();
 
-  fill(mainC);
-  stroke(borderC);
-  rect(wTileSize / 2, hTileSize / 2, wTileSize, hTileSize);
+  mainC   = color(010,010,010,090);     // dark
+  borderC = color(000,000,000,000);     // transparent
+
+  const t1 = new Tile(tileWidth, tileHeight, tileRadius)
+
+  t1.makeAt(tileWidth / 2, tileHeight / 2);
+
+  console.log(t1);
 }
 
-function draw() {
+function draw() {}
 
+function calcTileSize() {
+  tileWidth = window.innerWidth  / tileAmountWidth;
+  tileHeight = window.innerHeight / tileAmountHeight;
 }
 
-function calcTiles() {
-  wTileSize = window.innerWidth  / wTiles;
-  hTileSize = window.innerHeight / hTiles;
+
+
+class Tile {
+  constructor(width, height, radius) {
+    this.width = width;
+    this.height = height;
+    this.radius = radius;
+  }
+
+  makeAt(posWidth, posHeight) {
+    this.posWidth = posWidth;
+    this.posHeight = posHeight;
+    // draw rectangle
+    fill(mainC);
+    stroke(borderC);
+    rect(this.posWidth, this.posHeight, this.width, this.height, this.radius);
+  }
 }
