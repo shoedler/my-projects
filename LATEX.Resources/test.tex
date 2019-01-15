@@ -1,0 +1,45 @@
+% !TEX TS-program = pdflatex
+\documentclass[a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{mathtools}
+\usepackage[sfdefault]{roboto}
+
+\title{LaTeX Beispiel}
+\author{ssc}
+\date{15.01.2019}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+\section{Einführung}
+  Hier eine kurze \textit{Einführung}
+  Die \textbf{Überschrift} wird automatisch im Inhaltsverzeichnis
+  aufgelistet.
+  --Willkommen bei \LaTeX{}!
+
+\subsection{Schriftstil wechseln}
+  Mit einer "Group" kann der Schriftstil gewechselt werden. \newline
+  \begingroup
+  \fontseries{t}\selectfont
+  Das ist die "Thin" Version der Schrift \newline
+  \endgroup
+  Das ist wieder die "Light" Version der Schrift.
+
+\subsection{Eine Auflistung}
+    \begin{description}
+        \item [UI]      Atom One Dark UI
+        \item [Syntax]  Atom One Dark Syntax
+        \item [Font]    Consolas
+    \end{description}
+
+\subsection{Eine Gleichung}
+  Gleichung ~\eqref{eq:gauss} ist ein \emph{gaussches Integral}
+
+    \begin{equation}
+        \int_{-\infty}^{\infty}\exp(-x^2)\,dx = \sqrt{\pi} \label{eq:gauss}
+    \end{equation}
+
+\end{document}
