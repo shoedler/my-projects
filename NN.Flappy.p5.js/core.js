@@ -1,3 +1,5 @@
+/* COMEBAK 19:30 pt2 */
+
 const TOTAL = 250;
 var birds = [];
 let savedBirds = [];
