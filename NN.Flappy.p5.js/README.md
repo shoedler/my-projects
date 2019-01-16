@@ -1,6 +1,5 @@
 # Prerequisities
-- NodeJS *used for the* `nn.js` `matrix.js` *files*
-- NPM `install npm` to get NPM dependencies
+None
 
 
 # Info
@@ -12,10 +11,13 @@
     - y location of pipe's top
     - y location of pipe's bottom
     - y velocity of bird normalized
-  - Hidden Layer:
-    - 4
+  - Hidden Layers:
+    - 8
   - Outputs:
-    - Jump or don't jump
+    - 2
 
 # Open Points
-[] load JSON of bird brain via browse
+* [x] load JSON of bird brain via browser
+* [ ] fix load brain functions to apply to NN
+* [ ] move save brain to next gen, activate with flag
+* [ ] make bird death visually notable
