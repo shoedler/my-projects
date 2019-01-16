@@ -1,3 +1,8 @@
+#Prerequisities
+- NodeJS *used for the* `nn.js` `matrix.js` *files*
+- NPM `install npm` to get NPM dependencies
+
+
 #Info
 - Every bird has it's own NN
 - NN architecture:

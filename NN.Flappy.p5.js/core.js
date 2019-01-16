@@ -1,10 +1,11 @@
 /* COMEBAK 19:30 pt2 */
 
-const TOTAL = 250;
-var birds = [];
+const TOTAL = 300;
+let birds = [];
 let savedBirds = [];
-var pipes = [];
+let pipes = [];
 let counter = 0;
+
 
 function setup() {
   createCanvas(window.innerWidth, window.innerHeight);
@@ -12,43 +13,49 @@ function setup() {
   for (var i = 0; i < TOTAL; i++) {
     birds[i] = new Bird();
   }
-  pipes.push(new Pipe());
 }
 
 function draw() {
   background(51);
 
-  if (frameCount % 60 == 0) {
+  if (counter % 60 == 0) {
     pipes.push(new Pipe());
   }
   counter++;
 
-  for (var i = pipes.length - 1; i > 0 ; i--) {
-    pipes[i].show();
+  for (var i = pipes.length - 1; i >= 0 ; i--) {
     pipes[i].update();
 
-    if (pipes[i].offscreen()) {
-      pipes.splice(i, 1);
-    }
-
     for (let j = birds.length - 1; j >= 0; j-- ) {
+      // when does the bird die?
       if (pipes[i].hits(birds[j]) || birds[j].life()) {
         // save bird when it dies, don't make array of arrays! [0]
         savedBirds.push(birds.splice(j, 1)[0]);
       }
+    }
+
+    if (pipes[i].offscreen()) {
+      pipes.splice(i, 1);
     }
   }
 
   for (let bird of birds) {
     bird.think(pipes);
     bird.update();
-    bird.show();
   }
 
   if (birds.length === 0) {
     counter = 0;
     nextGeneration();
     pipes = [];
+  }
+
+  for (let bird of birds) {
+    bird.show();
+  }
+
+  for (let pipe of pipes) {
+    pipe.show();
   }
 
   stats();
@@ -60,11 +67,12 @@ function gameOver() {
 }
 
 function stats() {
-  textAlign(LEFT, CENTER);
+  let magic = 12;
+  textAlign(LEFT, TOP);
   fill (255);
   textFont("consolas");
-  textSize(12);
+  textSize(magic);
   blendMode(DIFFERENCE);
-  text(frameCount / 10, window.innerWidth / 100, window.innerHeight / 200);
+  text("Score: " + frameCount / 10, window.innerWidth / 100, magic);
   blendMode(BLEND);
 }

@@ -20,7 +20,8 @@ class Bird {
   }
 
   show() {
-    fill(255);
+    fill(255, 100);
+    noStroke();
     ellipse(this.x, this.y, this.r, this.r);
   }
 
@@ -30,8 +31,8 @@ class Bird {
     let closestPipe = null;
     let closestPipeD = Infinity;
     for (let i = 0; i < pipes.length; i++) {
-      let d = pipes[i].x - this.x;
-      if (d < closestPipeD) {
+      let d = (pipes[i].x + pipes[i].w) - this.x;
+      if (d < closestPipeD && d > 0) {
         closestPipe = pipes[i];
         closestPipeD = d;
       }

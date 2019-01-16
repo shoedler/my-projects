@@ -27,6 +27,7 @@ class Pipe {
 
   show() {
     fill(255);
+    noStroke();
     rect(this.x, 0, this.w, this.top,);
     rect(this.x, window.innerHeight - this.bottom, this.w, this.bottom);
   }
