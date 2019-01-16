@@ -23,7 +23,7 @@ function draw() {
   }
   counter++;
 
-  for (var i = pipes.length - 1; i >= 0 ; i--) {
+  for (let i = pipes.length - 1; i >= 0 ; i--) {
     pipes[i].update();
 
     for (let j = birds.length - 1; j >= 0; j-- ) {
@@ -73,6 +73,10 @@ function stats() {
   textFont("consolas");
   textSize(magic);
   blendMode(DIFFERENCE);
-  text("Score: " + frameCount / 10, window.innerWidth / 100, magic);
+  text("Score: " + counter / 10, window.innerWidth / 100, magic);
+  text("Best Score: " + bestBirdScore, window.innerWidth / 100, 2 * magic);
+  text("Best Fitness: " + bestBirdFitness, window.innerWidth / 100, 3 * magic);
+  text("Generation: " + generation, window.innerWidth / 100, 4 * magic);
+
   blendMode(BLEND);
 }

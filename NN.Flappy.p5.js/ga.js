@@ -1,7 +1,12 @@
+let bestBirdScore = 0;
+let bestBirdFitness = 0;
+let generation = 0;
 
 function nextGeneration() {
-
   calculateFitness();
+  getBest();
+
+  generation++;
 
   for (var i = 0; i < TOTAL; i++) {
     birds[i] = pickOne();
@@ -19,11 +24,24 @@ function pickOne() {
 
 function calculateFitness() {
   let sum = 0;
-  for (let bird of birds) {
+  for (let bird of savedBirds) {
     sum += bird.score;
   }
   // normalize fitness between 1 and 0
-  for (let bird of birds) {
+  for (let bird of savedBirds) {
     bird.fitness = bird.score / sum;
+  }
+}
+
+function getBest() {
+  bestBirdScore = 0;
+  bestBirdFitness = 0;
+  for (let i = savedBirds.length - 1; i >= 0; i--) {
+    if (savedBirds[i].score > bestBirdScore) {
+      bestBirdScore = savedBirds[i].score;
+    }
+    if (savedBirds[i].fitness > bestBirdFitness) {
+      bestBirdFitness = nfc(savedBirds[i].fitness, 4);
+    }
   }
 }
