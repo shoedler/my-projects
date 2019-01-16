@@ -18,4 +18,4 @@
     - Jump or don't jump
 
 # Open Points
-[ ] load JSON of bird brain via browse
+[] load JSON of bird brain via browse
