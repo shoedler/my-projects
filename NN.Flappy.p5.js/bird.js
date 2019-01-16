@@ -4,10 +4,11 @@ class Bird {
     this.x = 60;
     this.r = 32;
 
-    this.g = 0.6;
+    this.g = 0.4;
     this.v = 0;
-    this.lift = 12;
+    this.lift = 9;
 
+    this.vNormalize = 10;
     this.score = 0;
     this.fitness = 0;
 
@@ -15,7 +16,7 @@ class Bird {
     if (brain) {
       this.brain = brain.copy();
     } else {
-      this.brain = new NeuralNetwork(4, 4, 2);
+      this.brain = new NeuralNetwork(5, 8, 2);
     }
   }
 
@@ -43,6 +44,7 @@ class Bird {
     inputs[1] = closestPipe.top / window.innerHeight;
     inputs[2] = closestPipe.bottom / window.innerHeight;
     inputs[3] = closestPipe.x / window.innerWidth;
+    inputs[4] = this.v / this.vNormalize;
     let output = this.brain.predict(inputs);
     if (output[0] > output[1]) {
       this.up();
@@ -66,9 +68,7 @@ class Bird {
 
   life() {
     // bird dies if it hits the top or the bottom of the screen
-    if (this.y > window.innerHeight) {
-      return true;
-    } else if (this.y < 0) {
+    if (this.y > window.innerHeight || this.y < 0) {
       return true;
     }
     return false;

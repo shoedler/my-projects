@@ -4,7 +4,7 @@ let generation = 0;
 
 function nextGeneration() {
   calculateFitness();
-  getBest();
+  calculateBest();
 
   generation++;
 
@@ -15,7 +15,16 @@ function nextGeneration() {
 }
 
 function pickOne() {
-  let bird = random(savedBirds);
+  let index = 0;
+  let r = random(1);
+
+  while (r > 0) {
+    r = r - savedBirds[index].fitness;
+    index++;
+  }
+  index--;
+
+  let bird = savedBirds[index];
   let child = new Bird(bird.brain);
   // do crossover here
   child.mutate();
@@ -33,7 +42,7 @@ function calculateFitness() {
   }
 }
 
-function getBest() {
+function calculateBest() {
   bestBirdScore = 0;
   bestBirdFitness = 0;
   for (let i = savedBirds.length - 1; i >= 0; i--) {

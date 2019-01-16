@@ -1,15 +1,12 @@
 class Pipe {
   constructor() {
-    this.top = random(window.innerHeight / 2);
-    this.bottom = random(window.innerHeight / 2);
-    this.spacing = 10;
-    // ensure that the gap is at least a 10th of the window height
-    while (this.bottom + this.top > window.innerHeight - window.innerHeight / this.spacing) {
-      this.top = random(window.innerHeight / 2);
-      this.bottom = random(window.innerHeight / 2);
-    }
+
+    this.spacing = 125;
+    this.top = random(window.innerHeight / 6, 3 / 4 * window.innerHeight);
+    this.bottom = height - (this.top + this.spacing);
+
     this.x = window.innerWidth;
-    this.w = 40;
+    this.w = 80;
     this.speed = 5;
   }
 
@@ -28,7 +25,8 @@ class Pipe {
   show() {
     fill(255);
     noStroke();
-    rect(this.x, 0, this.w, this.top,);
+    rectMode(CORNER);
+    rect(this.x, 0, this.w, this.top);
     rect(this.x, window.innerHeight - this.bottom, this.w, this.bottom);
   }
 
