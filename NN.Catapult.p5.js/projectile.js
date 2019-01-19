@@ -1,4 +1,4 @@
-let vxMax = 15;
+let vxMax = 8;
 let vyMax = 15;
 
 class Projectile {
