@@ -1,6 +1,6 @@
 class Target {
   constructor() {
-    this.w = wHeight / 40;
+    this.w = wWidth / 40;
     this.x = random(wWidth / 2, wWidth - this.w);
     this.middle = this.x + (this.w / 2);
     this.lowerBoundary = this.middle - (this.w / 2);
