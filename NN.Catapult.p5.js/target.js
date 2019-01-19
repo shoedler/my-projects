@@ -2,6 +2,9 @@ class Target {
   constructor() {
     this.w = wHeight / 40;
     this.x = random(wWidth / 2, wWidth - this.w);
+    this.middle = this.x + (this.w / 2);
+    this.lowerBoundary = this.middle - (this.w / 2);
+    this.upperBoundary = this.middle + (this.w / 2);
     this.color = color(200, 0, 0, 100);
   }
 
@@ -11,11 +14,4 @@ class Target {
     rect(this.x, wHeight - groundLevel, this.w, groundLevel);
   }
 
-  strike(projectile) {
-    if (projectile.vy == 0) {
-      if (projectile.x > this.x && projectile.x < this.x + this.w) {
-        console.log("WON");
-      }
-    }
-  }
 }

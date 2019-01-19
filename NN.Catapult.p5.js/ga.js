@@ -11,13 +11,9 @@ function pickOne() {
 
 
 function calculateFitness() {
-  let sum = 0;
-  for (let bird of savedBirds) {
-    sum += bird.score;
-  }
-  // normalize fitness between 1 and 0
-  for (let bird of savedBirds) {
-    bird.fitness = bird.score / sum;
+  for (let projectile of savedProjectiles) {
+    projectile.fitness = projectile.score;
+    console.log(projectile.fitness);
   }
 }
 
