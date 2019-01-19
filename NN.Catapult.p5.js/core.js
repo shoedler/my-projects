@@ -8,7 +8,7 @@ let wHeight = window.innerHeight;
 
 let groundLevel = wHeight / 30
 
-let TOTAL = 50;
+let TOTAL = 5;
 let projectiles = [];
 let bestProjectileScore = 0;
 let savedProjectiles = [];
@@ -17,6 +17,8 @@ let checkVelocity = 0;        // sum of all projectiles vy vx to check if a gen 
 
 // gui elements
 let paceSlider;
+let posValue = 12;
+let fontColor = 255;
 
 function setup() {
   createCanvas(wWidth, wHeight);
@@ -89,7 +91,7 @@ function drawGround() {
 }
 
 
-function stats() {
+function gui() {
   fill(31, 31, 31, 100);
   noStroke();
   rect(0, 0, window.innerWidth, posValue * 8);
@@ -101,24 +103,20 @@ function stats() {
   fill (fontColor);
   textFont("consolas");
   textSize(posValue);
-  text("Score: " + counter / 10, window.innerWidth / 100, posValue);
-  text("Currently Alive Birds: " + birds.length, window.innerWidth / 100, 2 * posValue);
-  text("Last Best Score: " + bestBirdScore / 10, window.innerWidth / 100, 3 * posValue);
-  text("Alltime Best Score: " + alltimeBestBirdScore / 10, window.innerWidth / 100, 4 * posValue);
+  text("Score: ", window.innerWidth / 100, posValue);
+  text("Active Projectiles: " + projectiles.length, window.innerWidth / 100, 2 * posValue);
+  text("Last Best Score: ", window.innerWidth / 100, 3 * posValue);
+  text("Alltime Best Score: ", window.innerWidth / 100, 4 * posValue);
   text("Generation: " + generation, window.innerWidth / 100, 5 * posValue);
 
   // top right
   text("Logic Cycles per Frame: " + paceSlider.value(), window.innerWidth / 4, 3.5 * posValue);
   paceSlider.position(window.innerWidth / 4, posValue);
-  saveButton.position(window.innerWidth / 2, posValue);
-  loadButton.position(window.innerWidth / 2, posValue * 3);
-  loadURLInput.position(window.innerWidth / 2, posValue * 5);
 
   // special
   textAlign(CENTER, CENTER);
   textSize(window.innerWidth / 5);
   if (paceSlider.value() == 0) {text("PAUSE", window.innerWidth / 2, window.innerHeight / 2);}
-  if (loadedBirdBrainSuccess == true) {text("LOADED", window.innerWidth / 2, window.innerHeight / 2);}
 
   blendMode(BLEND);
 }

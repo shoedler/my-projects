@@ -1,7 +1,7 @@
 
 function nextGeneration() {
   calculateFitness();
-  calculateBest(); // only for visuals
+  calculateBest(); // only for visual appeal
 
   generation++;
 
@@ -23,14 +23,16 @@ function pickOneAndMutate() {
   let index = 0;
   let r = random(1);
 
+  // pick from pop algorhytm
   while (r > 0) {
     r = r - savedProjectiles[index].fitness;
     index++;
   }
   index--;
 
-  let fitestProjectile = savedProjectiles[index];
-  let child = new Projectile(fitestProjectile.brain);
+  let pickedProjectile = savedProjectiles[index];
+
+  let child = new Projectile(pickedProjectile.brain);
   // do crossover here
   child.mutate();
   return child;
@@ -38,8 +40,13 @@ function pickOneAndMutate() {
 
 
 function calculateFitness() {
+  let sum = 0;
   for (let projectile of savedProjectiles) {
-    projectile.fitness = projectile.score;
+    sum += projectile.score;
+  }
+  // normalize fitness between 1 and 0
+  for (let projectile of savedProjectiles) {
+    projectile.fitness = projectile.score / sum;
   }
 }
 

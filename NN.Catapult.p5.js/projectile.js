@@ -2,7 +2,7 @@ let vxMax = 15;
 let vyMax = 15;
 
 class Projectile {
-  constructor() {
+  constructor(brain) {
     // visual properties
     this.color = color(255, 255, 255, 150);
     this.r = 7;
@@ -19,7 +19,11 @@ class Projectile {
     // genetic properties
     this.score = 0;
     this.fitness = 0;
-    this.brain = new NeuralNetwork(7, 8, 2);
+    if (brain) {
+      this.brain = brain.copy();
+    } else {
+      this.brain = new NeuralNetwork(7, 12, 1);
+    }
   }
 
   think(target) {
@@ -27,13 +31,13 @@ class Projectile {
     inputs[0] = this.y / wHeight;
     inputs[1] = this.x / wWidth;
     inputs[2] = target.middle / wWidth;
-    inputs[3] = target.upperBoundary / wWidth;
-    inputs[4] = target.lowerBoundary / wWidth;
-    inputs[5] = gravity;
-    inputs[6] = airResistance;
+    inputs[3] = gravity;
+    inputs[4] = airResistance;
+    inputs[5] = this.vx;
+    inputs[6] = this.vy;
     let output = this.brain.predict(inputs);
     this.vx = vxMax * output[0];
-    this.vy = vyMax * output[1];
+    this.vy = vyMax * output[0];
   }
 
   mutate() {
@@ -48,15 +52,8 @@ class Projectile {
 
   update(target) {
     // increase score. 1 = max
-    if (this.x < target.lowerBoundary) {this.score = 1 / target.x * this.x;}
-    if (this.x > target.upperBoundary) {this.score = target.middle / this.x;}
-
-    // evaluate if the projectile won
-    // if (this.vy == 0) {
-    //   if (this.x - this.r > target.x && this.x + this.r < target.x + target.w) {
-    //     // won the game
-    //   }
-    // }
+    if (this.x < target.middle) {this.score = 1 / target.x * this.x;}
+    if (this.x > target.middle) {this.score = target.middle / this.x;}
 
     // physics
     this.y -= this.vy;
@@ -80,8 +77,6 @@ class Projectile {
   }
 
   updateTrail() {
-    fill(255);
-    stroke(255);
     this.trail.push(new Trail(this.x, this.y));
     for (let trail of this.trail) {
       trail.show();
@@ -106,8 +101,8 @@ class Trail {
   }
 
   show() {
-    fill(255);
-    stroke(255);
+    fill(255, 255, 255, 60);
+    stroke(150);
     point(this.x, this.y);
   }
 }
