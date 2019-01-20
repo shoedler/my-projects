@@ -14,8 +14,6 @@ function nextGeneration() {
   mainTarget = new Target();
   mainTarget.show();
   for (let projectile of projectiles) {projectile.think(mainTarget);}
-
-  generation++;
 }
 
 

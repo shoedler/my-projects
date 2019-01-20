@@ -22,7 +22,7 @@ let fontColor = 255;
 
 function setup() {
   createCanvas(wWidth, wHeight);
-  paceSlider = createSlider(0, 50, 1);
+  paceSlider = createSlider(0, 200, 1);
 
   // initial population
   for (var i = 0; i < TOTAL; i++) {projectiles[i] = new Projectile();}
@@ -34,9 +34,6 @@ function setup() {
 }
 
 function draw() {
-  // logic stuff
-  for (let n = 0; n < paceSlider.value(); n++) {logic();}
-
   // drawing stuff
   background(51);
   drawGround();
@@ -51,15 +48,18 @@ function draw() {
       projectile.show();
   }
   gui();
+
+  // logic stuff
+  for (let n = 0; n < paceSlider.value(); n++) {logic();}
 }
 
 
 function logic() {
   checkVelocity = 0;
   for (let projectile of projectiles) {
-    projectile.update(mainTarget);
     checkVelocity += projectile.vx;
     checkVelocity += projectile.vy;
+    projectile.update(mainTarget);
   }
 
   for (let i = projectiles.length - 1; i >= 0; i-- ) {
@@ -71,7 +71,6 @@ function logic() {
   }
 
   if (checkVelocity == 0) {
-    console.log("ng");
     nextGeneration();
   }
 }

@@ -22,7 +22,7 @@ class Projectile {
     if (brain) {
       this.brain = brain.copy();
     } else {
-      this.brain = new NeuralNetwork(7, 12, 1);
+      this.brain = new NeuralNetwork(3, 8, 2);
     }
   }
 
@@ -31,13 +31,9 @@ class Projectile {
     inputs[0] = this.y / wHeight;
     inputs[1] = this.x / wWidth;
     inputs[2] = target.middle / wWidth;
-    inputs[3] = gravity;
-    inputs[4] = airResistance;
-    inputs[5] = this.vx;
-    inputs[6] = this.vy;
     let output = this.brain.predict(inputs);
     this.vx = vxMax * output[0];
-    this.vy = vyMax * output[0];
+    this.vy = vyMax * output[1];
   }
 
   mutate() {
@@ -48,6 +44,12 @@ class Projectile {
     fill(this.color);
     noStroke();
     ellipse(this.x, this.y, this.r, this.r);
+
+    // score
+    textAlign(CENTER, TOP);
+    fill(255);
+    textSize(10);
+    text(nfc(this.score,3), this.x, this.y - 2* this.r);
   }
 
   update(target) {
@@ -87,9 +89,7 @@ class Projectile {
   }
 
   life() {
-    if (this.vx == 0 && this.vy == 0) {
-      return true;
-    }
+    if (this.vx == 0 && this.vy == 0) {return true;}
     return false;
   }
 }
