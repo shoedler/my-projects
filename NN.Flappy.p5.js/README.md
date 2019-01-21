@@ -19,5 +19,5 @@ None
 # Open Points
 * [x] load JSON of bird brain via browser
 * [ ] fix load brain functions to apply to NN
-* [ ] move save brain to next gen, activate with flag
+* [x] move save brain to next gen, activate with flag
 * [ ] make bird death visually notable

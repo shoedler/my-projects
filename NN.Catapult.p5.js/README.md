@@ -3,18 +3,17 @@ None
 
 
 # Info
-- Every bird has it's own NN
+- Every projectile has it's own NN
 - NN architecture:
   - Inputs:
-    - y location of bird
-    - x location of closest pipe
-    - y location of pipe's top
-    - y location of pipe's bottom
-    - y velocity of bird normalized
+    - x location of projectile (before launch)
+    - y location of projectile (before launch)
+    - x middle of target
   - Hidden Layers:
     - 8
   - Outputs:
-    - 2
+    - vx
+    - vy
 
 # Open Points
 * [x] load JSON of bird brain via browser
