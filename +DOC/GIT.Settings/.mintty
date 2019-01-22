@@ -1,0 +1,12 @@
+BoldAsFont=yes
+ThemeFile=base16-default-mod-lighten
+Transparency=high
+Font=Consolas
+FontHeight=18
+CursorColour=45,45,45
+BackgroundColour=176,176,176
+FontSmoothing=full
+AllowBlinking=yes
+Locale=de_CH
+Charset=UTF-8
+Term=xterm
