@@ -1,11 +1,11 @@
-# Atom Packages
+# Good Atom Packages
 
 ## Essentials
 
 Package | Description | Link
 --- | --- | ---
-Process palette | Execture scripts from within atom                | [atom.io](https://atom.io/packages/process-palette)
-Tabs to spaces  | Change all tabs to spaces. No more Tabs!         | [atom.io](https://atom.io/packages/tabs-to-spaces)
+Process palette | Execute scripts from within atom                 | [atom.io](https://atom.io/packages/process-palette)
+Tabs to spaces  | Change all tabs to spaces. No! more! Tabs!       | [atom.io](https://atom.io/packages/tabs-to-spaces)
 Auto-encoding   | Change encoding depending on the file            | [atom.io](https://atom.io/packages/auto-encoding)
 p5-js Snippets  | Includes p5js snippets when handling `.js` files | [atom.io](https://atom.io/packages/p5js-snippets), [p5js](https://p5js.org/)
 Split Diff      | Diff files in atom using Editors                 | [atom.io](https://atom.io/packages/split-diff)
