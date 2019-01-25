@@ -7,9 +7,9 @@ class Diagram {
 
     this.gridRows = 365;
     this.gridCols = 100;
-  }
 
-  updateMeasurements() {
+    this.lines = [];
+
     this.blx = this.padding / 100 * wWidth;
     this.bly = wHeight - (this.padding / 100 * wHeight);
     this.brx = wWidth - (this.padding / 100 * wWidth);
@@ -18,10 +18,13 @@ class Diagram {
     this.tly = (wHeight / 2) + (this.padding / 100 * wHeight);
     this.trx = wWidth - (this.padding / 100 * wWidth);
     this.try = (wHeight / 2) + (this.padding / 100 * wHeight);
+
+    this.wCell = (this.brx - this.blx) / this.gridRows;
+    this.hCell = ((95 / 100 * this.bly)-(102 / 100 * this.tly)) / this.gridCols;
   }
 
-  show() {
 
+  show() {
     stroke(this.color);
     strokeWeight(1);
     noFill();
@@ -45,31 +48,58 @@ class Diagram {
     }
 
     // grid
-    let wCell = (this.brx - this.blx) / this.gridRows;
-    let hCell = ((95 / 100 * this.bly)-(102 / 100 * this.tly)) / this.gridCols;
     for (let i = 0; i < this.gridCols; i++) {
       for (let j = 0; j < this.gridRows; j++) {
         stroke(240, 240, 240, 20);
         strokeWeight(.3);
         noFill();
-        rect(this.blx + (wCell * j), (102 / 100 * this.tly) + (hCell * i), wCell, hCell);
+        rect(this.blx + (this.wCell * j), (102 / 100 * this.tly) + (this.hCell * i), this.wCell, this.hCell);
       }
     }
-
-    // line test
-    stroke(240, 40, 40);
-    strokeWeight(2);
-    noFill();
-
-    bezier()
-    beginShape();
-    vertex(this.blx + (wCell * 0) + (wCell / 2), (102 / 100 * this.tly) + (hCell * 100) + (hCell / 2));
-    curveVertex(this.blx + (wCell * 91) + (wCell / 2), (102 / 100 * this.tly) + (hCell * 20) + (hCell / 2));
-    curveVertex(this.blx + (wCell * 120) + (wCell / 2), (102 / 100 * this.tly) + (hCell * 70) + (hCell / 2));
-    curveVertex(this.blx + (wCell * 182) + (wCell / 2), (102 / 100 * this.tly) + (hCell * 50) + (hCell / 2));
-    vertex(this.blx + (wCell * 364) + (wCell / 2), (102 / 100 * this.tly) + (hCell * 100) + (hCell / 2));
-    endShape();
   }
 
+  addLine(name, r, g, b) {
+    this.lines.push(new StressLine(name, this.blx, (102 / 100 * this.tly), r, g, b));
+    console.log("New StressLine Object created: " + "'" + name + "' " + "at index " + this.lines.length);
+    return this.lines.length - 1;
+  }
+  addCoordinates(arrIndex, x, y) {
+    let tempX = this.wCell * x;
+    let tempY = (this.gridCols * this.hCell) - (this.hCell * y); // inverse, to draw from grid's bottom left
+    this.lines[arrIndex].vertX.push(tempX);
+    this.lines[arrIndex].vertY.push(tempY);
+  }
+  showLine(arrIndex) {
+    stroke(this.lines[arrIndex].r, this.lines[arrIndex].g, this.lines[arrIndex].b);
+    strokeWeight(2);
+    noFill();
+    translate(this.lines[arrIndex].zeroX, this.lines[arrIndex].zeroY);
 
+    beginShape();
+    // draw first vertex twice
+    curveVertex(this.lines[arrIndex].vertX[0], this.lines[arrIndex].vertY[0]);
+    curveVertex(this.lines[arrIndex].vertX[0], this.lines[arrIndex].vertY[0]);
+    for (let i = 1; i < this.lines[arrIndex].vertX.length - 1; i++) {
+      curveVertex(this.lines[arrIndex].vertX[i], this.lines[arrIndex].vertY[i]);
+    }
+    // draw last vertex twice
+    let lastX = this.lines[arrIndex].vertX.length - 1;
+    let lastY = this.lines[arrIndex].vertY.length - 1;
+    curveVertex(this.lines[arrIndex].vertX[lastX], this.lines[arrIndex].vertY[lastY]);
+    curveVertex(this.lines[arrIndex].vertX[lastX], this.lines[arrIndex].vertY[lastY]);
+    endShape();
+  }
+}
+
+class StressLine {
+  constructor(name, zeroX, zeroY, r, g, b) {
+    this.name = name;
+    this.zeroX = zeroX;
+    this.zeroY = zeroY;
+    this.r = r;
+    this.g = g;
+    this.b = b;
+    this.vertX = [];
+    this.vertY = [];
+  }
 }
