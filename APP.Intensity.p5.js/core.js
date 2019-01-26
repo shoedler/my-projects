@@ -1,23 +1,32 @@
 let wWidth = window.innerWidth;
 let wHeight = window.innerHeight;
 
-let d = new Diagram();
-let schoolStress = d.addLine("School", 255, 0, 0);
-let solaStress = d.addLine("Sola", 0, 0, 255);
+let d = new Diagram(wWidth / 20, wHeight / 5);
 
 function setup() {
   createCanvas(wWidth, wHeight);
   textFont("consolas");
 
-  d.addCoordinates(schoolStress,   0,   0);
-  d.addCoordinates(schoolStress,  91,  20);
-  d.addCoordinates(schoolStress, 186,  70);
-  d.addCoordinates(schoolStress, 365,  20);
+  d.addLine("School", 255, 0, 0);
+  d.addLinePoints("School",   0, 20);
+  d.addLinePoints("School", 10, 10);
+  d.addLinePoints("School", 50, 50);
+  d.addLinePoints("School", 180, 80);
+  d.addLinePoints("School", 365,40);
 
-  d.addCoordinates(solaStress,   0,   0);
-  d.addCoordinates(solaStress,  41, 100);
-  d.addCoordinates(solaStress, 136,  90);
-  d.addCoordinates(solaStress, 365,   0);
+  d.addLine("Sola", 0, 0, 255);
+  d.addLinePoints("Sola",  0,   0);
+  d.addLinePoints("Sola", 30,  40);
+  d.addLinePoints("Sola", 80, 100);
+  d.addLinePoints("Sola", 180, 80);
+  d.addLinePoints("Sola", 365, 10);
+
+  d.addLine("Test", 255, 255, 0);
+  d.addLinePoints("Test",  0,   0);
+  d.addLinePoints("Test", 40,  100);
+  d.addLinePoints("Test", 90, 30);
+  d.addLinePoints("Test", 190, 90);
+  d.addLinePoints("Test", 365, 0);
 
   console.log(d);
 
@@ -25,14 +34,12 @@ function setup() {
 
 function draw() {
   background(51);
-  d.show();
-  d.showLine(schoolStress);
-  d.showLine(solaStress);
+  d.showGrid();
+  d.showTags();
+  d.showLines();
 }
 
 function windowResized() {
-  d.x = 5 / 100 * wWidth;
-  d.y = wHeight - (5 / 100 * wHeight);
   wWidth = window.innerWidth;
   wHeight = window.innerHeight;
   resizeCanvas(wWidth, wHeight);
