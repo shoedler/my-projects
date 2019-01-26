@@ -78,21 +78,23 @@ class Diagram {
       endShape();
 
       // draw reference points
-      strokeWeight(this.cell_width * 2);
+      strokeWeight(this.cell_width);
       for (let i = 0; i < line.points_x.length; i++) {
         point(line.points_x[i], line.points_y[i]);
       }
     }
+  }
 
-    showLegend() {
-      /* COMBAK */
-      textAlign(LEFT, TOP);
-      for (let line of this.lines) {
-        text(line.name, this.width - (100 * this.cell_width), this.cell_height * line.)
-      }
+  showLegend() {
+    textAlign(LEFT, TOP);
+    noStroke();
+    for (let i = 0; i < this.lines.length; i++) {
+      fill(this.lines[i].color);
+      text(this.lines[i].name, this.width * 0.9, (2 * this.cell_height * i) + this.cell_height);
     }
   }
 }
+
 
 class Line {
   constructor(name, r, g, b) {
