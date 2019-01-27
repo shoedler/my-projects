@@ -33,7 +33,7 @@ class Diagram {
     translate(this.data_x, this.data_y);
 
     noFill();
-    stroke(255, 255, 255, 30);
+    stroke(255, 255, 255, 15);
     strokeWeight(0.5);
     for (let i = 0; i < this.data_rows; i++) {
       for (let j = 0; j < this.data_cols; j++) {
@@ -78,7 +78,7 @@ class Diagram {
       endShape();
 
       // draw reference points
-      strokeWeight(this.cell_width);
+      strokeWeight(this.cell_width * 0.5);
       for (let i = 0; i < line.points_x.length; i++) {
         point(line.points_x[i], line.points_y[i]);
       }
