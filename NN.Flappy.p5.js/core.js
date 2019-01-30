@@ -118,8 +118,8 @@ function saveBestBird() {
 
 
 function loadBird() {
-  loadedBirdBrainJSON = loadJSON('https://api.myjson.com/bins/19nc2k' , brainLoaded());
   console.log('Brain loading...');
+  loadedBirdBrainJSON = loadJSON('https://api.myjson.com/bins/19nc2k' , brainLoaded());
 }
 function brainLoaded() {
   loadedBirdBrainFlag = true;

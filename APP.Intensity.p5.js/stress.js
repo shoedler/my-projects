@@ -33,7 +33,7 @@ class Diagram {
     translate(this.data_x, this.data_y);
 
     noFill();
-    stroke(255, 255, 255, 30);
+    stroke(255, 255, 255, 15);
     strokeWeight(0.5);
     for (let i = 0; i < this.data_rows; i++) {
       for (let j = 0; j < this.data_cols; j++) {
@@ -78,21 +78,23 @@ class Diagram {
       endShape();
 
       // draw reference points
-      strokeWeight(this.cell_width * 2);
+      strokeWeight(this.cell_width * 0.5);
       for (let i = 0; i < line.points_x.length; i++) {
         point(line.points_x[i], line.points_y[i]);
       }
     }
+  }
 
-    showLegend() {
-      /* COMBAK */
-      textAlign(LEFT, TOP);
-      for (let line of this.lines) {
-        text(line.name, this.width - (100 * this.cell_width), this.cell_height * line.)
-      }
+  showLegend() {
+    textAlign(LEFT, TOP);
+    noStroke();
+    for (let i = 0; i < this.lines.length; i++) {
+      fill(this.lines[i].color);
+      text(this.lines[i].name, this.width * 0.9, (2 * this.cell_height * i) + this.cell_height);
     }
   }
 }
+
 
 class Line {
   constructor(name, r, g, b) {
