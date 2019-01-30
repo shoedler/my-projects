@@ -1,16 +1,20 @@
 let wWidth = window.innerWidth;
 let wHeight = window.innerHeight;
+let bgColor = 51;
 
-const gravity_x = 0.01;
-const gravity_y = 0.01;
+let gravity_x = 0.01;
+let gravity_y = 0.01;
 
 let player;
 let playerMoveForce = 2;
+let hole;
 let flock = [];
 let dead = [];
 
+
 function setup() {
   createCanvas(wWidth, wHeight);
+  textFont("consolas");
 
   // create player
   player = new Entity(random(wWidth),
@@ -30,33 +34,42 @@ function setup() {
                           random(100, 255),   // green component
                           random(100, 255))); // blue  component
   }
+
+  // create blackhole
+  hole = new BlackHole(100);
 }
 
-function draw() {
-  background(51);
-  backgroundGradient();
 
+function draw() {
+  background(bgColor);
   showScore(dead.length);
 
-  for (let entity of flock) {
-    entity.update();
-    entity.show();
+  hole.show();
+
+  for (let i = 0; i < flock.length; i++) {
+    flock[i].update();
+    flock[i].show();
+    if (flock[i].life(hole)) {
+      dead.push(flock.splice(i, 1)[0]);
+    }
   }
 
   player.update();
   player.show();
+  if (player.life(hole)) {gameOver()}
 
   checkCollision();
 }
 
+
 function checkCollision() {
   for (let i = 0; i < flock.length; i++) {
 
-    var x = flock[i].x - player.x;
-    var y = flock[i].y - player.y;
+    let x = flock[i].x - player.x;
+    let y = flock[i].y - player.y;
 
     // detect collision using the phytagorean theorem
-    var distance = sqrt(x*x + y*y)-(flock[i].r / 2 + player.r / 2);
+    let distance = sqrt(x*x + y*y)-(flock[i].r / 2 + player.r / 2);
 
     if (distance <= 0) { // collision happened
 
@@ -64,10 +77,13 @@ function checkCollision() {
         player.r += flock[i].r / 5;
         dead.push(flock.splice(i, 1)[0]);
         console.log("mampf");
+      } else {                    // player gets "eaten" by flock[i]
+        gameOver();
       }
     }
   }
 }
+
 
 function keyPressed() {
   switch (keyCode) {
@@ -89,21 +105,31 @@ function keyPressed() {
   }
 }
 
+
 function showScore(score) {
   fill(200);
   textSize(20);
   textAlign(LEFT, BOTTOM);
-  text("Score " + score, wWidth * 0.05, wHeight * 0.1);
+  text("Dead " + score, wWidth * 0.05, wHeight * 0.1);
 }
 
-function backgroundGradient() {
-  let endGrayscale = 51;
-  let startGrayscale = 90;
-  for (let i = startGrayscale; i > endGrayscale; i--) {
-    fill(startGrayscale - i);
-    ellipse(wWidth / 2, wHeight / 2, i, i);
+
+function gameOver() {
+  fill(200);
+  textSize(90);
+  textAlign(CENTER,CENTER);
+  text("GAME OVER", wWidth / 2, wHeight / 2);
+  player.vx = 0;
+  player.vy = 0;
+
+  gravity_x = 0;
+  gravity_y = 0;
+  for (let entity of flock) {
+    entity.vx = 0;
+    entity.vy = 0;
   }
 }
+
 
 function windowResized() {
   wWidth = window.innerWidth;
