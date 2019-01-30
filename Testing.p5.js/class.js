@@ -1,16 +1,17 @@
+
 class Entity {
-  constructor(x,y) {
+  constructor(x, y, r, player, mass, color_r, color_g, color_b) {
     this.x = x;
     this.y = y;
+    this.r = r;
+    this.color_r = color_r;
+    this.color_g = color_g;
+    this.color_b = color_b;
+    this.player = player;
+    this.mass = mass;
+
     this.vx = 0;
     this.vy = 0;
-    this.r = 20;
-    this.gravity = 0.01;
-    this.airResistance = 0.009;
-    this.color_r = 255;
-    this.color_g = 255;
-    this.color_b = 255;
-    this.player = false;
   }
 
   show() {
@@ -28,26 +29,17 @@ class Entity {
 
   update() {
     // y physics
-    if (this. y < wHeight / 2) {
-      this.vy += this.gravity;
+    if (this.y < wHeight / 2) {
+      this.vy += (this.mass * gravity_y);
     } else {
-      this.vy -= this.gravity;
+      this.vy -= (this.mass * gravity_y);
     }
     this.y += this.vy;
 
-    // x physics
-    // if (this.vx + this.airResistance > 0) {
-    //   this.vx -= this.airResistance;
-    // } else if (this.vx - this.airResistance < 0) {
-    //   this.vx += this.airResistance;
-    // } else {
-    //   this.vx = 0;
-    // }
-
     if (this.x < wWidth / 2) {
-      this.vx += this.airResistance;
+      this.vx += (this.mass * gravity_x);
     } else {
-      this.vx -= this.airResistance;
+      this.vx -= (this.mass * gravity_x);
     }
 
     this.x += this.vx
