@@ -49,38 +49,18 @@ function draw() {
   for (let i = 0; i < flock.length; i++) {
     flock[i].update();
     flock[i].show();
-    if (flock[i].life(hole)) {
-      dead.push(flock.splice(i, 1)[0]);
+
+    for (let j = 0; j < flock.length; j++) {
+      if (flock[i].life(hole, flock[j])) {
+        dead.push(flock.splice(i, 1)[0]);
+      }
     }
   }
 
   player.update();
   player.show();
-  if (player.life(hole)) {gameOver()}
-
-  checkCollision();
-}
-
-
-function checkCollision() {
-  for (let i = 0; i < flock.length; i++) {
-
-    let x = flock[i].x - player.x;
-    let y = flock[i].y - player.y;
-
-    // detect collision using the phytagorean theorem
-    let distance = sqrt(x*x + y*y)-(flock[i].r / 2 + player.r / 2);
-
-    if (distance <= 0) { // collision happened
-
-      if (flock[i].r < player.r) { // player "eats" flock[i] if it's radius is smaller than ours
-        player.r += flock[i].r / 5;
-        dead.push(flock.splice(i, 1)[0]);
-        console.log("mampf");
-      } else {                    // player gets "eaten" by flock[i]
-        gameOver();
-      }
-    }
+  for (let entity of flock) {
+    if (player.life(hole, entity)) {gameOver()}
   }
 }
 

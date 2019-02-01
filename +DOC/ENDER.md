@@ -8,23 +8,25 @@
 * [ ] Enable manual mesh bed leveling
 
 ## Noise Upgrades
-* [ ] Replace fans with Noctuas
-* [ ] Add Stepper shock absorbers
-* [ ] Upgrade control board to update stepper drivers
+### Fans
+* [ ] Meanwell LRS 350-24 Cooling Fan:  **?** V
+* [ ] Partcooling fan: 5015 fan         **24** V
+* [ ] Hot end fan: NF-A4x20             **?** V
+### Axes
+* [ ] TMC2130 drivers                   4pcs
+* [ ] MKS Gen L Controller
+* [ ] Stepper shock absorbers
 
-## RagBag Upgrades
-* [ ] Add TL-Smoothers
-* [ ]
+
 
 ## Intermediate Upgrades
 * [ ] BLTouch automatic bed leveling
 
 ## Nylon / Polycarbonate printing
-Needs 300+ Degrees C. Micro Swiss hot end is **crucial** since it has a titanium heatbreak. The Ender 3 Pro factory hot end doesn't have that. The PTFE bowden tube could melt and give of **toxic** fumes!
+Needs 300+ Degrees C. Micro Swiss hot end is **crucial** since it has a titanium heatbreak. The Ender 3 Pro factory hot end doesn't have that. The PTFE bowden tube could melt and give off **toxic** fumes!
 ### Prerequisities
 * [ ] Micro Swiss hot end
-* [ ] Type K thermocouple + breakout board
-* [ ] Duett control board (Maybe MKS Gen L)
+* [ ] Type K thermocouple (Not compatible with Melze) + breakout board
 * [ ] Disable part cooling
 * [ ] Probably an enclosure for the printer
-* [ ] Dry filament. Dry filament with perforated spools and wind loosly.
+* [ ] Dry filament. Dry the filament with perforated spools and wind loosly.

@@ -51,20 +51,37 @@ class Entity {
     this.vy += vy;
   }
 
-  life(blackhole) {
-    let x = blackhole.x - this.x;
-    let y = blackhole.y - this.y;
+  life(blackhole, entity) {
+    // ######
+    // detect collision with black hole
+    let xB = blackhole.x - this.x;
+    let yB = blackhole.y - this.y;
+
+    // detect collision with another entity
+    let xE = entity.x - this.x;
+    let yE = entity.y - this.y;
 
     // detect collision using the phytagorean theorem
-    let distance = sqrt(x*x + y*y)-(blackhole.r / 2 + this.r / 2);
+    let distanceB = sqrt(xB*xB + yB*yB)-(blackhole.r / 2 + this.r / 2);
+    let distanceE = sqrt(xE*xE + yE*yE)-(entity.r / 2 + this.r / 2);
 
-    if (distance <= 0) { // collision happened
-      this.r = this.r + distance;
+    if (distanceB <= 0) { // collision happened
+      this.r = this.r + distanceB;
     }
 
+    if (distanceE <= 0) {
+      this.r = this.r + distanceE;
+    }
+
+    console.log(distanceE);
+    console.log(distanceB);
+    debugger;
+
+    // true if dead
     if (this.r <= 0) {
       return true;
     }
+
   }
 }
 
