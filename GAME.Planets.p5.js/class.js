@@ -9,18 +9,25 @@ class Entity {
     this.player = player;
     this.mass = mass;
 
-    this.vx = 0;
-    this.vy = 0;
+    if (x < wWidth / 2) {
+      this.vx = random(-0.1, -1);
+    } else {
+      this.vx = random(0.1, 1);
+    }
+
+    if (y < wHeight / 2) {
+      this.vy = random(-0.1, -1);
+    } else {
+      this.vy = random(0.1, 1);
+    }
   }
 
   show() {
 
     noStroke();
     if (this.player) {
-      for (let i = 1; i < this.r; i++) {
-        fill(random(255), random(255), random(255));
-        ellipse(this.x, this.y, i, i);
-      }
+      fill(random(255), random(255), random(255));
+      ellipse(this.x, this.y, this.r, this.r);
     } else {
       fill(this.color_r, this.color_g, this.color_b);
       ellipse(this.x, this.y, this.r, this.r);
@@ -51,31 +58,25 @@ class Entity {
     this.vy += vy;
   }
 
-  life(blackhole, entity) {
-    // ######
-    // detect collision with black hole
-    let xB = blackhole.x - this.x;
-    let yB = blackhole.y - this.y;
+  life(entity) {
+
 
     // detect collision with another entity
-    let xE = entity.x - this.x;
-    let yE = entity.y - this.y;
+    let x = entity.x - this.x;
+    let y = entity.y - this.y;
 
     // detect collision using the phytagorean theorem
-    let distanceB = sqrt(xB*xB + yB*yB)-(blackhole.r / 2 + this.r / 2);
-    let distanceE = sqrt(xE*xE + yE*yE)-(entity.r / 2 + this.r / 2);
+    let distance = sqrt(x*x + y*y)-(entity.r / 2 + this.r / 2);
 
-    if (distanceB <= 0) { // collision happened
-      this.r = this.r + distanceB;
+    if (distance <= 0) {
+      if (this.r < entity.r) {
+        entity.r = entity.r - (distance / 6);
+        this.r = this.r + (distance / 1);
+      } else {
+        this.r = this.r - (distance / 6);
+        entity.r = entity.r + (distance / 1);
+      }
     }
-
-    if (distanceE <= 0) {
-      this.r = this.r + distanceE;
-    }
-
-    console.log(distanceE);
-    console.log(distanceB);
-    debugger;
 
     // true if dead
     if (this.r <= 0) {
