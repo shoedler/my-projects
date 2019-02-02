@@ -1,112 +1,60 @@
-let wWidth = window.innerWidth;
-let wHeight = window.innerHeight;
-
-const gravity_x = 0.01;
-const gravity_y = 0.01;
-
-let player;
-let playerMoveForce = 2;
-let flock = [];
-let dead = [];
+var particles = [];
+var player;
+var TOTAL_PARTICLES = 30
+var attractor;
+var bgColor = 51;
 
 function setup() {
-  createCanvas(wWidth, wHeight);
+  createCanvas(window.innerWidth, window.innerHeight);
 
-  // create player
-  player = new Entity(random(wWidth),
-                      random(wHeight),
-                      20,
-                      true,
-                      1);
-
-  // create enemies
-  for (var i = 0; i < 10; i++) {
-    flock.push(new Entity(random(wWidth),     // initial x position
-                          random(wHeight),    // initial y position
-                          random(15, 40),     // radius
-                          false,              // is player?
-                          random(0.1, 1.5),   // mass
-                          random(100, 255),   // red   component
-                          random(100, 255),   // green component
-                          random(100, 255))); // blue  component
+  for (var i = 0 ; i < TOTAL_PARTICLES ; i++){
+    particles[i] = new Particle(random(width), random(height), random(1,3));
   }
+  attractor = new Attractor(width/2, height/2);
+  player = new Particle(width / 4, height / 4, 2);
 }
 
 function draw() {
-  background(51);
-  backgroundGradient();
+  background(bgColor);
 
-  showScore(dead.length);
-
-  for (let entity of flock) {
-    entity.update();
-    entity.show();
-  }
-
+  var fPlayer = attractor.calculateAttraction(player);
+  player.applyForce(fPlayer);
   player.update();
   player.show();
+  // player.hitsBorders();
 
-  checkCollision();
-}
-
-function checkCollision() {
-  for (let i = 0; i < flock.length; i++) {
-
-    var x = flock[i].x - player.x;
-    var y = flock[i].y - player.y;
-
-    // detect collision using the phytagorean theorem
-    var distance = sqrt(x*x + y*y)-(flock[i].r / 2 + player.r / 2);
-
-    if (distance <= 0) { // collision happened
-
-      if (flock[i].r < player.r) { // player "eats" flock[i] if it's radius is smaller than ours
-        player.r += flock[i].r / 5;
-        dead.push(flock.splice(i, 1)[0]);
-        console.log("mampf");
-      }
-    }
-  }
+  // for (var i=0; i < particles.length; i++) {
+  //     var force = attractor.calculateAttraction(particles[i]);
+  //     particles[i].applyForce(force);
+  //     particles[i].update();
+  //     particles[i].show();
+  //     particles[i].hitsBorders();
+  // }
+  attractor.show();
 }
 
 function keyPressed() {
+  var fMod
   switch (keyCode) {
-    case 38:
-      player.move(0, -playerMoveForce);
+    case 38: // up
+      fMod = createVector(0, -1);
+      player.acc.add(fMod);
       break;
 
-    case 40:
-      player.move(0, playerMoveForce);
+    case 40: // down
+      fMod = createVector(0, 1);
+      player.acc.add(fMod);
       break;
 
-    case 37:
-      player.move(-playerMoveForce, 0);
+    case 37: // left
+      fMod = createVector(-1, 0);
+      player.acc.add(fMod);
       break;
 
-    case 39:
-      player.move(playerMoveForce, 0);
+    case 39: // right
+      fMod = createVector(1, 0);
+      player.acc.add(fMod);
       break;
+    console.log(player.acc);
   }
-}
-
-function showScore(score) {
-  fill(200);
-  textSize(20);
-  textAlign(LEFT, BOTTOM);
-  text("Score " + score, wWidth * 0.05, wHeight * 0.1);
-}
-
-function backgroundGradient() {
-  let endGrayscale = 51;
-  let startGrayscale = 90;
-  for (let i = startGrayscale; i > endGrayscale; i--) {
-    fill(startGrayscale - i);
-    ellipse(wWidth / 2, wHeight / 2, i, i);
-  }
-}
-
-function windowResized() {
-  wWidth = window.innerWidth;
-  wHeight = window.innerHeight;
-  resizeCanvas(wWidth, wHeight);
 }
