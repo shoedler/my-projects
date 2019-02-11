@@ -2,8 +2,8 @@ const multiBitDefinitionsRegex =     /^(T|D|E|F|G|R|X|Y)(\d*)(\s*)([A-Z0-9\-\_]*
 const singleBitDefinitionsRegex =    /^(T|D|E|F|G|R|X|Y)(\d*)(\.)(\d)(\s*)([A-Z0-9\-\_]*)$/;
 const programNumberDefinitionRegex = /^(P\d*)\s*C(\d*)$/;
 const programTitleDefinitionRegex =  /^;---------------\s*(fc\d*.lad)\s*\(([^\)]*)\)$/i;
-const instructionDefinitionsRegex =  /^([A-Z0-9]*)\s*([0-9X]*)\s*([0-9X]*)\s*([0-9X]*)\s*([0-9X]*)\s*([0-9X]*)\s*([0-9X]*)$/;
-const formatDefinitionsRegex =       /^([A-Z0-9_]*)\s*(\d*)$/;
+const instructionDefinitionsRegex =  /^([A-Z0-9]*)\s*([0-9]*)$/;
+const formatDefinitionsRegex =       /^([A-Z0-9\_]*)\s*(\d*)$/;
 
 const currentModuleNumberRegex =     /^([P])(\d*)[^\s]$/;
 const currentModuleSourceRegex =     /^;---------------\s*(fc\d*.lad)\s*\(([^\)]*)\)$/i;
@@ -19,10 +19,11 @@ class Interpreter {
     console.log(" ");
   }
 
+
   getMultiBitDefinitions(str) {
     let match = multiBitDefinitionsRegex.exec(str);
     if (match != null && match[1,2,4] != null && match[1,2,4] != "") {
-      let definition = new Memory(match[1], match[2], "", "?", match[4])
+      let definition = new Memory(match[1], match[2], "", ">=8", match[4])
       return definition;
     } else {
       return null;
@@ -40,6 +41,7 @@ class Interpreter {
     }
   }
 
+
   getProgramNumberDefinition(str) {
     let match = programNumberDefinitionRegex.exec(str);
     if (match != null && match[1,2] != null && match[1,2] != "") {
@@ -49,6 +51,7 @@ class Interpreter {
       return null;
     }
   }
+
 
   getProgramTitleDefinition(str, modules) {
     let match = programTitleDefinitionRegex.exec(str);
@@ -66,28 +69,30 @@ class Interpreter {
     }
   }
 
+
   getInstructionDefinitions(instrArr) {
     let definitions = [];
     for (let ins of instrArr) {
       let match = instructionDefinitionsRegex.exec(ins)
       if ( match != null && match[1,2] && match[1,2] != "") {
-        definitions.push(new SUBProgram(parseInt(match[2]), match[1], parseInt(match[3]), parseInt(match[4]),
-                                        parseInt(match[5]), parseInt(match[6]), parseInt(match[7])));
+        definitions.push(new Instruction(parseInt(match[2]), match[1]));
       }
     }
     return definitions;
   }
 
+
   getFormatDefinitions(formatArr) {
     let definitions = [];
     for (let format of formatArr) {
       let match = formatDefinitionsRegex.exec(format)
-      if ( match != null && match[1,2] && match[1,2] != "") {
-        definitions.push(new FORMATDefinition(match[2], match[1]));
+      if (match != null && match[1,2] && match[1,2] != "") {
+        definitions.push(new Format(match[2], match[1]));
       }
     }
     return definitions;
   }
+
 
   getCurrentModule(str1, str2, modules) {
     let match1 = currentModuleNumberRegex.exec(str1);
@@ -136,31 +141,15 @@ class Interpreter {
     }
   }
 
-  getInstructionOperations(strArr, index, subs) {
-    let found;
-    let match = instructionOperationRegex.exec(strArr[index]);
-    if (match != null && match[1,2] != null && match[1,2] != "") {
-      for (let sub of subs) {
-        if (match[2] == sub.number) {
-          found = Object.assign({}, sub);
-          /* Evaluate instruction logic */
-          if (found.formatLinefeed != 0) {found.format = strArr[index + found.formatLinefeed]};
 
-          switch (found.mode) {
-            case 1: /* RD A and WRT B */
-              found.reads.push(strArr[index + found.inputALinefeed]);
-              found.writes.push(strArr[index + found.inputBLinefeed]);
-              break;
-            case 2: /* RD A and RD B */
-              found.reads.push(strArr[index + found.inputALinefeed]);
-              found.reads.push(strArr[index + found.inputBLinefeed]);
-            default:
-          }
-          return found;
-          break;
+  getInstructionOperations(lines, index, instructions) {
+    let match = instructionOperationRegex.exec(lines[index]);
+    if (match != null && match[1,2] != null && match[1,2] != "") {
+      for (let i = 0; i < instructions.length; i++) {
+        if (match[2] == instructions[i].number) {
+          return InstructionFunctionalityData(instructions[i], lines, index);
         }
       }
-
     } else {
       return null;
     }
@@ -168,6 +157,7 @@ class Interpreter {
 }
 
 
+/* "Define" classes */
 class Memory {
   constructor(type, byteAddress, bitAddress, length, symbol) {
     this.byteType = type;             /* Memory Letter, e.g. "R" */
@@ -178,6 +168,7 @@ class Memory {
   }
 }
 
+
 class Module {
   constructor(programNumber, sourceFile, title) {
     this.programNumber = programNumber
@@ -186,24 +177,39 @@ class Module {
   }
 }
 
-class SUBProgram {
-  constructor(number, instruction, fLf = 0, aLf, bLf, format, mode) {
-    this.number = number;
-    this.instruction = instruction;
-    this.formatLinefeed = fLf;  /* At which line after the instruction is the format attribute? 0 if inexistent */
-    this.inputALinefeed = aLf;  /* At which line after the instruction is the read memory / address? */
-    this.inputBLinefeed = bLf;  /* At which line after the instruction is the write memory / address? */
 
-    this.format = format;       /* 1=Byte, 2=Word etc. */
-    this.mode = mode;           /* Contains mode of instruction */
-    this.reads = [];             /* Will store the Memory / address it reads */
-    this.writes = [];            /* Will store the Memory / address it writes */
-  }
-}
-
-class FORMATDefinition {
+class Format {
   constructor(format, variable) {
     this.format = format;
     this.variable = variable;
+  }
+}
+
+
+class Instruction {
+  constructor(number, instruction, ) {
+    this.number = number;
+    this.instruction = instruction;
+  }
+}
+
+
+/* "Ooperation" classes */
+class BitOperation {
+  constructor(op, mem, inMod, inNwk) {
+    this.operation = op;
+    this.memory = mem;
+    this.inModule = inMod;
+    this.inNetwork = inNwk;
+  }
+}
+
+class InstructionOperation {
+  constructor(instr, reads, writes, inMod, inNwk) {
+    this.type = instr;
+    this.reads = reads;   /* Arr */
+    this.writes = writes; /* Arr */
+    this.inModule = inMod;
+    this.inNetwork = inNwk;
   }
 }

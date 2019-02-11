@@ -2,12 +2,12 @@ class Resource {
   constructor(sourceLines) {
     this.sourceLines = sourceLines;
 
-    this.SUBPrograms = [];
-    this.FORMATDefinitions = [];
-    this.MBDMemory = [];
+    this.Modules = [];
+    this.Formats = [];
     this.SBDMemory = [];
+    this.MBDMemory = [];
+    this.Instructions = [];
 
-    this.PRGModules = [];
     this.bitReadOperations = [];
     this.bitWriteOperations = [];
     this.instructionOperations = [];
@@ -75,8 +75,8 @@ class Resource {
     }
   }
 }
-                              /* Type     Number   FormatLF   AlF    BlF    Format  Mode*/
-                              /*                                                    1 = RD a, WRT b | 2 = RD a, RD b */
+
+
 let instructionDefinitions =   ["END1         1",
                                 "END2         2",
                                 "END3        48",
@@ -89,13 +89,13 @@ let instructionDefinitions =   ["END1         1",
                                 "TMRB        24",
                                 "TMRC        54",
                                 "TMRBF       77",
-                                "DECB        25       1       2       4       0       1",
+                                "DECB        25",
                                 "CTR          5",
-                                "CTRC        55       X       1       2       2       1",
-                                "CTRB        56       X       1       2       2       1",
-                                "ROT          6",  /* Not used, -> undefined */
-                                "ROTB        26",  /* Not used, -> undefined */
-                                "COD          7",  /* Not used, -> undefined. 4-digit BCD = 2 bytes*/
+                                "CTRC        55",
+                                "CTRB        56",
+                                "ROT          6",
+                                "ROTB        26",
+                                "COD          7",
                                 "CODB        27",
                                 "MOVE         8",
                                 "MOVOR       28",
@@ -110,7 +110,7 @@ let instructionDefinitions =   ["END1         1",
                                 "DCNV        14",
                                 "DCNVB       31",
                                 "COMP        15",
-                                "COMPB       32        1       2       3       0       2",
+                                "COMPB       32",
                                 "COIN        16",
                                 "SFT         33",
                                 "DSCH        17",
