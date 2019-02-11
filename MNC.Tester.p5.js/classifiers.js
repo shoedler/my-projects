@@ -145,11 +145,7 @@ class Interpreter {
   getInstructionOperations(lines, index, instructions) {
     let match = instructionOperationRegex.exec(lines[index]);
     if (match != null && match[1,2] != null && match[1,2] != "") {
-      for (let i = 0; i < instructions.length; i++) {
-        if (match[2] == instructions[i].number) {
-          return InstructionFunctionalityData(instructions[i], lines, index);
-        }
-      }
+      return InstructionFunctionalityData(instructions, match[2], lines, index);
     } else {
       return null;
     }
