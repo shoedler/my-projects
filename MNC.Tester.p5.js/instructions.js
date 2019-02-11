@@ -1,9 +1,9 @@
 
-function InstructionFunctionalityData(instrArr, instrNbr, lines, index) {
-  missingLogic = [];
-  for (let i = 0; i < instrArr.length; i++) {
-    if (instrNbr == instrArr[i].number) {
-      switch (instrArr[i].type) {
+function InstructionFunctionalityData(res, match, index) {
+  for (let i = 0; i < res.Instructions.length; i++) {
+    if (match == res.Instructions[i].number) {
+
+      switch (res.Instructions[i].instruction) {
         case "XMOVB":
           break;
         case "COMPB":
@@ -11,19 +11,13 @@ function InstructionFunctionalityData(instrArr, instrNbr, lines, index) {
         case "CODB":
           break;
         default:
-          /* Collect Subs which appear in the mnemonic, are defined but aren't
+          /* Collect Subs which appear in the mnemonic and are defined but aren't
           handled in code */
-          missingLogic.push(instrArr[i]);
       }
     } /* Match Instruction number */
   }
 
-  if (missingLogic.length > 0) {
-    console.log("This mnemonic uses Instructions which are not handled in code: ");
-    console.log(missingLogic);
-  }
-
   return null
-  // must output read / write / either array with the correct data format, e.g. R8100-R8102
+  // must output read / write / either array with the correct data format, e.g. R8100-R8102 for 2 bytes
 
 }

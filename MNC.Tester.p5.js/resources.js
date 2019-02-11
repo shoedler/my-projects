@@ -77,6 +77,9 @@ class Resource {
 }
 
 
+let irrelevantInstructionDefinitions = "END1,END2,TMR,TMRB,TMRC,TMRBF,CTR,CTRB,CTRC,CTRB,JMP,JMPE,JMPB,JMPC,LBL";
+let ignoredInstructionDefinitions =    "ROT,ROTB,GTB,GTW,GTD,LTB,LTW,LTD,GEB,GEW,GED,LEB,LEW,LED"
+
 let instructionDefinitions =   ["END1         1",
                                 "END2         2",
                                 "END3        48",
@@ -176,6 +179,7 @@ let instructionDefinitions =   ["END1         1",
                                 "LEB        215",
                                 "LEW        216",
                                 "LED        217"];
+
 
 let formatDefinions =          ["PMC_BYTE           1", "PMC_WORD           2", "PMC_DWORD          4", "PMC_CONST_BYTE  0001",
                                 "PMC_CONST_WORD  0002", "PMC_CONST_DWORD 0004", "PMC_ADR_BYTE    1001", "PMC_ADR_WORD    1002",

@@ -142,10 +142,10 @@ class Interpreter {
   }
 
 
-  getInstructionOperations(lines, index, instructions) {
-    let match = instructionOperationRegex.exec(lines[index]);
+  getInstructionOperations(res, index) {
+    let match = instructionOperationRegex.exec(res.sourceLines[index]);
     if (match != null && match[1,2] != null && match[1,2] != "") {
-      return InstructionFunctionalityData(instructions, match[2], lines, index);
+      return InstructionFunctionalityData(res, match[2], index);
     } else {
       return null;
     }

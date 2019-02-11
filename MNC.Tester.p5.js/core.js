@@ -11,7 +11,6 @@ let CurrentNetwork;
 let Reader;
 let Data;
 
-
 function preload() {
   /* The loadStrings function returns an array, indexed by the lines of the loaded file
   syntax: loadStrings(filename,callback,errorCallback)*/
@@ -34,7 +33,7 @@ function draw() {
   warn += analyzeLogic            (Data);
   warn += analyzeDependencies     (Data);
   warn += analyzeResults          (Data);
-  if (warn != 0) {console.log("%c There have been " + warn + " warnings!", "background: #b72828; color: #ffffff");}
+  if (warn != 0) {console.log("%c There have been " + warn + " Warnings!", "background: #b72828; color: #ffffff");}
   // let testSearch2 = Data.bitQuery("allWriteOperations", Data.getBit("R9000.1"));
   // let testSearch = Data.bitQuery("allReadOperations", Data.getBit("REQUAL"));
   noLoop();
@@ -46,10 +45,10 @@ function getAdditionalDefinitions(source) {
   /* Load definitions from array. These defs are "nice-to-have" but
   not necessary. The are not found in the .mnc file, that's why we load them manually */
   console.log("Getting additional definitions...");
-  source.Instructions = Reader.getInstructionDefinitions(instructionDefinitions);
+  source.Instructions =        Reader.getInstructionDefinitions(instructionDefinitions);
   console.log("-- Instructions (aka. SUBs) definitions : " + source.Instructions.length);
-  source.Formats =      Reader.getFormatDefinitions(formatDefinions);
-  console.log("-- Format definitions     : " + source.Formats.length);
+  source.Formats =             Reader.getFormatDefinitions(formatDefinions);
+  console.log("-- Format definitions                   : " + source.Formats.length);
   finishSequence(w, 2);
   return w
 }
@@ -103,7 +102,7 @@ function analyzeLogic(source) {
       op = Reader.getWriteBitOperation(lines[i]);
       if (op != null) {source.bitWriteOperations.push(new BitOperation(op, CurrentModule, CurrentNetwork));}
       /* Instructions */
-      op = Reader.getInstructionOperations(source.sourceLines, i, source.Instructions);
+      op = Reader.getInstructionOperations(source, i);
       if (op != null) {source.instructionOperations.push(new InstructionOperation(op.instruction,
                                                                                   op.reads,
                                                                                   op.writes,
@@ -154,21 +153,6 @@ function analyzeResults(source) {
     console.log(unused);
   }
 
-  /* Check if there are any Instructions detected which are defined as "unsure" (mode = -1) */
-  console.log("-- Instructions, which are defined as 'unsure':");
-  let unsure = []
-  for (let i = 0; i < source.Instructions.length; i++) {
-    if (source.Instructions[i].mode == -1) {
-      unsure.push(source.Instructions[i]);
-      w += 1;
-    }
-  }
-  if (unsure.length == 0) {
-    console.log("%c--- None. All Instructions are defined correctly.", "color: " + green);
-  } else {
-    console.log("%c--- There are some...", "color: " + red);
-    console.log(unsure);
-  }
   finishSequence(w, 2);
   return w;
 }
