@@ -8,14 +8,12 @@ const yellow = "#998429"
 let CurrentModule;
 let CurrentNetwork;
 
-let Reader;
 let Data;
 
 function preload() {
   /* The loadStrings function returns an array, indexed by the lines of the loaded file
   syntax: loadStrings(filename,callback,errorCallback)*/
   Data = new Resource(loadStrings("https://raw.githubusercontent.com/WashirePie/CFX.Web/master/%2BDOC/RAW/mnemonic.mnc"));
-  Reader = new Interpreter;
 }
 
 
@@ -28,29 +26,13 @@ function draw() {
   background(51);
   let warn = 0;
   /* Run all sequences to analyze the mnemonic */
-  warn += getAdditionalDefinitions(Data);
   warn += getDefinitions          (Data);
   warn += analyzeLogic            (Data);
   warn += analyzeDependencies     (Data);
   warn += analyzeResults          (Data);
   if (warn != 0) {console.log("%c There have been " + warn + " Warnings!", "background: #b72828; color: #ffffff");}
-  // let testSearch2 = Data.bitQuery("allWriteOperations", Data.getBit("R9000.1"));
-  // let testSearch = Data.bitQuery("allReadOperations", Data.getBit("REQUAL"));
+
   noLoop();
-}
-
-
-function getAdditionalDefinitions(source) {
-  let w = 0;
-  /* Load definitions from array. These defs are "nice-to-have" but
-  not necessary. The are not found in the .mnc file, that's why we load them manually */
-  console.log("Getting additional definitions...");
-  source.Instructions =        Reader.getInstructionDefinitions(instructionDefinitions);
-  console.log("-- Instructions (aka. SUBs) definitions : " + source.Instructions.length);
-  source.Formats =             Reader.getFormatDefinitions(formatDefinions);
-  console.log("-- Format definitions                   : " + source.Formats.length);
-  finishSequence(w, 2);
-  return w
 }
 
 
@@ -60,17 +42,17 @@ function getDefinitions(source) {
   console.log("Getting definitions...");
   for (let line of source.sourceLines) {
     /* Check if line contains a multi bit definition */
-    let MBD = Reader.getMultiBitDefinitions(line);
+    let MBD = source.getMultiBitDefinitions(line);
     if (MBD != null) {source.MBDMemory.push(MBD);}
     /* Check if line contains a single bit definition */
-    let SBD = Reader.getSingleBitDefinitions(line);
+    let SBD = source.getSingleBitDefinitions(line);
     if (SBD != null) {source.SBDMemory.push(SBD);}
     /* Check if line contains a program number definition */
-    let PRGNBR = Reader.getProgramNumberDefinition(line);
+    let PRGNBR = source.getModuleNumberDefinition(line);
     if (PRGNBR != null) {source.Modules.push(PRGNBR);}
     /* Check if line contains a program title definition (they are only shown
     where the program is called in the file). Add to equally named existing module */
-    Reader.getProgramTitleDefinition(line, source.Modules);
+    source.getModuleTitleDefinition(line);
   }
   console.log("-- Multibit definitions  : " + source.MBDMemory.length);
   console.log("-- Singlebit definitions : " + source.SBDMemory.length);
@@ -87,27 +69,31 @@ function analyzeLogic(source) {
   let lines = source.sourceLines;
   for (let i = 0; i < lines.length; i++) {
     /* Update the current module */
-    let MODULE = Reader.getCurrentModule(lines[i], lines[i+1], source.Modules);
+    let MODULE = source.getCurrentModule(lines[i], lines[i+1]);
     if (MODULE != null) {CurrentModule = MODULE;}
     /* Update the current network */
-    let NETWORK = Reader.getCurrentNetwork(lines[i]);
+    let NETWORK = source.getCurrentNetwork(lines[i]);
     if (NETWORK != null) {CurrentNetwork = NETWORK;}
     /* If both CurrentNetwork & CurrentModule aren't null, we can begin to check
     for operations */
     if (CurrentModule != null && CurrentNetwork != null) {
       let op = null;
       /* Bitwise operations */
-      op = Reader.getReadBitOperation(lines[i]);
-      if (op != null) {source.bitReadOperations.push (new BitOperation(op, CurrentModule, CurrentNetwork));}
-      op = Reader.getWriteBitOperation(lines[i]);
-      if (op != null) {source.bitWriteOperations.push(new BitOperation(op, CurrentModule, CurrentNetwork));}
+      op = source.getReadBitOperation(lines[i]);
+      if (op != null) {source.bitReadOperations.push (new BitOperation(op, CurrentModule, CurrentNetwork, i));}
+      op = source.getWriteBitOperation(lines[i]);
+      if (op != null) {source.bitWriteOperations.push(new BitOperation(op, CurrentModule, CurrentNetwork, i));}
       /* Instructions */
-      op = Reader.getInstructionOperations(source, i);
+      op = source.InstructionLogicData(lines, i);
       if (op != null) {source.instructionOperations.push(new InstructionOperation(op.instruction,
+                                                                                  op.number,
+                                                                                  op.format,
+                                                                                  op.formatLength,
                                                                                   op.reads,
                                                                                   op.writes,
                                                                                   CurrentModule,
-                                                                                  CurrentNetwork));}
+                                                                                  CurrentNetwork,
+                                                                                  i));}
     }
   }
   console.log("-- Found bitwise Read operations:");
