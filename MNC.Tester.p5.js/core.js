@@ -30,6 +30,7 @@ function draw() {
   warn += analyzeLogic            (Data);
   warn += analyzeDependencies     (Data);
   warn += analyzeResults          (Data);
+  console.log(Data.usedUndefinedInstructions);
   if (warn != 0) {console.log("%c There have been " + warn + " Warnings!", "background: #b72828; color: #ffffff");}
 
   noLoop();

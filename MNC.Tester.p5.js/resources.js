@@ -79,6 +79,8 @@ class Resource {
     this.bitReadOperations = [];
     this.bitWriteOperations = [];
     this.instructionOperations = [];
+
+    this.usedUndefinedInstructions = [];
   }
 
 
@@ -190,93 +192,144 @@ class Resource {
         switch (number) {
           case 1: /* ☑️ */
             name = "END1";
+            /* Needs nothing */
             break;
           case 2: /* ☑️ */
             name = "END2";
+            /* Needs nothing */
             break;
           case 48: /* ☑️ */
             name = "END3";
+            /* Needs nothing */
             break;
           case 64: /* ☑️ */
             name = "SUBEND";
+            /* Needs nothing */
             break;
           case 65: /* ☑️ */
             name = "SUBCALL";
+            format.length = 1;
+            reads = this.instructionReads(lines, index, 1, format.length);
             break;
           case 66: /* ☑️ */
             name = "SUBCALLU";
+            format.length = 1;
+            reads = this.instructionReads(lines, index, 1, format.length);
             break;
           case 71: /* ☑️ */
             name = "SUBPRG";
+            format.length = 1;
+            reads = this.instructionReads(lines, index, 1, format.length);
             break;
           case 72: /* ☑️ */
             name = "SUBE";
+            /* Needs nothing */
             break;
-          case 3:
+          case 3: /* ☑️ */
             name = "TMR";
+            format.length = 1;
+            reads = "TMR_" + this.instructionReads(lines, index, 1, format.length);
             break;
-          case 24:
+          case 24: /* ☑️ */
             name = "TMRB";
+            format.length = 1;
+            reads = "TMR_" + this.instructionReads(lines, index, 1, format.length);
             break;
-          case 54:
+          case 54: /* ☑️ */
             name = "TMRC";
+            format.length = 1;
+            reads = "TMR_" + this.instructionReads(lines, index, 1, format.length);
             break;
-          case 77:
+          case 77: /* ☑️ */
             name = "TMBRF";
+            format.length = 1;
+            reads = "TMR_" + this.instructionReads(lines, index, 1, format.length);
             break;
-          case 25:
+          case 25: /* ☑️ */
             name = "DECB";
+            format = this.instructionFormat(lines, index, 1);
+            reads = [this.instructionReads(lines, index, 2, format.length), this.instructionReads(lines, index, 3, format.length)];
+            writes = this.instructionWrites(lines, index, 4, format.length);
             break;
-          case 5:
+          case 5: /* ☑️ */
             name = "CTR";
+            format.length = 1;
+            reads = "CTR_" + this.instructionReads(lines, index, 1, format.length);
+            writes = "CTR_" + this.instructionWrites(lines, index, 1, format.length);
             break;
-          case 55:
+          case 55: /* ☑️ */
             name = "CTRC";
+            format.length = 2;
+            reads = this.instructionReads(lines, index, 1, format.length);
+            format.length = 4;
+            writes = this.instructionWrites(lines, index, 1, format.length);
             break;
-          case 56:
+          case 56: /* ☑️ */
             name = "CTRB";
+            format.length = 1;
+            reads = "CTR_" + this.instructionReads(lines, index, 1, format.length);
+            writes = "CTR_" + this.instructionWrites(lines, index, 1, format.length);
             break;
           case 6:
             name = "ROT";
+            this.usedUndefinedInstructions.push(name);
             break;
           case 26:
             name = "ROTB";
+            this.usedUndefinedInstructions.push(name);
             break;
           case 7:
             name = "COD";
+            this.usedUndefinedInstructions.push(name);
             break;
-          case 27:
+          case 27: /* ☑️ */
             name = "CODB";
+            format = this.instructionFormat(lines, index, 1);
+            reads = this.instructionReads(lines, index, 3, format.length);
+            writes = this.instructionWrites(lines, index, 4, format.length);
             break;
           case 8:
             name = "MOVE";
+            this.usedUndefinedInstructions.push(name);
             break;
-          case 28:
+          case 28: /* ❔ */
             name = "MOVOR";
+            format.length = 1;
+            reads = [this.instructionReads(lines, index, 1, format.length), this.instructionReads(lines, index, 2, format.length)];
+            writes = this.instructionWrites(lines, index, 3, format.length);
+
             break;
           case 9:
             name = "COM";
+            this.usedUndefinedInstructions.push(name);
             break;
           case 29:
             name = "COME";
+            this.usedUndefinedInstructions.push(name);
             break;
-          case 10:
+          case 10: /* ☑️ */
             name = "JMP";
+            /* Needs nothing */
             break;
-          case 30:
+          case 30: /* ☑️ */
             name = "JMPE";
+            /* Needs nothing */
             break;
-          case 68:
+          case 68: /* ☑️ */
             name = "JMPB";
+            /* Needs nothing */
             break;
-          case 69:
+          case 69: /* ☑️ */
             name = "LBL";
+            /* Needs nothing */
             break;
           case 11:
             name = "PARI";
+            this.usedUndefinedInstructions.push(name);
             break;
-          case 14: /* ❎ */
+          case 14:
             name = "DCNV";
+            this.usedUndefinedInstructions.push(name);
             break;
           case 31: /* ☑️ */
             name = "DCNVB";
@@ -286,6 +339,7 @@ class Resource {
             break;
           case 15:
             name = "COMP";
+            this.usedUndefinedInstructions.push(name);
             break;
           case 32: /* ☑️ */
             name = "COMPB";
@@ -295,48 +349,71 @@ class Resource {
             break;
           case 16:
             name = "COIN";
+            this.usedUndefinedInstructions.push(name);
             break;
           case 33:
             name = "SFT";
+            this.usedUndefinedInstructions.push(name);
             break;
           case 17:
             name = "DSCH";
+            this.usedUndefinedInstructions.push(name);
             break;
           case 34:
             name = "DSCHB";
+            this.usedUndefinedInstructions.push(name);
             break;
           case 18:
             name = "XMOV";
+            this.usedUndefinedInstructions.push(name);
             break;
           case 35:
             name = "XMOVB";
+            this.usedUndefinedInstructions.push(name);
             break;
           case 19:
             name = "ADD";
+            this.usedUndefinedInstructions.push(name);
             break;
-          case 36:
+          case 36: /* ☑️ */
             name = "ADDB";
+            format = this.instructionFormat(lines, index, 1);
+            reads = [this.instructionReads(lines, index, 2, format.length), this.instructionReads(lines, index, 3, format.length)];
+            writes = this. instructionWrites(lines, index, 4, format.length);
             break;
           case 20:
             name = "SUB";
+            this.usedUndefinedInstructions.push(name);
             break;
-          case 37:
+          case 37: /* ☑️ */
             name = "SUBB";
+            format = this.instructionFormat(lines, index, 1);
+            reads = [this.instructionReads(lines, index, 2, format.length), this.instructionReads(lines, index, 3, format.length)];
+            writes = this. instructionWrites(lines, index, 4, format.length);
             break;
           case 21:
             name = "MUL";
+            this.usedUndefinedInstructions.push(name);
             break;
-          case 38:
+          case 38: /* ☑️ */
             name = "MULB";
+            format = this.instructionFormat(lines, index, 1);
+            reads = [this.instructionReads(lines, index, 2, format.length), this.instructionReads(lines, index, 3, format.length)];
+            writes = this. instructionWrites(lines, index, 4, format.length);
             break;
           case 22:
             name = "DIV";
+            this.usedUndefinedInstructions.push(name);
             break;
-          case 39:
+          case 39: /* ☑️ */
             name = "DIVB";
+            format = this.instructionFormat(lines, index, 1);
+            reads = [this.instructionReads(lines, index, 2, format.length), this.instructionReads(lines, index, 3, format.length)];
+            writes = this. instructionWrites(lines, index, 4, format.length);
             break;
           case 23: /* ❎ */
             name = "NUME";
+            this.usedUndefinedInstructions.push(name);
             break;
           case 40: /* ☑️ */
             name = "NUMEB";
@@ -346,9 +423,11 @@ class Resource {
             break;
           case 49:
             name = "DISP";
+            this.usedUndefinedInstructions.push(name);
             break;
-          case 41:
+          case 41: /* ☑️ */
             name = "DISPB";
+            /* Needs nothing */
             break;
           case 42: /* ❔ */
           name = "EXIN";
@@ -384,65 +463,95 @@ class Resource {
             format.length = 1;
             writes = this.instructionWrites(lines, index, 1, format.length);
             break;
-          case 57:
+          case 57: /* ☑️ */
             name = "DIFU";
+            format.length = 1;
+            reads = "DIFU_" + this.instructionReads(lines, index, 1, format.length);
             break;
-          case 58:
+          case 58: /* ☑️ */
             name = "DIFD";
+            format.length = 1;
+            reads = "DIFD_" + this.instructionReads(lines, index, 1, format.length);
             break;
-          case 53:
+          case 53: /* ☑️ */
             name = "AXCTL";
+            /* Needs nothing */
             break;
-          case 59:
+          case 59: /* ☑️ */
             name = "EXOR";
+            format = this.instructionFormat(lines, index, 1);
+            reads = [this.instructionReads(lines, index, 2, format.length), this.instructionReads(lines, index, 3, format.length)];
+            writes = this. instructionWrites(lines, index, 4, format.length);
             break;
-          case 60:
+          case 60: /* ☑️ */
             name = "LOGAND";
+            format = this.instructionFormat(lines, index, 1);
+            reads = [this.instructionReads(lines, index, 2, format.length), this.instructionReads(lines, index, 3, format.length)];
+            writes = this. instructionWrites(lines, index, 4, format.length);
             break;
-          case 61:
+          case 61: /* ☑️ */
             name = "LOGOR";
+            format = this.instructionFormat(lines, index, 1);
+            reads = [this.instructionReads(lines, index, 2, format.length), this.instructionReads(lines, index, 3, format.length)];
+            writes = this. instructionWrites(lines, index, 4, format.length);
             break;
-          case 62:
+          case 62: /* ☑️ */
             name = "LOGNOT";
+            format = this.instructionFormat(lines, index, 1);
+            reads = this.instructionReads(lines, index, 2, format.length);
+            writes = this. instructionWrites(lines, index, 3, format.length);
             break;
           case 90:
             name = "FNC90";
+            this.usedUndefinedInstructions.push(name);
             break;
           case 91:
             name = "FNC91";
+            this.usedUndefinedInstructions.push(name);
             break;
           case 92:
             name = "FNC92";
+            this.usedUndefinedInstructions.push(name);
             break;
           case 93:
             name = "FNC93";
+            this.usedUndefinedInstructions.push(name);
             break;
           case 94:
             name = "FNC94";
+            this.usedUndefinedInstructions.push(name);
             break;
           case 95:
             name = "FNC95";
+            this.usedUndefinedInstructions.push(name);
             break;
           case 96:
             name = "FNC96";
+            this.usedUndefinedInstructions.push(name);
             break;
           case 97:
             name = "FNC97";
+            this.usedUndefinedInstructions.push(name);
             break;
           case 88:
             name = "MMC3R";
+            this.usedUndefinedInstructions.push(name);
             break;
           case 89:
             name = "MMC3W";
+            this.usedUndefinedInstructions.push(name);
             break;
           case 98:
             name = "MMCWR";
+            this.usedUndefinedInstructions.push(name);
             break;
           case 99:
             name = "MMCWW";
+            this.usedUndefinedInstructions.push(name);
             break;
           case 460:
             name = "PID";
+            this.usedUndefinedInstructions.push(name);
             break;
           default:
             /* Collect Subs which appear in the mnemonic and are defined but aren't
@@ -503,13 +612,13 @@ class Resource {
     let kind = "Normal";
     let length = parseInt(match[1], 10);
     /* Change kind / length if it's not a normal format */
-    if (match[2] & match[3] != "") {
+    if (match[2] && match[3] != null) {
       length = parseInt(match[3], 10);
-      switch (parseInt(match[1], 10)) {
-        case 0:
-          kind = "Const";
+      switch (match[1]) {
+        case "0":
+          kind = "Constant";
           break;
-        case 1:
+        case "1":
           kind = "Adress";
           break;
       }
