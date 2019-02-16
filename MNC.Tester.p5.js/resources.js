@@ -1,4 +1,4 @@
-const multiBitDefinitionsRegex =     /^(T|D|E|F|G|R|X|Y)(\d*)(\s*)([A-Z0-9\-\_]*)$/;
+const multiBitDefinitionsRegex =     /^(T|D|E|F|G|R|X|Y)(\d*)(\s*)([A-Z0-9\-\_\#]*)$/;
 const singleBitDefinitionsRegex =    /^(T|D|E|F|G|R|X|Y)(\d*)(\.)(\d)(\s*)([A-Z0-9\-\_]*)$/;
 const moduleNumberDefinitionRegex = /^(P\d*)\s*C(\d*)$/;
 const moduleTitleDefinitionRegex =  /^;---------------\s*(fc\d*.lad)\s*\(([^\)]*)\)$/i;
@@ -165,7 +165,7 @@ class Resource {
   getReadBitOperation(str) {
     let match = readBitOperationsRegex.exec(str);
     if (match != null && match[1,3] != null && match[1,3] != "") {
-      return [match[1] + match[2], match[3]];
+      return {op: match[1] + match[2], mem: match[3]};
     } else {
       return null;
     }
@@ -175,7 +175,7 @@ class Resource {
   getWriteBitOperation(str) {
     let match = writeBitOperationsRegex.exec(str);
     if (match != null && match[1,3] != null && match[1,3] != "") {
-      return [match[1] + match[2], match[3]];
+      return {op: match[1] + match[2], mem: match[3]};
     } else {
       return null;
     }
@@ -595,12 +595,14 @@ class Resource {
     /* If match is null then it's a constant, not a memory definition */
     if (match != null) {
       /* Only add "Memory Range" to return if the desired length is bigger than one byte */
-      if (length > 1) {
-        endByte = match[1] + (parseInt(match[2], 10) + length - 1);
-        return startByte  + " - " + endByte;
-      } else {
-        return startByte
-      }
+      // NOTE: Commented out since it's easier to do querys when there's only one Byte in the "reads" attribute
+      // if (length > 1) {
+      //   endByte = match[1] + (parseInt(match[2], 10) + length - 1);
+      //   return startByte  + " - " + endByte;
+      // } else {
+      //   return startByte
+      // }
+      return startByte;
     } else {
       return startByte;
     }

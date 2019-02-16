@@ -8,6 +8,8 @@ const yellow = "#998429"
 let CurrentModule;
 let CurrentNetwork;
 
+let MyQueries = [];
+
 let Data;
 
 function preload() {
@@ -30,9 +32,12 @@ function draw() {
   warn += analyzeLogic            (Data);
   warn += analyzeDependencies     (Data);
   warn += analyzeResults          (Data);
-  console.log(Data.usedUndefinedInstructions);
-  if (warn != 0) {console.log("%c There have been " + warn + " Warnings!", "background: #b72828; color: #ffffff");}
 
+  checkWarnings(warn);
+
+  MyQueries.push(new Query(Data, "bitRead", "AX-SAV"));
+  console.log(" ");
+  MyQueries.push(new Query(Data, "bitWrite", "R212.0"));
   noLoop();
 }
 
@@ -81,9 +86,9 @@ function analyzeLogic(source) {
       let op = null;
       /* Bitwise operations */
       op = source.getReadBitOperation(lines[i]);
-      if (op != null) {source.bitReadOperations.push (new BitOperation(op, CurrentModule, CurrentNetwork, i));}
+      if (op != null) {source.bitReadOperations.push (new BitOperation(op.op, op.mem, CurrentModule, CurrentNetwork, i));}
       op = source.getWriteBitOperation(lines[i]);
-      if (op != null) {source.bitWriteOperations.push(new BitOperation(op, CurrentModule, CurrentNetwork, i));}
+      if (op != null) {source.bitWriteOperations.push(new BitOperation(op.op, op.mem, CurrentModule, CurrentNetwork, i));}
       /* Instructions */
       op = source.InstructionLogicData(lines, i);
       if (op != null) {source.instructionOperations.push(new InstructionOperation(op.instruction,
@@ -140,6 +145,17 @@ function analyzeResults(source) {
     console.log(unused);
   }
 
+  /* Check if there are used but not defined instructions in the mnemonic*/
+  console.log("-- Used, but not-handled Instructions:");
+  if (Data.usedUndefinedInstructions.length == 0) {
+    console.log("%c--- None. All Instructions are handled in this file.", "color: " + green);
+  } else {
+    console.log("%c--- There are some...", "color: " + red);
+    console.log(Data.usedUndefinedInstructions);
+    w += Data.usedUndefinedInstructions.length;
+  }
+
+
   finishSequence(w, 2);
   return w;
 }
@@ -159,4 +175,13 @@ function finishSequence(w, spaces = 1, additionalString = "") {
       console.log(" ");
     }
   }
+}
+
+function checkWarnings(warn) {
+  if (warn != 0) {
+    console.log("%cThere are " + warn + " Warnings overall!", "color: " + red);
+  } else {
+    console.log("%cNo Warnings overall", "color: " + green);
+  }
+  console.log(" ");
 }

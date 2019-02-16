@@ -51,7 +51,7 @@ function Particle(x,y,m) {
 function Attractor() {
   this.pos = createVector(width / 2, height / 2);
   this.mass = 60;
-  this.G = 1;
+  this.G = .2;
   this.endGradient = bgColor; // bgColor is a global var
   this.startGradient = 20;
 
