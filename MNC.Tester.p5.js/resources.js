@@ -145,9 +145,11 @@ class Resource {
             break;
           }
         }
-        console.log("%cHI", "background-color: #bada55");
+        console.log("%cFound already defined module, but it didn't match", "background-color: #bada55");
       } else {
-        /* If there's no P Number, cerate new "undefined" Module */
+        /* If there's no P Number, create new "undefined" Module */
+        console.log("%cFound undefined module", "background-color: #bada55");
+        console.log(match2[1] + " " + match2[2]);
         return new Module(undefined , match2[1], undefined);
       }
     }

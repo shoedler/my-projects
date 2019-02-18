@@ -20,6 +20,10 @@ function preload() {
 
 /* TODO: COMBAK:
 Fix the issue where the getCurrentModule Fucntion overrides the instructions modules number and title
+UPDATE: MUST happen in the getCurrentModule function! narrowed it down...
+Found it. After END Level 2, there are only P numbers (for the submodules) so
+the end Level 2 needs to be detected.
+- Add LEVEL Variable which stores the current level and handle CurrentModule detection accordingly*/
 
 
 function setup() {
@@ -35,7 +39,6 @@ function draw() {
   warn += analyzeLogic            (Data);
   warn += analyzeDependencies     (Data);
   warn += analyzeResults          (Data);
-
   checkWarnings(warn);
 
   MyQueries.push(new Query(Data, "bitRead", "AX-SAV"));
