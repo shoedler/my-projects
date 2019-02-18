@@ -18,6 +18,9 @@ function preload() {
   Data = new Resource(loadStrings("https://raw.githubusercontent.com/WashirePie/CFX.Web/master/%2BDOC/RAW/mnemonic.mnc"));
 }
 
+/* TODO: COMBAK:
+Fix the issue where the getCurrentModule Fucntion overrides the instructions modules number and title
+
 
 function setup() {
   createCanvas(wWidth, wHeight);

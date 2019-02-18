@@ -3,7 +3,7 @@ const singleBitDefinitionsRegex =    /^(T|D|E|F|G|R|X|Y)(\d*)(\.)(\d)(\s*)([A-Z0
 const moduleNumberDefinitionRegex = /^(P\d*)\s*C(\d*)$/;
 const moduleTitleDefinitionRegex =  /^;---------------\s*(fc\d*.lad)\s*\(([^\)]*)\)$/i;
 
-const currentModuleNumberRegex =     /^([P])(\d*)[^\s]$/;
+const currentModuleNumberRegex =     /^([P])(\d*)$/;
 const currentModuleSourceRegex =     /^;---------------\s*(fc\d*.lad)\s*\(([^\)]*)\)$/i;
 const currentNetworkRegex =          /^N(\d\d\d\d\d)\:$/g;
 const readBitOperationsRegex =       /^(RD|OR|AND)(\.NOT\.STK|\.NOT|\.STK|)\s*(.*)$/;
@@ -137,17 +137,19 @@ class Resource {
   getCurrentModule(str1, str2) {
     let match1 = currentModuleNumberRegex.exec(str1);
     let match2 = currentModuleSourceRegex.exec(str2);
-    if (match1 != null && match1[1,2] != null && match1[1,2] != "") {
     if (match2 != null && match2[1,2] != null && match2[1,2] != "") {
-      for (let i = 0; i < this.Modules.length; i++) {
-        if (match2[1].includes(this.Modules[i].sourceFile)) { /* If the module was found in the defined modules... */
-          return this.Modules[i];
-          break;
+      if (match1 != null && match1[1,2] != null && match1[1,2] != "") {
+        for (let i = 0; i < this.Modules.length; i++) {
+          if (match2[1].includes(this.Modules[i].sourceFile)) { /* If the module was found in the defined modules... */
+            return this.Modules[i];
+            break;
+          }
         }
+        console.log("%cHI", "background-color: #bada55");
+      } else {
+        /* If there's no P Number, cerate new "undefined" Module */
+        return new Module(undefined , match2[1], undefined);
       }
-    } else {
-      return null;
-    }
     }
   }
 
