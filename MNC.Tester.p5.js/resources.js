@@ -1,7 +1,7 @@
 const multiBitDefinitionsRegex =     /^(T|D|E|F|G|R|X|Y)(\d*)(\s*)([A-Z0-9\-\_\#]*)$/;
 const singleBitDefinitionsRegex =    /^(T|D|E|F|G|R|X|Y)(\d*)(\.)(\d)(\s*)([A-Z0-9\-\_]*)$/;
-const moduleNumberDefinitionRegex = /^(P\d*)\s*C(\d*)$/;
-const moduleTitleDefinitionRegex =  /^;---------------\s*(fc\d*.lad)\s*\(([^\)]*)\)$/i;
+const moduleNumberDefinitionRegex =  /^(P\d*)\s*C(\d*)$/;
+const moduleTitleDefinitionRegex =   /^;---------------\s*(fc\d*.lad)\s*\(([^\)]*)\)$/i;
 
 const currentModuleNumberRegex =     /^([P])(\d*)$/;
 const currentModuleSourceRegex =     /^;---------------\s*(fc\d*.lad)\s*\(([^\)]*)\)$/i;
@@ -9,6 +9,7 @@ const currentNetworkRegex =          /^N(\d\d\d\d\d)\:$/g;
 const readBitOperationsRegex =       /^(RD|OR|AND)(\.NOT\.STK|\.NOT|\.STK|)\s*(.*)$/;
 const writeBitOperationsRegex =      /^(WRT|SET|RST)(\.NOT|)\s*(.*)$/;
 const instructionOperationRegex =    /^(SNUB|SUB)\s*(\d*)$/;
+const levelSubRegex =                /^(SNUB|SUB)\s*(\d*)$/;
 const instructionReadWriteRegex =    /^([A-Z])(\d*)$/;
 const instructionFormatRegex =       /^(\d|)(\d\d|)(\d|)$/;
 
@@ -137,21 +138,30 @@ class Resource {
   getCurrentModule(str1, str2) {
     let match1 = currentModuleNumberRegex.exec(str1);
     let match2 = currentModuleSourceRegex.exec(str2);
+
+    /* Source file name */
     if (match2 != null && match2[1,2] != null && match2[1,2] != "") {
-      if (match1 != null && match1[1,2] != null && match1[1,2] != "") {
-        for (let i = 0; i < this.Modules.length; i++) {
-          if (match2[1].includes(this.Modules[i].sourceFile)) { /* If the module was found in the defined modules... */
-            return this.Modules[i];
-            break;
-          }
+      for (let i = 0; i < this.Modules.length; i++) {
+        /* Check if the sourcefile is already defined */
+        if (match2[1].includes(this.Modules[i].sourceFile)) {
+          return this.Modules[i];
         }
-        console.log("%cFound already defined module, but it didn't match", "background-color: #bada55");
-      } else {
-        /* If there's no P Number, create new "undefined" Module */
-        console.log("%cFound undefined module", "background-color: #bada55");
-        console.log(match2[1] + " " + match2[2]);
-        return new Module(undefined , match2[1], undefined);
       }
+      /* SOurcenumber hasn't been used yet. */
+      console.log("%cFound undefined module by sourcefile", "background-color: #bada55");
+      return new Module(undefined , match2[1], undefined);
+    }
+    /* P Number */
+    if (match1 != null && match1[1,2] != null && match1[1,2] != "") {
+      for (let i = 0; i < this.Modules.length; i++) {
+        /* Check if the P Number is already defined */
+        if (parseInt(match1[2], 10) == this.Modules[i].number) {
+          return this.Modules[i];
+        }
+      }
+      /* SOurcenumber hasn't been used yet. */
+      console.log("%cFound undefined module by program number.", "background-color: #bada55");
+      return new Module(match1[2] , undefined, undefined);
     }
   }
 

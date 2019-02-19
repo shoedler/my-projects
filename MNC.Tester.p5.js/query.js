@@ -37,9 +37,20 @@ class Query {
         for (let ins of this.src.instructionOperations) {
           /* loop trough "reads" array, if there is one */
           if (ins.reads != null) {
-            for (let read of ins.reads) {
-              if (bit.byteType + bit.byteAddress == read) {
-                if (checkInstructionByteRange(read, ins.formatLength, bit)) {
+            /* If it "reads" is an array, loop trough it */
+            if (Array.isArray(ins.reads)){
+              for (let read of ins.reads) {
+                if (bit.byteType + bit.byteAddress == read) {
+                  /* Check if the current bit is contained in an arrangement of bytes. */
+                  if (checkInstructionByteRange(read, ins.formatLength, bit.byteAddress)) {
+                    this.result.push(ins);
+                  }
+                }
+              }
+            /* If "reads" isn't an array then handle it's content as one value */
+            } else {
+              if (bit.byteType + bit.byteAddress == ins.reads) {
+                if (checkInstructionByteRange(ins.reads, ins.formatLength, bit.byteAddress)) {
                   this.result.push(ins);
                 }
               }
@@ -49,6 +60,7 @@ class Query {
 
         this.queryLogFooter(this.result);
         break;
+
       case "bitWrite":
         query = this.memory;
         this.queryLogHead("Bit Write Operations for (" + query + ")");
@@ -66,13 +78,23 @@ class Query {
               }
         }
 
-        /* check for matching "reads" in instructionOperations */
+        /* check for matching "writes" in instructionOperations */
         for (let ins of this.src.instructionOperations) {
           /* loop trough "reads" array, if there is one */
           if (ins.writes != null) {
-            for (let write of ins.writes) {
-              if (bit.byteType + bit.byteAddress == write) {
-                if (checkInstructionByteRange(write, ins.formatLength, bit)) {
+            /* If it "writes" is an array, loop trough it */
+            if (Array.isArray(ins.writes)){
+              for (let write of ins.writes) {
+                if (bit.byteType + bit.byteAddress == write) {
+                  if (checkInstructionByteRange(write, ins.formatLength, bit.byteAddress)) {
+                    this.result.push(ins);
+                  }
+                }
+              }
+            /* If "writes" isn't an array then handle it's content as one value */
+            } else {
+              if (bit.byteType + bit.byteAddress == ins.writes) {
+                if (checkInstructionByteRange(ins.writes, ins.formatLength, bit.byteAddress)) {
                   this.result.push(ins);
                 }
               }
@@ -134,18 +156,16 @@ class Query {
   }
 }
 
-function checkInstructionByteRange(startByte, length, checkBit) {
-  let match = startByte.exec(/^[A-Z](\d*)$/);
+function checkInstructionByteRange(startByte, length, checkByteAddress) {
+  let match = (/^[A-Z](\d*)$/).exec(startByte);
   if (match != null) {
+    let number = parseInt(match[1], 10);
     /* loop trough length (amount of bytes) */
-    for (let i = 0; i = length; i++) {
+    for (let i = 0; i < length; i++) {
       /* if the bit's byteAdress matches the instructions byteAdress + i then it's getting handled there */
-      if (checkBit.byteAddress == match + i) {
+      if (checkByteAddress == number + i) {
         return true;
       }
     }
-  } else {
-    /* also return false if the regex doesn't match. this could mean it's a constant */
-    return false;
   }
 }
