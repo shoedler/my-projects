@@ -1,0 +1,45 @@
+TMC Mode change					http://marlinfw.org/docs/gcode/M569.html
+
+Verkabelung gemäss PDF:				https://cdn.thingiverse.com/assets/a6/03/31/95/98/MKS_Gen-L_TMC2130_SPI_Sensor-less_Homing_Wiring_Diagram.pdf
+SPI Mode der TMC2130 gesetzt gemäss:		https://www.biqu.equipment/products/biqu-bigtreetech-tmc2100-2208-2130-v1-0-stepstick-mks-stepper-motor-driver-ultra-silent
+
+Marlin 1.1.x Vanilla verwendet
+
+Arduino IDE
+-----------
+U8glib installiert von Oliver
+TMCStepper Lib installiert von teemuatlut
+TMC2130Stepper Lib installiert von teemuatlut
+
+conf.h
+-----------
+CR10_STOCKDISPLAY					einkommentiert
+X_DRIVER_TYPE						TMC2130 (nicht _STANDALONE)
+Y_DRIVER_TYPE						TMC2130 (nicht _STANDALONE)
+Z_DRIVER_TYPE						TMC2130 (nicht _STANDALONE)
+E0_DRIVER_TYPE						TMC2130 (nicht _STANDALONE)
+INVERT_X_DIR						true
+INVERT_Y_DIR						true
+INVERT_Z_DIR						false
+X_MIN_ENDSTOP_INVERTING					true
+Y_MIN_ENDSTOP_INVERTING					true
+
+conf_adv.h
+-----------
+E0_AUTO_FAN_PIN 					als 7 definiert
+REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER 		einkommentiert
+TMC_DEBUG 						einkommentiert
+
+
+Todo:
+----------
+Steps /mm für
+[] x
+[] y
+[] z
+[] e
+
+StallGuard einstellen (geht anscheinend nur in SpreadCycle Mode) für
+[] x
+[] y
+
