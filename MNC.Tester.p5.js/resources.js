@@ -76,6 +76,7 @@ class Resource {
     this.Modules = [];
     this.SBDMemory = [];
     this.MBDMemory = [];
+    this.Level = 0;
 
     this.bitReadOperations = [];
     this.bitWriteOperations = [];
@@ -207,14 +208,17 @@ class Resource {
           case 1: /* ☑️ */
             name = "END1";
             /* Needs nothing */
+            this.Level = 2;
             break;
           case 2: /* ☑️ */
             name = "END2";
             /* Needs nothing */
+            this.Level = 3;
             break;
           case 48: /* ☑️ */
             name = "END3";
             /* Needs nothing */
+            this.Level = -1;
             break;
           case 64: /* ☑️ */
             name = "SUBEND";
