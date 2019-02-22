@@ -2,7 +2,7 @@
 #### Mit TMC2130 SPI Mode [ENDER 3]
 ---
 #### Tipps
-Tipps für TMC M-Befehle: Suche in der MARLIN gcode Reference nache "TMC" um alle
+Tipps fÃ¼r TMC M-Befehle: Suche in der MARLIN gcode Reference nache "TMC" um alle
 relevanten zu finden.
 [TMC Mode-Wechsel M-Befehl](http://marlinfw.org/docs/gcode/M569.html)
 
@@ -12,13 +12,16 @@ Siehe auch der [Troubleshooting Bereich der offiziellen MARLIN Trinamic Seite](h
 ---
 #### Vorbereitungen
 ##### Hardware
-* MKS GEN L v1.0 Verkabelung gemäss diesem [PDF](https://cdn.thingiverse.com/assets/a6/03/31/95/98/MKS_Gen-L_TMC2130_SPI_Sensor-less_Homing_Wiring_Diagram.pdf)
-* Die TMC2130 müssen im SPI Mode sein. Für z.B. die BIQU TMC2130 v1.1 ist [dies](https://www.biqu.equipment/products/biqu-bigtreetech-tmc2100-2208-2130-v1-0-stepstick-mks-stepper-motor-driver-ultra-silent) die Anleitung, welche Brücken gesetzt / entfernt werden müssen um den SPI Mode anzuwählen.
+* MKS GEN L v1.0 Verkabelung gemÃ¤ss diesem [PDF](https://cdn.thingiverse.com/assets/a6/03/31/95/98/MKS_Gen-L_TMC2130_SPI_Sensor-less_Homing_Wiring_Diagram.pdf)
+Die Endstops wurde jedoch verwendet gemÃ¤ss TeachingTechs [Video](https://www.youtube.com/watch?v=LNdMYgwez8Y)
+* Die TMC2130 mÃ¼ssen im SPI Mode sein. FÃ¼r z.B. die BIQU TMC2130 v1.1 ist [dies](https://www.biqu.equipment/products/biqu-bigtreetech-tmc2100-2208-2130-v1-0-stepstick-mks-stepper-motor-driver-ultra-silent) die Anleitung, welche BrÃ¼cken gesetzt / entfernt werden mÃ¼ssen um den SPI Mode anzuwÃ¤hlen.
 *(Meistens: CFG4 / CGF5 auf GND oder VCC & R5 entfernen)*
 
 ##### Firmware
 * [Marlin 1.1.x Vanilla](https://github.com/MarlinFirmware/Marlin/archive/1.1.x.zip) verwenden
-* `Marlin.ino` öffnen und die Einstellungen des Ender 3 `Configuration.h` & `Configuration_adv.h` Presets hineinmergen
+* Die Firmware ist auf der Vanilla Firmware aufgebaut. So geht's:
+Die Einstellungen des Ender 3 Presets (`/example_configurations/Creality/Ender-3`) `Configuration.h` & `Configuration_adv.h` mit einem Diff Tool hineinmergen. **Das ist ein MUSS!**
+Danach `Marlin.ino` Ã¶ffnen um die anschliessenden Ã„nderungen vorzunehmen.
 
 ##### Arduino IDE
 * U8glib Library installiert von **Oliver**
@@ -26,8 +29,8 @@ Siehe auch der [Troubleshooting Bereich der offiziellen MARLIN Trinamic Seite](h
 * TMC2130Stepper Library installiert von **teemuatlut**
 
 ---
-#### Änderungen
-*Ender 3 spezifische Änderungen werden hier nicht gelistet. Ausser die Stepper Directions (INVERT_...)*
+#### Ã¼nderungen
+*Ender 3 spezifische Ã„nderungen werden hier nicht gelistet. Ausser die Stepper Directions (INVERT_...)*
 ##### Configuration.h
 Variable | Aktion
 ---|---
@@ -39,8 +42,8 @@ Variable | Aktion
 `INVERT_X_DIR` | auf `true` gesetzt
 `INVERT_Y_DIR` | auf `true` gesetzt
 `INVERT_Z_DIR` | auf `false` gesetzt
-`X_MIN_ENDSTOP_INVERTING` | auf `true` gesetzt
-`Y_MIN_ENDSTOP_INVERTING` | auf `true` gesetzt
+`X_MIN_ENDSTOP_INVERTING` | auf `false` gesetzt
+`Y_MIN_ENDSTOP_INVERTING` | auf `false` gesetzt
 
 ##### Configuration_adv.h
 Variable | Aktion
@@ -52,13 +55,13 @@ Variable | Aktion
 
 ---
 #### Todo:
-Steps/mm prüfen für
+Steps/mm prÃ¼fen fÃ¼r
 * [ ] X-Achse
 * [ ] Y-Achse
 * [ ] Z-Achse
 * [ ] Extruder
 
-StallGuard einstellen (geht anscheinend nur in SpreadCycle Mode) für
+StallGuard einstellen (geht anscheinend nur in SpreadCycle Mode) fÃ¼r
 * [ ] X-Achse
 * [ ] Y-Achse
 
