@@ -1,10 +1,10 @@
-const multiBitDefinitionsRegex =     /^(T|D|E|F|G|R|X|Y)(\d*)(\s*)([A-Z0-9\-\_\#]*)$/;
-const singleBitDefinitionsRegex =    /^(T|D|E|F|G|R|X|Y)(\d*)(\.)(\d)(\s*)([A-Z0-9\-\_]*)$/;
-const moduleNumberDefinitionRegex =  /^(P\d*)\s*C(\d*)$/;
-const moduleTitleDefinitionRegex =   /^;---------------\s*(fc\d*.lad)\s*\(([^\)]*)\)$/i;
+const multiBitDefinitionRegex =      /^(T|D|E|F|G|R|X|Y)(\d*)(\s*)([A-Z0-9\-\_\#]*)$/;
+const singleBitDefinitionRegex =     /^(T|D|E|F|G|R|X|Y)(\d*)(\.)(\d)(\s*)([A-Z0-9\-\_]*)$/;
+const moduleNumberDefinitionRegex =  /^[P](\d*)\s*C(\d*)$/;
+const moduleTitleDefinitionRegex =   /^;---------------\s*fc(\d*).lad\s*\(([^\)]*)\)$/i;
 
 const currentModuleNumberRegex =     /^([P])(\d*)$/;
-const currentModuleSourceRegex =     /^;---------------\s*(fc\d*.lad)\s*\(([^\)]*)\)$/i;
+const currentModuleSourceRegex =     /^;---------------\s*fc(\d*).lad\s*\(([^\)]*)\)$/i;
 const currentNetworkRegex =          /^N(\d\d\d\d\d)\:$/g;
 const readBitOperationsRegex =       /^(RD|OR|AND)(\.NOT\.STK|\.NOT|\.STK|)\s*(.*)$/;
 const writeBitOperationsRegex =      /^(WRT|SET|RST)(\.NOT|)\s*(.*)$/;
@@ -87,7 +87,7 @@ class Resource {
 
 
   getMultiBitDefinitions(str) {
-    let match = multiBitDefinitionsRegex.exec(str);
+    let match = multiBitDefinitionRegex.exec(str);
     if (match != null && match[1,2,4] != null && match[1,2,4] != "") {
       let definition = new Memory(match[1], match[2], "", ">=8", match[4])
       return definition;
@@ -98,7 +98,7 @@ class Resource {
 
 
   getSingleBitDefinitions(str) {
-    let match = singleBitDefinitionsRegex.exec(str);
+    let match = singleBitDefinitionRegex.exec(str);
     if (match != null && match[1,2,4,6] != null && match[1,2,4,6] != "") {
       let definition = new Memory(match[1], match[2], match[4], 1, match[6])
       return definition;
@@ -111,7 +111,7 @@ class Resource {
   getModuleNumberDefinition(str) {
     let match = moduleNumberDefinitionRegex.exec(str);
     if (match != null && match[1,2] != null && match[1,2] != "") {
-      let mod = new Module(match[1], match[2]);
+      let mod = new Module(parseInt(match[1], 10), parseInt(match[2], 10));
       return mod;
     } else {
       return null;
@@ -124,8 +124,7 @@ class Resource {
     if (match != null && match[1,2] != null && match[1,2] != "") {
       for (let i = 0; i < this.Modules.length; i++) {
         if (match[1].includes(this.Modules[i].sourceFile)) { /* If the module was found in the defined modules... */
-          this.Modules[i].sourceFile = "fc" + this.Modules[i].sourceFile + ".lad"
-          this.Modules[i].title = match[2];
+          this.Modules[i].title = match[2]; /* ..add the found title to it */
           return true;
           break;
         }
@@ -140,29 +139,28 @@ class Resource {
     let match1 = currentModuleNumberRegex.exec(str1);
     let match2 = currentModuleSourceRegex.exec(str2);
 
-    /* Source file name */
+    /* does it match the Source file name? */
     if (match2 != null && match2[1,2] != null && match2[1,2] != "") {
       for (let i = 0; i < this.Modules.length; i++) {
         /* Check if the sourcefile is already defined */
-        if (match2[1].includes(this.Modules[i].sourceFile)) {
+        if (match2.includes(this.Modules[i].sourceFile)) {
           return this.Modules[i];
         }
       }
-      /* SOurcenumber hasn't been used yet. */
-      console.log("%cFound undefined module by sourcefile", "background-color: #bada55");
-      return new Module(undefined , match2[1], undefined);
+      /* Sourcenumber hasn't been used yet. */
+      return new Module(undefined , parseInt(match2[1], 10), match2[2]);
     }
-    /* P Number */
+
+    /* does it match the P Number? */
     if (match1 != null && match1[1,2] != null && match1[1,2] != "") {
       for (let i = 0; i < this.Modules.length; i++) {
         /* Check if the P Number is already defined */
-        if (parseInt(match1[2], 10) == this.Modules[i].number) {
+        if (parseInt(match1[2], 10) == this.Modules[i].programNumber) {
           return this.Modules[i];
         }
       }
       /* SOurcenumber hasn't been used yet. */
-      console.log("%cFound undefined module by program number.", "background-color: #bada55");
-      return new Module(match1[2] , undefined, undefined);
+      return new Module(parseInt(match1[2], 10) , undefined, undefined);
     }
   }
 
@@ -594,13 +592,14 @@ class Resource {
     let endByte
     /* If match is null then it's a constant, not a memory definition */
     if (match != null) {
-      /* Only add "Memory Range" to return if the desired length is bigger than one byte */
-      if (length > 1) {
-        endByte = match[1] + (parseInt(match[2], 10) + length - 1);
-        return startByte  + " - " + endByte;
-      } else {
-        return startByte
-      }
+    //  /* Only add "Memory Range" to return if the desired length is bigger than one byte */
+    //   if (length > 1) {
+    //     endByte = match[1] + (parseInt(match[2], 10) + length - 1);
+    //     return startByte  + " - " + endByte;
+    //   } else {
+    //     return startByte
+    //   }
+      return startByte;
     } else {
       return startByte;
     }
