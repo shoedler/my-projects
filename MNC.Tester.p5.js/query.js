@@ -133,38 +133,42 @@ class Query {
 
   siftInstructionOperations(values, byteType, byteAddress, ins) {
     /* Loop trough if array, else handle as one */
-    if (Array.isArray(values)) {
-      for (let value of values) {
-        /* Check if the current bit is contained in an arrangement of bytes. */
-        if (checkInstructionByteRange(value, ins.formatLength, byteType, byteAddress)) {
-          this.result.push(ins);
-        }
+    if (Array.isArray(values) == false) {
+      try {
+        let temp = values;
+      } catch (e if e instanceof ReferenceError) {
+        console.log(values);
       }
-    /* If "reads" isn't an array then handle it's content as one value */
-    } else {
-      if (checkInstructionByteRange(values, ins.formatLength, byteType, byteAddress)) {
+
+      let values = [];
+      values.push(temp);
+    }
+
+    for (let value of values) {
+      /* Check if the current bit is contained in an arrangement of bytes. */
+      if (checkInstructionByteRange(value, ins.formatLength, byteType, byteAddress)) {
         this.result.push(ins);
       }
     }
+    // /* If "reads" isn't an array then handle it's content as one value */
+    // } else {
+    //   if (checkInstructionByteRange(values, ins.formatLength, byteType, byteAddress)) {
+    //     this.result.push(ins);
+    //   }
+    // }
   }
 }
 
 
-function checkInstructionByteRange(startByte, length, checkByteAddress, checkByteAddress) {
+function checkInstructionByteRange(startByte, length, checkByteType, checkByteAddress) {
   let match = (/^([A-Z])(\d*)$/).exec(startByte);
   if (match != null) {
     let type = match[1];
     let number = parseInt(match[2], 10);
     /* loop trough length (amount of bytes) */
     for (let i = 0; i < length; i++) {
-
-      if (number == 305) {
-        console.log(type + (number + i));
-        debugger;
-      }
-      
       /* if the bit's byteAdress matches the instructions byteAdress + i then it's getting handled there */
-      if (checkByteAddress + checkByteAddress == type + (number + i)) {
+      if (checkByteType + checkByteAddress == type + (number + i)) {
         return true;
       }
     }
