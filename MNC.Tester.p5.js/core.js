@@ -41,9 +41,9 @@ function draw() {
   warn += analyzeResults          (Data);
   checkWarnings(warn);
 
-  MyQueries.push(new Query(Data, "bitRead", "AX-SAV"));
+  MyQueries.push(new Query(Data, "definedBitRead", "ELADGK"));
   console.log(" ");
-  MyQueries.push(new Query(Data, "bitWrite", "R212.0"));
+  MyQueries.push(new Query(Data, "definedBitWrite", "AX-SAV"));
   noLoop();
 }
 

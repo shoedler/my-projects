@@ -15,45 +15,32 @@ class Query {
     let byte;
 
     switch (this.type) {
-
-      case "bitRead":
+      /* ---------------------------------------------------------------------*/
+      case "definedBitRead":
         query = this.memory;
-        this.queryLogHead("Bit Read Operations for (" + query + ")");
+        this.queryLogHead("Defined-Bit Read Operations for (" + query + ")");
 
         /* get definitions */
         this.log.push("Looking for definitions...");
         bit = this.getBit(query, this.src);
-        byte = this.getByte((bit.byteType + bit.byteAddress), this.src);
+        /* exit if no bit has been found */
+        if (bit != undefined) {
+          byte = this.getByte((bit.byteType + bit.byteAddress), this.src);
 
-        this.log.push("Looking for read operations...");
-        /* check for matching bitRead operations */
-        for (let bitR of this.src.bitReadOperations) {
-          if (bitR.memory ==  bit.byteType  + bit.byteAddress  + "." + bit.bitAddress) {
-                this.result.push(bitR);
-              }
-        }
+          this.log.push("Looking for read operations...");
+          /* check for matching bitRead operations */
+          for (let bitR of this.src.bitReadOperations) {
+            if (bitR.memory ==  bit.byteType  + bit.byteAddress  + "." + bit.bitAddress) {
+              this.result.push(bitR);
+            }
+          }
 
-        /* check for matching "reads" in instructionOperations */
-        for (let ins of this.src.instructionOperations) {
-          /* loop trough "reads" array, if there is one */
-          if (ins.reads != null) {
-            /* If it "reads" is an array, loop trough it */
-            if (Array.isArray(ins.reads)){
-              for (let read of ins.reads) {
-                if (bit.byteType + bit.byteAddress == read) {
-                  /* Check if the current bit is contained in an arrangement of bytes. */
-                  if (checkInstructionByteRange(read, ins.formatLength, bit.byteAddress)) {
-                    this.result.push(ins);
-                  }
-                }
-              }
-            /* If "reads" isn't an array then handle it's content as one value */
-            } else {
-              if (bit.byteType + bit.byteAddress == ins.reads) {
-                if (checkInstructionByteRange(ins.reads, ins.formatLength, bit.byteAddress)) {
-                  this.result.push(ins);
-                }
-              }
+          /* check for matching "reads" in instructionOperations */
+          for (let ins of this.src.instructionOperations) {
+            /* loop trough "reads" array, if there is one */
+            if (ins.reads != null) {
+              /* If it "reads" is an array, loop trough it */
+              this.siftInstructionOperations(ins.reads, bit.byteType, bit.byteAddress, ins);
             }
           }
         }
@@ -61,50 +48,38 @@ class Query {
         this.queryLogFooter(this.result);
         break;
 
-      case "bitWrite":
+      /* ---------------------------------------------------------------------*/
+      case "definedBitWrite":
         query = this.memory;
-        this.queryLogHead("Bit Write Operations for (" + query + ")");
+        this.queryLogHead("Defined-Bit Write Operations for (" + query + ")");
 
         /* get definitions */
         this.log.push("Looking for definitions...");
         bit = this.getBit(query, this.src);
-        byte = this.getByte((bit.byteType + bit.byteAddress), this.src);
+        /* exit if no bit has been found */
+        if (bit != undefined) {
+          byte = this.getByte((bit.byteType + bit.byteAddress), this.src);
 
-        this.log.push("Looking for write operations...");
-        /* check for matching bitRead operations */
-        for (let bitW of this.src.bitWriteOperations) {
-          if (bitW.memory ==  bit.byteType  + bit.byteAddress  + "." + bit.bitAddress) {
-                this.result.push(bitW);
-              }
-        }
+          this.log.push("Looking for write operations...");
+          /* check for matching bitRead operations */
+          for (let bitW of this.src.bitWriteOperations) {
+            if (bitW.memory ==  bit.byteType  + bit.byteAddress  + "." + bit.bitAddress) {
+              this.result.push(bitW);
+            }
+          }
 
-        /* check for matching "writes" in instructionOperations */
-        for (let ins of this.src.instructionOperations) {
-          /* loop trough "reads" array, if there is one */
-          if (ins.writes != null) {
-            /* If it "writes" is an array, loop trough it */
-            if (Array.isArray(ins.writes)){
-              for (let write of ins.writes) {
-                if (bit.byteType + bit.byteAddress == write) {
-                  if (checkInstructionByteRange(write, ins.formatLength, bit.byteAddress)) {
-                    this.result.push(ins);
-                  }
-                }
-              }
-            /* If "writes" isn't an array then handle it's content as one value */
-            } else {
-              if (bit.byteType + bit.byteAddress == ins.writes) {
-                if (checkInstructionByteRange(ins.writes, ins.formatLength, bit.byteAddress)) {
-                  this.result.push(ins);
-                }
-              }
+          /* check for matching "writes" in instructionOperations */
+          for (let ins of this.src.instructionOperations) {
+            /* loop trough "reads" array, if there is one */
+            if (ins.writes != null) {
+              this.siftInstructionOperations(ins.writes, bit.byteType, bit.byteAddress, ins);
             }
           }
         }
-
         this.queryLogFooter(this.result);
         break;
 
+      /* ---------------------------------------------------------------------*/
       default:
         this.log.push("Query Type undefined.");
     }
@@ -139,7 +114,8 @@ class Query {
       }
     }
     /* not defined */
-    this.log.push("Bit is undefined");
+    this.log.push("-- Bit is undefined");
+    return undefined
   }
 
   getByte(byte, src) {
@@ -152,18 +128,47 @@ class Query {
       }
     }
     /* not defined */
-    this.log.push("Has no parent Byte Definition");
+    this.log.push("-- Has no parent Byte Definition");
+  }
+
+  siftInstructionOperations(values, byteType, byteAddress, ins) {
+    /* Loop trough if array, else handle as one */
+    if (Array.isArray(values) == false) {
+      try {
+        let temp = values;
+      } catch (e if e instanceof ReferenceError) {
+        console.log(values);
+      }
+
+      let values = [];
+      values.push(temp);
+    }
+
+    for (let value of values) {
+      /* Check if the current bit is contained in an arrangement of bytes. */
+      if (checkInstructionByteRange(value, ins.formatLength, byteType, byteAddress)) {
+        this.result.push(ins);
+      }
+    }
+    // /* If "reads" isn't an array then handle it's content as one value */
+    // } else {
+    //   if (checkInstructionByteRange(values, ins.formatLength, byteType, byteAddress)) {
+    //     this.result.push(ins);
+    //   }
+    // }
   }
 }
 
-function checkInstructionByteRange(startByte, length, checkByteAddress) {
-  let match = (/^[A-Z](\d*)$/).exec(startByte);
+
+function checkInstructionByteRange(startByte, length, checkByteType, checkByteAddress) {
+  let match = (/^([A-Z])(\d*)$/).exec(startByte);
   if (match != null) {
-    let number = parseInt(match[1], 10);
+    let type = match[1];
+    let number = parseInt(match[2], 10);
     /* loop trough length (amount of bytes) */
     for (let i = 0; i < length; i++) {
       /* if the bit's byteAdress matches the instructions byteAdress + i then it's getting handled there */
-      if (checkByteAddress == number + i) {
+      if (checkByteType + checkByteAddress == type + (number + i)) {
         return true;
       }
     }
