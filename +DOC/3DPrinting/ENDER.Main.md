@@ -1,24 +1,26 @@
 # Ragbag
 ## Ender 3 VREF for TMC2130
-RMS   = `Imax / sqrt(2)`
+Root Mean Squared (RMS)   = `Imax / sqrt(2)`
 
-Vref  = `(Irms * 2.5V) / 1.77A`
+Vref                      = `(Irms * 2.5V) / 1.77A`
 
 Equals to:
 
-X, Y, Z:  0.842V
-E0:       1.000V
+X, Y, Z                   = 0.842V
+E0:                       = 1.000V
 
 Times 90%:
 
-**X, Y, Z:  0.760V**
-**E0:       0.900V**
+**X, Y, Z                 = 0.760V**
+**E0:                     = 0.900V**
 
+## To Do
+* [ ] GPIO Relay Board -> RPi
 
 # Upgrades Ender 3 Pro
 
 ## Basic Upgrades
-* [ ] Print control board back cover
+* [ ] Print LCD back cover
 * [X] Print part cooling duct
 * [X] Print filament guides
 

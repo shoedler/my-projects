@@ -7,6 +7,14 @@ var bgColor = 51;
 function setup() {
   createCanvas(window.innerWidth, window.innerHeight);
 
+  var sum = 0;
+
+  for (var k = 1; k <= 5; k++) {
+    sum += (1 / k);
+  }
+
+  console.log(sum);
+
   for (var i = 0 ; i < TOTAL_PARTICLES ; i++){
     particles[i] = new Particle(random(width), random(height), random(1,3));
   }
