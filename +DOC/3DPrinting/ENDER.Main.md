@@ -1,26 +1,39 @@
-# Upgrade Requirements Ender 3 Pro
+# Ragbag
+## Ender 3 VREF for TMC2130
+RMS   = `Imax / sqrt(2)`
+
+Vref  = `(Irms * 2.5V) / 1.77A`
+
+Equals to:
+
+X, Y, Z:  0.842V
+E0:       1.000V
+
+Times 90%:
+
+**X, Y, Z:  0.760V**
+**E0:       0.900V**
+
+
+# Upgrades Ender 3 Pro
 
 ## Basic Upgrades
 * [ ] Print control board back cover
-* [ ] Print part cooling duct (probably Bullseye version)
-* [ ] Print filament guides
-* [ ] Flash bootloader to factory control board
-* [ ] Enable manual mesh bed leveling
+* [X] Print part cooling duct
+* [X] Print filament guides
 
 ## Noise Upgrades
 ### Fans
-* [ ] Meanwell LRS 350-24 Cooling Fan:  **?** V
-* [ ] Partcooling fan: 5015 fan         **24** V
-* [ ] Hot end fan: NF-A4x20             **?** V
+* [X] Meanwell LRS 350-24 Cooling Fan (40x40):  **12** V
+* [X] Partcooling fan: 5015 fan                 **24** V
+* [X] Hot end fan: NF-A4x20                     **12** V
 ### Axes
-* [ ] TMC2130 drivers                   4pcs
-* [ ] MKS Gen L Controller
-* [ ] Stepper shock absorbers
-
+* [X] TMC2130 drivers                   4pcs
+* [X] MKS Gen L Controller
 
 
 ## Intermediate Upgrades
-* [ ] BLTouch automatic bed leveling
+* [X] BLTouch automatic bed leveling
 
 ## Nylon / Polycarbonate printing
 Needs 300+ Degrees C. Micro Swiss hot end is **crucial** since it has a titanium heatbreak. The Ender 3 Pro factory hot end doesn't have that. The PTFE bowden tube could melt and give off **toxic** fumes!

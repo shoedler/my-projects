@@ -1,4 +1,0 @@
-G28 ; Home all axes
-G29 E ; Auto bed leveling
-G92 E0.0; Extruder position set to 0
-G1 X0 Y0 Z10 F6000; Back to 0 position
