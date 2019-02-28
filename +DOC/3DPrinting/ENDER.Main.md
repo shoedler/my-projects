@@ -47,6 +47,7 @@ Amount | Type | What For
 * [ ] Install & Wire kWh Counter
 * [ ]
 
+
 ### Materials & Tools which are missing
 - Jigsaw with Metalcutting Blade
 - Harting Crimping Pliers
