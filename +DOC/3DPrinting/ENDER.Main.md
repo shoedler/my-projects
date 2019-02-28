@@ -1,26 +1,68 @@
 # Ragbag
 ## Ender 3 VREF for TMC2130
-Root Mean Squared (RMS)   = `Imax / sqrt(2)`
+### Formulas
+What | Formula
+--- | ---
+Root Mean Squared (RMS) |  I<sub>max</sub> / sqrt(2)
+V<sub>ref</sub> | (I<sub>rms</sub> * 2.5V) / 1.77A
 
-Vref                      = `(Irms * 2.5V) / 1.77A`
+### Calculation for Ender 3
+V<sub>ref</sub> X, Y, Z   =   0.842V
+V<sub>ref</sub> E         =   1.000V
 
-Equals to:
+V<sub>ref</sub> X, Y, Z   =   0.842V * 90% = **0.760V**
+V<sub>ref</sub> E         =   1.000V * 90% = **0.900V**
 
-X, Y, Z                   = 0.842V
-E0:                       = 1.000V
+---
 
-Times 90%:
-
-**X, Y, Z                 = 0.760V**
-**E0:                     = 0.900V**
-
+# Ender 3 Electrical Cabinet
 ## To Do
-* [ ] GPIO Relay Board -> RPi
+As of 28.02.2019
+### Wiring
+* [ ] Wire Cabinet Cover Earthing (1.5q, M8)
+* [ ] Wire Cabinet Main Earthing (1.5q, M8)
+* [ ] Wire Cabinet Plate Earthing (1.5q, M6)
+
+### Wiring & Installation (in Cabinet)
+* [ ] Install & Wire Clamp Blocks
+
+Amount | Type | What For
+--- | --- | ---
+2 | Grey, 2.5q | Line
+2 | Blue, 2.5q | Neutral
+2 | GNYE, 2.5q | Earth
+9 | Grey, 2.5q | 24VDC, SW24VDC, 5VDC
+9 | Grey, 2.5q | GND1, GND2, GND3
+2 | Bridge, 2x | Line, Neutral
+6 | Bridge, 3x | All DC Voltages & GNDs
+4 | Endplates  | Cl-Block 1 & 2
+4 | Clamp Stops | Cl-Block 1 & 2
+
+* [ ] Install & Wire
+* [ ] Install & Wire Cabinet Fans (120x120)
+* [ ] Install & Wire Harting Connectors
+* [ ] Install & Wire 5V 3A PSU
+* [ ] Install & Wire OctoPi
+* [ ] Install & Wire GPIO Relay Board for SW24VDC
+* [ ] Install & Wire kWh Counter
+* [ ]
+
+### Materials & Tools which are missing
+- Jigsaw with Metalcutting Blade
+- Harting Crimping Pliers
+- Cableshoe Crimping Pliers
+
+- USB WiFi Dongle
+- USB Feedtrough for electrical Cabinets
+- 5V PSU (Meanwell DR15)
+-
+
+---
 
 # Upgrades Ender 3 Pro
 
 ## Basic Upgrades
-* [ ] Print LCD back cover
+* [X] Print LCD back cover
 * [X] Print part cooling duct
 * [X] Print filament guides
 
@@ -34,7 +76,7 @@ Times 90%:
 * [X] MKS Gen L Controller
 
 
-## Intermediate Upgrades
+## Ragbag Upgrades
 * [X] BLTouch automatic bed leveling
 
 ## Nylon / Polycarbonate printing
