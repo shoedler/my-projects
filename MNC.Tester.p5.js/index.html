@@ -6,9 +6,31 @@
     <link rel="stylesheet" type="text/css" href="mnc-tester.css">
     <meta charset="utf-8" />
   </head>
+
   <body>
-    <script src="query.js"></script>
-    <script src="resources.js"></script>
-    <script src="core.js"></script>
+    <!-- Header -->
+    <header>
+      <form action="query-data" class="query-data">
+
+        <label for="query-type">Type</label>
+        <select id="query-type" name="query-type">
+          <option value="bitReadOperations">Bit Read Operations for defined Bits</option>
+          <option value="bitWriteOperations">Bit Write Operations for defined Bits</option>
+          <option value="NIL">NIL</option>
+        </select>
+
+        <label for="query-value">Value</label>
+        <input type="text" name="query-value" value="ALADGK"><br>
+
+        <input type="submit" name="query" value="Query">
+      </form>
+    </header>
+
+    <!-- Body -->
+    <section class="p5Canvas">
+      <script src="query.js"></script>
+      <script src="resources.js"></script>
+      <script src="core.js"></script>
+    </section>
   </body>
 </html>

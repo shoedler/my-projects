@@ -38,7 +38,6 @@ Amount | Type | What For
 4 | Endplates  | Cl-Block 1 & 2
 4 | Clamp Stops | Cl-Block 1 & 2
 
-* [ ] Install & Wire
 * [ ] Install & Wire Cabinet Fans (120x120)
 * [ ] Install & Wire Harting Connectors
 * [ ] Install & Wire 5V 3A PSU

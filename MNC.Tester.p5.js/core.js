@@ -1,5 +1,6 @@
 let wWidth  = window.innerWidth;
 let wHeight = window.innerHeight;
+const heightContractor = 0.75;
 
 const red   = "#b72828"
 const green = "#3bb728"
@@ -9,8 +10,8 @@ let CurrentModule;
 let CurrentNetwork;
 
 let MyQueries = [];
-
 let Data;
+
 
 function preload() {
   /* The loadStrings function returns an array, indexed by the lines of the loaded file
@@ -18,16 +19,9 @@ function preload() {
   Data = new Resource(loadStrings("https://raw.githubusercontent.com/WashirePie/CFX.Web/master/%2BDOC/RAW/mnemonic.mnc"));
 }
 
-/* TODO: COMBAK:
-Fix the issue where the getCurrentModule Fucntion overrides the instructions modules number and title
-UPDATE: MUST happen in the getCurrentModule function! narrowed it down...
-Found it. After END Level 2, there are only P numbers (for the submodules) so
-the end Level 2 needs to be detected.
-- Add LEVEL Variable which stores the current level and handle CurrentModule detection accordingly*/
-
 
 function setup() {
-  createCanvas(wWidth, wHeight);
+  createCanvas(wWidth, wHeight * heightContractor);
 }
 
 
