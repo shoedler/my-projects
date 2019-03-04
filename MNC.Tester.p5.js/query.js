@@ -70,7 +70,7 @@ class Query {
 
           /* check for matching "writes" in instructionOperations */
           for (let ins of this.src.instructionOperations) {
-            /* loop trough "reads" array, if there is one */
+            /* loop trough "writes" array, if there is one */
             if (ins.writes != null) {
               this.siftInstructionOperations(ins.writes, bit.byteType, bit.byteAddress, ins);
             }
@@ -133,44 +133,44 @@ class Query {
 
   siftInstructionOperations(values, byteType, byteAddress, ins) {
     /* Loop trough if array, else handle as one */
-    if (Array.isArray(values) == false) {
-      try {
-        let temp = values;
-      } catch (e if e instanceof ReferenceError) {
-        console.log(values);
+    if (isIterable(values)) {
+      for (let value of values) {
+        /* Check if the current bit is contained in an arrangement of bytes. */
+        if (checkInstructionByteRange(value, ins.formatLength, byteType, byteAddress)) {
+          this.result.push(ins);
+        }
       }
-
-      let values = [];
-      values.push(temp);
-    }
-
-    for (let value of values) {
-      /* Check if the current bit is contained in an arrangement of bytes. */
-      if (checkInstructionByteRange(value, ins.formatLength, byteType, byteAddress)) {
+    } else {
+      if (checkInstructionByteRange(values, ins.formatLength, byteType, byteAddress)) {
         this.result.push(ins);
       }
     }
-    // /* If "reads" isn't an array then handle it's content as one value */
-    // } else {
-    //   if (checkInstructionByteRange(values, ins.formatLength, byteType, byteAddress)) {
-    //     this.result.push(ins);
-    //   }
-    // }
   }
 }
 
 
 function checkInstructionByteRange(startByte, length, checkByteType, checkByteAddress) {
-  let match = (/^([A-Z])(\d*)$/).exec(startByte);
-  if (match != null) {
-    let type = match[1];
-    let number = parseInt(match[2], 10);
-    /* loop trough length (amount of bytes) */
-    for (let i = 0; i < length; i++) {
-      /* if the bit's byteAdress matches the instructions byteAdress + i then it's getting handled there */
-      if (checkByteType + checkByteAddress == type + (number + i)) {
-        return true;
+  if (startByte != null) {
+    let match = (/^([A-Z])(\d*)$/).exec(startByte);
+    if (match != null) {
+      let number = parseInt(match[2], 10);
+      let type = match[1];
+      /* loop trough length (amount of bytes) */
+      for (let i = 0; i < length; i++) {
+        /* if the bit's byteAdress matches the instructions byteAdress + i then it's getting handled there */
+        if (checkByteType + checkByteAddress == type + (number + i)) {
+          return true;
+        }
       }
     }
   }
+}
+
+
+function isIterable(obj) {
+  /* Checks for null and undefined or strings */
+  if (obj == null || typeof obj == "string") {
+    return false;
+  }
+  return typeof obj[Symbol.iterator] === 'function';
 }

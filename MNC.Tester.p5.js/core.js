@@ -21,7 +21,8 @@ function preload() {
 
 
 function setup() {
-  createCanvas(wWidth, wHeight * heightContractor);
+  wHeight = wHeight * heightContractor
+  createCanvas(wWidth, wHeight);
 }
 
 
@@ -36,8 +37,10 @@ function draw() {
   checkWarnings(warn);
 
   MyQueries.push(new Query(Data, "definedBitRead", "ELADGK"));
-  console.log(" ");
   MyQueries.push(new Query(Data, "definedBitWrite", "AX-SAV"));
+
+  var test = new Graph("HI", "HIII");
+  test.show();
   noLoop();
 }
 
