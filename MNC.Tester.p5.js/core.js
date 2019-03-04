@@ -39,7 +39,7 @@ function draw() {
   MyQueries.push(new Query(Data, "definedBitRead", "ELADGK"));
   MyQueries.push(new Query(Data, "definedBitWrite", "AX-SAV"));
 
-  var test = new Graph("HI", "HIII");
+  var test = new Graph(Data.sourceLines.length, 4);
   test.show();
   noLoop();
 }
