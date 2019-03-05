@@ -30,17 +30,17 @@ function draw() {
   background(51);
   let warn = 0;
   /* Run all sequences to analyze the mnemonic */
-  warn += getDefinitions          (Data);
-  warn += analyzeLogic            (Data);
-  warn += analyzeDependencies     (Data);
-  warn += analyzeResults          (Data);
+  warn += getDefinitions      (Data);
+  warn += analyzeLogic        (Data);
+  warn += analyzeDependencies (Data);
+  warn += analyzeResults      (Data);
   checkWarnings(warn);
 
   MyQueries.push(new Query(Data, "definedBitRead", "ELADGK"));
   MyQueries.push(new Query(Data, "definedBitWrite", "AX-SAV"));
 
-  var test = new Graph(Data.sourceLines.length, 4);
-  test.show();
+  let Test = new Map(Data);
+  Test.show();
   noLoop();
 }
 
