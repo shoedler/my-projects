@@ -30,6 +30,8 @@ class Module {
     this.programNumber = programNumber
     this.sourceFile = sourceFile;
     this.title = title;
+    this.fromLine;
+    this.toLine;
   }
 }
 
@@ -135,7 +137,7 @@ class Resource {
   }
 
 
-  getCurrentModule(str1, str2) {
+  getCurrentModule(str1, str2, lineNumber) {
     let match1 = currentModuleNumberRegex.exec(str1);
     let match2 = currentModuleSourceRegex.exec(str2);
 
@@ -144,6 +146,7 @@ class Resource {
       for (let i = 0; i < this.Modules.length; i++) {
         /* Check if the sourcefile is already defined */
         if (match2.includes(this.Modules[i].sourceFile)) {
+          this.Modules[i].fromLine = lineNumber;
           return this.Modules[i];
         }
       }
@@ -151,7 +154,7 @@ class Resource {
       return new Module(undefined , parseInt(match2[1], 10), match2[2]);
     }
 
-    /* does it match the P Number? */
+    /* does it match the Program Number? */
     if (match1 != null && match1[1,2] != null && match1[1,2] != "") {
       for (let i = 0; i < this.Modules.length; i++) {
         /* Check if the P Number is already defined */
@@ -159,7 +162,7 @@ class Resource {
           return this.Modules[i];
         }
       }
-      /* SOurcenumber hasn't been used yet. */
+      /* Sourcenumber hasn't been used yet. */
       return new Module(parseInt(match1[2], 10) , undefined, undefined);
     }
   }
@@ -193,6 +196,7 @@ class Resource {
       return null;
     }
   }
+
 
   InstructionLogicData(lines, index) {
     let match = instructionOperationRegex.exec(lines[index]);

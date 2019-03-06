@@ -78,7 +78,7 @@ function analyzeLogic(source) {
   let lines = source.sourceLines;
   for (let i = 0; i < lines.length; i++) {
     /* Update the current module */
-    let MODULE = source.getCurrentModule(lines[i], lines[i+1]);
+    let MODULE = source.getCurrentModule(lines[i], lines[i+1], i);
     if (MODULE != null) {CurrentModule = MODULE;}
     /* Update the current network */
     let NETWORK = source.getCurrentNetwork(lines[i]);
