@@ -13,8 +13,16 @@ let MyQueries = [];
 let Data;
 
 
+document.getElementById("query-submit").onclick = function() {
+  /* DOM functionality */
+  let type =  document.getElementById("query-type");  let typeVal = type.options[type.selectedIndex].value;
+  let query = document.getElementsByTagName("input")[0].value;
+  MyQueries.push(new Query(Data, typeVal, query));
+}
+
+
 function preload() {
-  /* The loadStrings function returns an array, indexed by the lines of the loaded file
+  /* The loadStrings function returns an array, indexed by the line count of the loaded file
   syntax: loadStrings(filename,callback,errorCallback)*/
   Data = new Resource(loadStrings("https://raw.githubusercontent.com/WashirePie/CFX.Web/master/%2BDOC/RAW/mnemonic.mnc"));
 }
@@ -28,20 +36,22 @@ function setup() {
 
 function draw() {
   background(51);
-  let warn = 0;
+
   /* Run all sequences to analyze the mnemonic */
+  let warn = 0;
   warn += getDefinitions      (Data);
   warn += analyzeLogic        (Data);
   warn += analyzeDependencies (Data);
   warn += analyzeResults      (Data);
   checkWarnings(warn);
 
-  MyQueries.push(new Query(Data, "definedBitRead", "ELADGK"));
-  MyQueries.push(new Query(Data, "definedBitWrite", "AX-SAV"));
-
+  /* Generate Map */
   let Test = new Map(Data);
   Test.show();
   noLoop();
+
+  /* Generate some space in the log. Could also use Console.clear(); */
+  for (let i = 0; i < 20; i++) {console.log(" "); console.log("  ");}
 }
 
 
@@ -165,26 +175,19 @@ function analyzeResults(source) {
 
 
 function finishSequence(w, spaces = 1, additionalString = "") {
-  if (w != 0) {
-    console.log("%cWarnings: " + w, "color: " + yellow);
-  } else {
-    console.log("No Warnings");
-  }
+  if (w != 0) {console.log("%cWarnings: " + w, "color: " + yellow);}
+  else        {console.log("No Warnings");}
+  
   console.log("Finished. " + additionalString);
   for (let i = 0; i < spaces; i++) {
-    if (i % 2 == 0) {
-      console.log("");
-    } else {
-      console.log(" ");
-    }
+    if (i % 2 == 0) {console.log("");}
+    else            {console.log(" ");}
   }
 }
 
+
 function checkWarnings(warn) {
-  if (warn != 0) {
-    console.log("%cThere are " + warn + " Warnings overall!", "color: " + red);
-  } else {
-    console.log("%cNo Warnings overall", "color: " + green);
-  }
+  if (warn != 0) {console.log("%cThere are " + warn + " Warnings overall!", "color: " + red);}
+  else           {console.log("%cNo Warnings overall", "color: " + green);}
   console.log(" ");
 }

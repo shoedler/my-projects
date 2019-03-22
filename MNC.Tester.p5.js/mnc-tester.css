@@ -43,7 +43,6 @@ header input[type=submit] {
 
   border: none;
   border-radius: 1px;
-  cursor: crosshair;
 }
 header input[type=submit]:hover {
   background-color: #d11b59;

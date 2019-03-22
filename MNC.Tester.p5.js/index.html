@@ -10,20 +10,16 @@
   <body>
     <!-- Header -->
     <header>
-      <form action="query-data" class="query-data">
+      <label for="query-type">Type</label>
+      <select id="query-type" name="query-type">
+        <option value="definedBitRead">Find Bit-Read Operations for defined Bits</option>
+        <option value="definedBitWrite">Find Bit-Write Operations for defined Bits</option>
+      </select>
 
-        <label for="query-type">Type</label>
-        <select id="query-type" name="query-type">
-          <option value="bitReadOperations">Bit Read Operations for defined Bits</option>
-          <option value="bitWriteOperations">Bit Write Operations for defined Bits</option>
-          <option value="NIL">NIL</option>
-        </select>
+      <label for="query-value">Value</label>
+      <input type="text" name="query-value" value="ALADGK"><br>
 
-        <label for="query-value">Value</label>
-        <input type="text" name="query-value" value="ALADGK"><br>
-
-        <input type="submit" name="query" value="Query">
-      </form>
+      <input type="submit" id="query-submit" value="Query">
     </header>
 
     <!-- Body -->
