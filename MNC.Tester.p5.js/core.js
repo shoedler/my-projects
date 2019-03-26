@@ -45,13 +45,10 @@ function draw() {
   warn += analyzeResults      (Data);
   checkWarnings(warn);
 
-  /* Generate Map */
-  let Test = new Map(Data);
-  Test.show();
-  noLoop();
-
   /* Generate some space in the log. Could also use Console.clear(); */
   for (let i = 0; i < 20; i++) {console.log(" "); console.log("  ");}
+
+  noLoop(); 
 }
 
 
@@ -177,7 +174,7 @@ function analyzeResults(source) {
 function finishSequence(w, spaces = 1, additionalString = "") {
   if (w != 0) {console.log("%cWarnings: " + w, "color: " + yellow);}
   else        {console.log("No Warnings");}
-  
+
   console.log("Finished. " + additionalString);
   for (let i = 0; i < spaces; i++) {
     if (i % 2 == 0) {console.log("");}
