@@ -8,6 +8,7 @@
   </head>
 
   <body>
+
     <!-- Header -->
     <header>
       <label for="query-type">Type</label>
@@ -22,12 +23,27 @@
       <input type="submit" id="query-submit" value="Query">
     </header>
 
-    <!-- Body -->
+    <!-- Table -->
+    <table id="output-table">
+      <tbody>
+        <tr>
+          <th>Action</th>
+          <th>Operation</th>
+          <th>Module</th>
+          <th>MNC Line</th>
+        </tr>
+        <!-- Table-rows will be generated into here  -->
+      </tbody>
+    </table>
+
+    <!-- Canvas -->
     <section class="p5Canvas">
+      <script src="DOMint.js"></script>
       <script src="query.js"></script>
       <script src="resources.js"></script>
-      <script src="plot.js"></script>
+      <!-- <script src="plot.js"></script> -->
       <script src="core.js"></script>
     </section>
+
   </body>
 </html>

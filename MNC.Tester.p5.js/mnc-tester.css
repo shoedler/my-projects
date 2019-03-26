@@ -1,48 +1,86 @@
+/* GLOBAL */
 * {
   font-family: consolas, monospace;
 }
 
+/* Style Body */
+/******************************************************************************/
 body {
+  background-color: #313131;
+  color: white;
+  padding: 30px;
   margin: 0;
-  padding: 0;
 }
 
+/* Style Header */
+/******************************************************************************/
 header {
   background-color: #313131;
-  padding: 30px;
   color: white;
+  padding: 30px;
   height: 230px;
   text-align: center;
 }
 
 /* Style the footer */
+/******************************************************************************/
 footer {
-  background-color: #777;
+  background-color: #313131;
   padding: 10px;
   text-align: center;
   color: white;
 }
 
+/* Style table */
+/******************************************************************************/
+table {
+  background-color: white !important;
+  width: 100%;
+}
+table, caption {
+  color: white;
+  padding: 15px;
+  font-size: 20px;
+}
+table, th, td {
+  color: #313131;
+  border: 1px solid white;
+  border-radius: 10px;
+  border-collapse: separate;
+}
+th, td {
+  padding: 15px;
+}
+th {
+  text-align: left;
+  font-size: 24px;
+}
+table {
+  border-spacing: 5px;
+}
+
 /* Style Controls */
+/******************************************************************************/
 header input[type=text], select {
   width: 100%;
   height: auto;
   padding: 1% 2%;
   margin: 0.5% 0;
   box-sizing: border-box;
+  border: none;
+  border-radius: 10px;
 }
 
 header input[type=submit] {
+  background-color: #e91e63;
+  color: white;
   width: 100%;
   height: auto;
-  color: white;
-  background-color: #e91e63;
   margin-top: 10px;
   padding: 1% 2%;
   margin: 0.5% 0;
-
   border: none;
-  border-radius: 1px;
+  border-radius: 10px;
 }
 header input[type=submit]:hover {
   background-color: #d11b59;

@@ -148,7 +148,6 @@ class Query {
   }
 }
 
-
 function checkInstructionByteRange(startByte, length, checkByteType, checkByteAddress) {
   if (startByte != null) {
     let match = (/^([A-Z])(\d*)$/).exec(startByte);

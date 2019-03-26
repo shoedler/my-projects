@@ -12,15 +12,6 @@ let CurrentNetwork;
 let MyQueries = [];
 let Data;
 
-
-document.getElementById("query-submit").onclick = function() {
-  /* DOM functionality */
-  let type =  document.getElementById("query-type");  let typeVal = type.options[type.selectedIndex].value;
-  let query = document.getElementsByTagName("input")[0].value;
-  MyQueries.push(new Query(Data, typeVal, query));
-}
-
-
 function preload() {
   /* The loadStrings function returns an array, indexed by the line count of the loaded file
   syntax: loadStrings(filename,callback,errorCallback)*/
@@ -48,7 +39,7 @@ function draw() {
   /* Generate some space in the log. Could also use Console.clear(); */
   for (let i = 0; i < 20; i++) {console.log(" "); console.log("  ");}
 
-  noLoop(); 
+  noLoop();
 }
 
 
