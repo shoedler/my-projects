@@ -1,3 +1,5 @@
+
+
 const multiBitDefinitionRegex =      /^(T|D|E|F|G|R|X|Y)(\d*)(\s*)([A-Z0-9\-\_\#]*)$/;
 const singleBitDefinitionRegex =     /^(T|D|E|F|G|R|X|Y)(\d*)(\.)(\d)(\s*)([A-Z0-9\-\_]*)$/;
 const moduleNumberDefinitionRegex =  /^[P](\d*)\s*C(\d*)$/;
@@ -13,81 +15,98 @@ const levelSubRegex =                /^(SNUB|SUB)\s*(\d*)$/;
 const instructionReadWriteRegex =    /^([A-Z])(\d*)$/;
 const instructionFormatRegex =       /^(\d|)(\d\d|)(\d|)$/;
 
-/* "Define" classes */
+
+/*******************************************************************************
+** Class - Memory
+** Holds a memory definition
+** Properties:
+*******************************************************************************/
 class Memory {
   constructor(type, byteAddress, bitAddress, length, symbol) {
-    this.byteType = type;             /* Memory Letter, e.g. "R" */
-    this.byteAddress = byteAddress;
-    this.bitAddress = bitAddress;
-    this.length = length;             /* In Bits, 1 = Bit, 8 = Byte etc. */
-    this.symbol = symbol;
+    this.byteType = type;            /*  =  Memory Letter, e.g. "R" */
+    this.byteAddress = byteAddress;  /*  =  Numeric, byte Address */
+    this.bitAddress = bitAddress;    /*  =  Numeric, bit Address */
+    this.length = length;            /*  =  Numeric, Amount of bits (range) of definition */
+    this.symbol = symbol;            /*  =  String, Mnemonic Symbol, < 6 Chars */
   }
 }
 
 
+/*******************************************************************************
+** Class - Module
+** Holds a module / program definition
+** Properties:
+*******************************************************************************/
 class Module {
   constructor(programNumber, sourceFile, title) {
-    this.programNumber = programNumber
-    this.sourceFile = sourceFile;
-    this.title = title;
-    this.fromLine;
-    this.toLine;
+    this.programNumber = programNumber /*  =  Numeric, "P" number */
+    this.sourceFile = sourceFile;      /*  =  String, sourcefile Name */
+    this.title = title;                /*  =  String, Module title */
   }
 }
 
 
-class Format {
-  constructor(format, variable) {
-    this.format = format;
-    this.variable = variable;
-  }
-}
-
-
-/* "Operation" classes */
+/*******************************************************************************
+** Class - BitOperation
+** Holds a bit operation, read or write
+** Properties:
+*******************************************************************************/
 class BitOperation {
   constructor(op, mem, inMod, inNwk, inLine) {
-    this.operation = op;
-    this.memory = mem;
-    this.inModule = inMod;
-    this.inNetwork = inNwk;
-    this.inLine = inLine;
+    this.operation = op;    /*  =  String, operation Type one of: [readBitOperationsRegex] */
+    this.memory = mem;      /*  =  String, memory Address. e.g. [R3453.2] */
+    this.inModule = inMod;  /*  =  Object of type [Module] */
+    this.inNetwork = inNwk; /*  =  String, containing the network the parser is currently in. */
+    this.inLine = inLine;   /*  =  String, Line index of the whole file. */
   }
 }
 
 
+/*******************************************************************************
+** Class - InstructionOperations
+** Hold a bit operation, read or write
+** Properties:
+*******************************************************************************/
 class InstructionOperation {
   constructor(instr, instrNbr, form, formLn, reads, writes, inMod, inNwk, inLine) {
-    this.instruction = instr;
-    this.instructionNumber = instrNbr;
-    this.format = form;
-    this.formatLength = formLn;
-    this.reads = reads;
-    this.writes = writes;
-    this.inModule = inMod;
-    this.inNetwork = inNwk;
+    this.instruction = instr;          /*  = String, Type of operation */
+    this.instructionNumber = instrNbr; /*  = Numeric, Type number */
+    this.format = form;                /*  = String, type of format (Normal, Const, Addr...) */
+    this.formatLength = formLn;        /*  = Numeric, length of it's actions (in bytes) */
+    this.reads = reads;                /*  = String, Beginning Address of read range */
+    this.writes = writes;              /*  = String, Beginnign Address of write range */
+    this.inModule = inMod;             /*  = Object, of tyop [Module] */
+    this.inNetwork = inNwk;            /*  = String, containing the network the parser is currently in. */
     this.inLine = inLine;
   }
 }
 
 
+/*******************************************************************************
+** Class - Resource
+** Holds the source MNC, all definitions, as well as logic data (ops)
+** and analyze-data
+** Properties:
+*******************************************************************************/
 class Resource {
   constructor(sourceLines) {
-    this.sourceLines = sourceLines;
+    this.sourceLines = sourceLines;         /* String array, each index holds 1 line */
 
-    this.Modules = [];
-    this.SBDMemory = [];
-    this.MBDMemory = [];
-    this.Level = 0;
+    this.Modules = [];                      /* Array of Module objects, holds module definitions */
+    this.SBDMemory = [];                    /* Array of Memory objects, holds Single bit definitions */
+    this.MBDMemory = [];                    /* Array of Memory objects, holds Multi bit definitions */
+    this.bitReadOperations = [];            /* Array of BitOperations, holds bit read operations */
+    this.bitWriteOperations = [];           /* Array of BitOperations, holds bit write operations */
+    this.instructionOperations = [];        /* Array of InstructionOperations, holds instruction operations */
 
-    this.bitReadOperations = [];
-    this.bitWriteOperations = [];
-    this.instructionOperations = [];
-
-    this.usedUndefinedInstructions = [];
+    this.usedUndefinedInstructions = [];    /* Array of InstructionsOperations, holds unhandled Instructions */
   }
 
 
+  /*******************************************************************************
+  ** Action: Checks if string contains a MBD. Creates Memory Object
+  ** Return: Memory Object [definition]
+  *******************************************************************************/
   getMultiBitDefinitions(str) {
     let match = multiBitDefinitionRegex.exec(str);
     if (match != null && match[1,2,4] != null && match[1,2,4] != "") {
@@ -98,7 +117,10 @@ class Resource {
     }
   }
 
-
+  /*******************************************************************************
+  ** Action: Checks if string contains a SBD. Creates Memory Object
+  ** Return: Memory Object [definition]
+  *******************************************************************************/
   getSingleBitDefinitions(str) {
     let match = singleBitDefinitionRegex.exec(str);
     if (match != null && match[1,2,4,6] != null && match[1,2,4,6] != "") {
@@ -109,7 +131,10 @@ class Resource {
     }
   }
 
-
+  /*******************************************************************************
+  ** Action: Checks if string contains a Module Definition. Creates Module Object
+  ** Return: Module Object [mod]
+  *******************************************************************************/
   getModuleNumberDefinition(str) {
     let match = moduleNumberDefinitionRegex.exec(str);
     if (match != null && match[1,2] != null && match[1,2] != "") {
@@ -120,7 +145,11 @@ class Resource {
     }
   }
 
-
+  /*******************************************************************************
+  ** Action: Checks if string Module title. Extends matching source.Modules Object
+  **         with the found title
+  ** Return: true: If a defined module was extended with the found title, else: false
+  *******************************************************************************/
   getModuleTitleDefinition(str) {
     let match = moduleTitleDefinitionRegex.exec(str);
     if (match != null && match[1,2] != null && match[1,2] != "") {
@@ -136,7 +165,15 @@ class Resource {
     }
   }
 
-
+  /*******************************************************************************
+  ** Action: Checks if string contains Module call. Can differentiate Module calls
+  **         by looking at the following line/string [str2]. Differentiates between
+  **         sourcefile Name calls or programNumber calls. Creates new Memory Objects
+  **         if a Module was not already defined in the source. Attention!:
+  **         The new module will not be appended to the source Module array since it's
+  **         not a definition if it get found in this method. It's just a call.
+  ** Return: Module Object. Either the found one or a new one.
+  *******************************************************************************/
   getCurrentModule(str1, str2, lineNumber) {
     let match1 = currentModuleNumberRegex.exec(str1);
     let match2 = currentModuleSourceRegex.exec(str2);
@@ -167,7 +204,10 @@ class Resource {
     }
   }
 
-
+  /*******************************************************************************
+  ** Action: Checks if string contains a Network Name.
+  ** Return: String, network Name [match[1]]
+  *******************************************************************************/
   getCurrentNetwork(str) {
     let match = currentNetworkRegex.exec(str);
     if (match != null && match[1] != null && match[1] != "") {
@@ -177,7 +217,10 @@ class Resource {
     }
   }
 
-
+  /*******************************************************************************
+  ** Action: Checks if string contains a BitRead Operation.
+  ** Return: [op: String (Operation), String (Modifier)] [mem: String (Memory)]
+  *******************************************************************************/
   getReadBitOperation(str) {
     let match = readBitOperationsRegex.exec(str);
     if (match != null && match[1,3] != null && match[1,3] != "") {
@@ -187,7 +230,10 @@ class Resource {
     }
   }
 
-
+  /*******************************************************************************
+  ** Action: Checks if string contains a BitWrite Operation.
+  ** Return: [op: String (Operation), String (Modifier)] [mem: String (Memory)]
+  *******************************************************************************/
   getWriteBitOperation(str) {
     let match = writeBitOperationsRegex.exec(str);
     if (match != null && match[1,3] != null && match[1,3] != "") {
@@ -197,7 +243,13 @@ class Resource {
     }
   }
 
-
+  /*******************************************************************************
+  ** Action: Checks if string[index] contains a instruction.
+  **         This method also holds all Instrucion logic. That's  why you have
+  **         to pass this method a whole lines array instead of just one line: It needs
+  **         to look ahead / behind to get some necessary Data for the found instruction.
+  ** Return: All Data to create a new InstructionOperation Object
+  *******************************************************************************/
   InstructionLogicData(lines, index) {
     let match = instructionOperationRegex.exec(lines[index]);
     if (match != null && match[1,2] != null && match[1,2] != "") {
@@ -210,17 +262,14 @@ class Resource {
           case 1: /* ☑️ */
             name = "END1";
             /* Needs nothing */
-            this.Level = 2;
             break;
           case 2: /* ☑️ */
             name = "END2";
             /* Needs nothing */
-            this.Level = 3;
             break;
           case 48: /* ☑️ */
             name = "END3";
             /* Needs nothing */
-            this.Level = -1;
             break;
           case 64: /* ☑️ */
             name = "SUBEND";
@@ -589,46 +638,45 @@ class Resource {
     }
   }
 
-
+  /*******************************************************************************
+  ** Action: Checks which Memory gets read by an instruction
+  ** Return: String, containing Starting memory [startByte]
+  *******************************************************************************/
   instructionReads(lines, index, offset, length = 1) {
     let startByte = lines[index + offset];
     let match = instructionReadWriteRegex.exec(startByte);
     let endByte
     /* If match is null then it's a constant, not a memory definition */
     if (match != null) {
-    //  /* Only add "Memory Range" to return if the desired length is bigger than one byte */
-    //   if (length > 1) {
-    //     endByte = match[1] + (parseInt(match[2], 10) + length - 1);
-    //     return startByte  + " - " + endByte;
-    //   } else {
-    //     return startByte
-    //   }
       return startByte;
     } else {
       return startByte;
     }
   }
 
+  /*******************************************************************************
+  ** Action: Checks which Memory gets written by an instruction
+  ** Return: String, containing Starting memory [startByte]
+  *******************************************************************************/
   instructionWrites(lines, index, offset, length = 1) {
     let startByte = lines[index + offset];
     let match = instructionReadWriteRegex.exec(startByte);
     let endByte
     /* If match is null then it's a constant, not a memory definition */
     if (match != null) {
-      /* Only add "Memory Range" to return if the desired length is bigger than one byte */
-      // NOTE: Commented out since it's easier to do querys when there's only one Byte in the "reads" attribute
-      // if (length > 1) {
-      //   endByte = match[1] + (parseInt(match[2], 10) + length - 1);
-      //   return startByte  + " - " + endByte;
-      // } else {
-      //   return startByte
-      // }
       return startByte;
     } else {
       return startByte;
     }
   }
 
+  /*******************************************************************************
+  ** Action: Checks the format length of instruction. Measured in bytes
+  **         Add the format length to the starting adress and you get the
+  **         instuctions range.
+  **         Also gets the type (kind) of Format
+  ** Return:  [kind: String (Kind)] [length: Numeric (Length in Bytes)]
+  *******************************************************************************/
   instructionFormat(lines, index, offset) {
     let format = lines[index + offset];
     let match = instructionFormatRegex.exec(format);

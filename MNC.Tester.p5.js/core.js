@@ -1,3 +1,7 @@
+
+/*******************************************************************************
+** Definitions
+*******************************************************************************/
 let wWidth  = window.innerWidth;
 let wHeight = window.innerHeight;
 const heightContractor = 0.75;
@@ -12,6 +16,9 @@ let CurrentNetwork;
 let MyQueries = [];
 let Data;
 
+/*******************************************************************************
+** Main functions
+*******************************************************************************/
 function preload() {
   /* The loadStrings function returns an array, indexed by the line count of the loaded file
   syntax: loadStrings(filename,callback,errorCallback)*/
@@ -36,13 +43,20 @@ function draw() {
   warn += analyzeResults      (Data);
   checkWarnings(warn);
 
-  /* Generate some space in the log. Could also use Console.clear(); */
-  for (let i = 0; i < 20; i++) {console.log(" "); console.log("  ");}
-
   noLoop();
 }
 
 
+/*******************************************************************************
+** Sequence 1 | get Definitions
+********************************************************************************
+** Action: Loops trough each line in the source and gets all Definitions.
+**         Reads & Writes directly from / to the source
+**         Gets SingleBitDefinitions, MultiBitDefinitions & Programnumbers.
+**         The "Modules" array is only partially filled after this method, the
+**         rest of it's data will be gathered in the getCurrentModule function.
+** Return: [w] (Integer), amount of warnings
+*******************************************************************************/
 function getDefinitions(source) {
   let w = 0;
   /* Get all definitions in the current file */
@@ -68,11 +82,19 @@ function getDefinitions(source) {
   return w
 }
 
-
+/*******************************************************************************
+** Sequence 2 | analyze Logic
+********************************************************************************
+** Action: Loops trough each line in the source and gets the MNC Logic.
+**         Reads & Writes directly from / to the source
+**         Gets currentModule, currentNetwork, read & write BitOperations.
+**         as well as instructionOperations
+** Return: [w] (Integer), amount of warnings
+*******************************************************************************/
 function analyzeLogic(source) {
   let w = 0;
-  /* Get all logic events in the whole file */
   console.log("Analyzing logic...");
+  /* Get all logic events in the whole file */
   let lines = source.sourceLines;
   for (let i = 0; i < lines.length; i++) {
     /* Update the current module */
@@ -113,17 +135,35 @@ function analyzeLogic(source) {
   return w
 }
 
-
+/*******************************************************************************
+** Sequence 3 | analyze Dependencies
+********************************************************************************
+** Action: Loops trough each line in the source and handles dependencies.
+**         Reads & Writes directly from / to the source
+**         -
+** Return: [w] (Integer), amount of warnings
+*******************************************************************************/
 function analyzeDependencies(source) {
   let w = 0;
-  /* Get all logic events in the whole file */
   console.log("Analyzing Dependencies...");
 
+  /* None */
   finishSequence(w, 2);
   return w
 }
 
-
+/*******************************************************************************
+** Sequence 4 | analyze Results
+********************************************************************************
+** Action: Loops trough each line in the source and analyzes the results.
+**         trough some given patterns and tests.
+**         Reads & Writes directly from / to the source
+**         - Checks for Modules which are defined, but were not used in the MNC.
+**         - Checks for used, but not yet handled Instructions.
+**           This test is just to warn the user that these Instructions will
+**           not be accounted for.
+** Return: [w] (Integer), amount of warnings
+*******************************************************************************/
 function analyzeResults(source) {
   let w = 0;
   console.log("Analyzing Results...");
@@ -161,7 +201,11 @@ function analyzeResults(source) {
   return w;
 }
 
-
+/*******************************************************************************
+** Action: Debug function, plots eventual warnings which came forth in a
+**         a sequence to the console.
+** Return: null
+*******************************************************************************/
 function finishSequence(w, spaces = 1, additionalString = "") {
   if (w != 0) {console.log("%cWarnings: " + w, "color: " + yellow);}
   else        {console.log("No Warnings");}
@@ -173,9 +217,13 @@ function finishSequence(w, spaces = 1, additionalString = "") {
   }
 }
 
-
+/*******************************************************************************
+** Action: Debug function, notifies the user if any warnings occured.
+** Return: null
+*******************************************************************************/
 function checkWarnings(warn) {
-  if (warn != 0) {console.log("%cThere are " + warn + " Warnings overall!", "color: " + red);}
+  if (warn != 0) {console.log("%cThere are " + warn + " Warnings overall!", "color: " + red);
+                        alert("There are " + warn + " Warnings overall!" + "\n \n" + "Please check your console log.");}
   else           {console.log("%cNo Warnings overall", "color: " + green);}
   console.log(" ");
 }

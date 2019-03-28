@@ -1,8 +1,18 @@
-/* DOM Interface */
+
+/*******************************************************************************
+** Definitions
+*******************************************************************************/
+const tableElementId = "table_element";
 
 
-/* Handle queries ordered via GUI */
+/*******************************************************************************
+** Action: Generates DOM Elements and fills them according to the query
+** Return: null
+*******************************************************************************/
 document.getElementById("query-submit").onclick = function() {
+  /* Clear table */
+  removeDOM_Elements(tableElementId);
+
   let type =  document.getElementById("query-type");  let typeVal = type.options[type.selectedIndex].value;
   let query = document.getElementsByTagName("input")[0].value;
 
@@ -19,11 +29,11 @@ document.getElementById("query-submit").onclick = function() {
     content = parseToOutput(result, typeVal, query);
     if (content != undefined) {
       tabBody =   document.getElementsByTagName("tbody").item(0);
-      row =       document.createElement("tr");
-      c1 =        document.createElement("td");
-      c2 =        document.createElement("td");
-      c3 =        document.createElement("td");
-      c4 =        document.createElement("td");
+      row =       document.createElement("tr"); row.setAttribute("id", tableElementId);
+      c1 =        document.createElement("td");  c1.setAttribute("id", tableElementId);
+      c2 =        document.createElement("td");  c2.setAttribute("id", tableElementId);
+      c3 =        document.createElement("td");  c3.setAttribute("id", tableElementId);
+      c4 =        document.createElement("td");  c4.setAttribute("id", tableElementId);
 
       txNode1 =   document.createTextNode(content.actionString);
       txNode2 =   document.createTextNode(content.operationString);
@@ -43,6 +53,22 @@ document.getElementById("query-submit").onclick = function() {
   }
 }
 
+/*******************************************************************************
+** Action: Removes all DOM Elements which are of the ID "id"
+** Return: null
+*******************************************************************************/
+function removeDOM_Elements(id) {
+  while (document.getElementById(id) != null) {
+    let elem = document.getElementById(id);
+    elem.parentNode.removeChild(elem);
+  }
+}
+
+
+/*******************************************************************************
+** Action: Formats query results into prepared Strings for the DOM Table
+** Return: action-, operation-, module- lineString
+*******************************************************************************/
 function parseToOutput(result, action, query) {
   /* These strings represent one column in the output table */
   let ActionString = query;
@@ -88,6 +114,10 @@ function parseToOutput(result, action, query) {
 }
 
 
+/*******************************************************************************
+** Action: Formats the OperationString according to it's content
+** Return: Formatted OperationString
+*******************************************************************************/
 function beautify(op) {
   let r = "is ";
   switch (true) {
