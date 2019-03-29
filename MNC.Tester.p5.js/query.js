@@ -13,6 +13,7 @@ class Query {
     this.src = resource;
     this.type = type;
     this.memory = memory;
+    this.memoryDefinition;
     this.log = [];
     this.result = [];
 
@@ -40,6 +41,7 @@ class Query {
         bit = this.getBit(query, this.src);
         /* exit if no bit has been found */
         if (bit != undefined) {
+          this.memoryDefinition = bit;
           byte = this.getByte((bit.byteType + bit.byteAddress), this.src);
 
           this.log.push("Looking for read operations...");
@@ -73,6 +75,7 @@ class Query {
         bit = this.getBit(query, this.src);
         /* exit if no bit has been found */
         if (bit != undefined) {
+          this.memoryDefinition = bit;
           byte = this.getByte((bit.byteType + bit.byteAddress), this.src);
 
           this.log.push("Looking for write operations...");

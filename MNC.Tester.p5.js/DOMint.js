@@ -2,65 +2,155 @@
 /*******************************************************************************
 ** Definitions
 *******************************************************************************/
-const tableElementId = "table_element";
+const tlElementId    = "timeLine_element";
+const tlElementTitle = "timeline_title";
+const stateNotifier  = "stNotifier";
+const stateText      = "stText";
+
+const stateRed       = "#e74848";
+const stateGreen     = "#53d467";
 
 
 /*******************************************************************************
-** Action: Generates DOM Elements and fills them according to the query
+** Action: Event: onClick Submit Button.
+           - Clears all DOM Elements with the [tlElementId] id
+           - Makes a new query using the DOM inputs
+           - Creates a TimeLine and a "Modal" for each result
 ** Return: null
 *******************************************************************************/
 document.getElementById("query-submit").onclick = function() {
-  /* Clear table */
-  removeDOM_Elements(tableElementId);
+  /* Clear all Elements containing [tlElementId] */
+  removeDOMelements(tlElementId);
 
   let type =  document.getElementById("query-type");  let typeVal = type.options[type.selectedIndex].value;
   let query = document.getElementsByTagName("input")[0].value;
 
   /* Make a new query */
   MyQueries.push(new Query(Data, typeVal, query));
+  let latestQuery = MyQueries.length - 1;
 
-  /* Make result array iterable. If there's only one result it's not iterable */
-  if (isIterable(MyQueries[MyQueries.length - 1].result) == false) {
-    MyQueries[MyQueries.length - 1].result.push("dummy");
+  /* Make result array iterable, if there's only one result it's not iterable */
+  if (isIterable(MyQueries[latestQuery].result) == false) {
+    MyQueries[latestQuery].result.push("dummy");
   }
 
-  /* Create a new row in the table for each result */
-  for (let result of MyQueries[MyQueries.length - 1].result) {
+  /* Prepare Memory definition string (If the query bit has a Definition) */
+  let memDefString = "";
+  if (MyQueries[latestQuery].memoryDefinition != null || undefined) {
+      Object.entries(MyQueries[latestQuery].memoryDefinition).forEach(memDefAttr => {
+          switch (memDefAttr[0]) {
+              case "byteType":    memDefString += "<b>Address:</b> " + memDefAttr[1];                break;
+              case "byteAddress": memDefString += memDefAttr[1];                                     break;
+              case "bitAddress":  memDefString += "." + memDefAttr[1];                                     break;
+              case "length":      memDefString += " | <b>length:</b> " + memDefAttr[1] + " byte(s)"; break;
+              case "symbol":      memDefString += "<br><b>" + "Symbol:</b> " + memDefAttr[1];        break;
+          }
+      })
+  } else {memDefString = "<b>No definition was found</b>"}
+
+
+  /* Add TimeLine title */
+  addDOMtitle(MyQueries[latestQuery].type + " for " +
+              MyQueries[latestQuery].memory + "<br><br>" +
+              memDefString);
+
+  /* Add a new TimeLine "Modal" for each result */
+  for (let result of MyQueries[latestQuery].result) {
     content = parseToOutput(result, typeVal, query);
     if (content != undefined) {
-      tabBody =   document.getElementsByTagName("tbody").item(0);
-      row =       document.createElement("tr"); row.setAttribute("id", tableElementId);
-      c1 =        document.createElement("td");  c1.setAttribute("id", tableElementId);
-      c2 =        document.createElement("td");  c2.setAttribute("id", tableElementId);
-      c3 =        document.createElement("td");  c3.setAttribute("id", tableElementId);
-      c4 =        document.createElement("td");  c4.setAttribute("id", tableElementId);
-
-      txNode1 =   document.createTextNode(content.actionString);
-      txNode2 =   document.createTextNode(content.operationString);
-      txNode3 =   document.createTextNode(content.moduleString);
-      txNode4 =   document.createTextNode(content.lineString);
-
-      c1.appendChild(txNode1);
-      c2.appendChild(txNode2);
-      c3.appendChild(txNode3);
-      c4.appendChild(txNode4);
-      row.appendChild(c1);
-      row.appendChild(c2);
-      row.appendChild(c3);
-      row.appendChild(c4);
-      tabBody.appendChild(row);
+        addDOMelement(content.lineString,
+                      content.actionString,
+                      content.operationString,
+                      content.moduleString);
     }
   }
+
+  /* Add last line of the TimeLine */
+  addDOMlastLine();
+
+  /* Update State */
+  Warnings = null;
+  updateDOMStatus(Warnings);
 }
+
+
+/*******************************************************************************
+** Action: Adds a DOM Title to the TimeLine
+** Return: null
+*******************************************************************************/
+function addDOMtitle(title) {
+    let titleSection = document.getElementById(tlElementTitle);
+    let divElement   = document.createElement("div");
+        divElement.setAttribute("class", "container"); divElement.setAttribute("id", tlElementId);
+    let pElement     = document.createElement("p");    pElement.setAttribute  ("id", tlElementId);
+
+    pElement.innerHTML += title + " &rarr;";
+    divElement.appendChild(pElement);
+    titleSection.appendChild(divElement);
+}
+
+
+/*******************************************************************************
+** Action: Adds a new DOM TimeLine Element inside the tbody tag.
+**         for a new result: title = lineString
+**                           content1 = actionString
+**                           content2 = operationString
+**                           content3 = moduleString
+** Return: null
+*******************************************************************************/
+function addDOMelement(title, content1, content2, content3) {
+    let tlBody =      document.getElementsByTagName("ol").item(0);
+    let liElement =   document.createElement("li");   liElement.setAttribute  ("id", tlElementId);
+    let timeElement = document.createElement("time"); timeElement.setAttribute("id", tlElementId);
+    let divElement =  document.createElement("div");  divElement.setAttribute ("id", tlElementId);
+
+    /* Assemble text content of "modal" */
+    timeElement.innerHTML += "L" + title;
+    divElement.appendChild(timeElement);
+    divElement.innerHTML += content1 + " " + content2 + "<br>";
+    divElement.innerHTML += content3;
+
+    liElement.appendChild(divElement);
+    tlBody.appendChild(liElement);
+}
+
+
+/*******************************************************************************
+** Action: Adds the finishing line to the TimeLine
+** Return: null
+*******************************************************************************/
+function addDOMlastLine() {
+    let tlBody =      document.getElementsByTagName("ol").item(0);
+    let liElement =   document.createElement("li");   liElement.setAttribute  ("id", tlElementId);
+    tlBody.appendChild(liElement);
+}
+
 
 /*******************************************************************************
 ** Action: Removes all DOM Elements which are of the ID "id"
 ** Return: null
 *******************************************************************************/
-function removeDOM_Elements(id) {
-  while (document.getElementById(id) != null) {
-    let elem = document.getElementById(id);
-    elem.parentNode.removeChild(elem);
+function removeDOMelements(id) {
+    while (document.getElementById(id) != null) {
+      let elem = document.getElementById(id);
+      elem.parentNode.removeChild(elem);
+    }
+}
+
+/*******************************************************************************
+** Action: Updates Status Bar
+** Return: null
+*******************************************************************************/
+function updateDOMStatus(warn) {
+  let circleElement = document.getElementById(stateNotifier);
+  let pElement     = document.getElementById(stateText);
+
+  if (warn != null) {
+    circleElement.setAttribute("fill", stateRed);
+    pElement.innerHTML = warn;
+  } else {
+    circleElement.setAttribute("fill", stateGreen);
+    pElement.innerHTML = "All Good!"
   }
 }
 

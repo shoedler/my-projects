@@ -2,8 +2,6 @@
 /*******************************************************************************
 ** Definitions
 *******************************************************************************/
-let wWidth  = window.innerWidth;
-let wHeight = window.innerHeight;
 const heightContractor = 0.75;
 
 const red   = "#b72828"
@@ -12,6 +10,9 @@ const yellow = "#998429"
 
 let CurrentModule;
 let CurrentNetwork;
+
+let Source = "https://raw.githubusercontent.com/WashirePie/CFX.Web/master/%2BDOC/RAW/mnemonic.mnc";
+let Warnings = null;
 
 let MyQueries = [];
 let Data;
@@ -22,26 +23,21 @@ let Data;
 function preload() {
   /* The loadStrings function returns an array, indexed by the line count of the loaded file
   syntax: loadStrings(filename,callback,errorCallback)*/
-  Data = new Resource(loadStrings("https://raw.githubusercontent.com/WashirePie/CFX.Web/master/%2BDOC/RAW/mnemonic.mnc"));
+  Data = new Resource(loadStrings(Source));
 }
 
 
-function setup() {
-  wHeight = wHeight * heightContractor
-  createCanvas(wWidth, wHeight);
-}
+function setup() {}
 
 
 function draw() {
-  background(51);
-
   /* Run all sequences to analyze the mnemonic */
   let warn = 0;
   warn += getDefinitions      (Data);
   warn += analyzeLogic        (Data);
   warn += analyzeDependencies (Data);
   warn += analyzeResults      (Data);
-  checkWarnings(warn);
+  Warnings = checkWarnings(warn);
 
   noLoop();
 }
@@ -219,11 +215,17 @@ function finishSequence(w, spaces = 1, additionalString = "") {
 
 /*******************************************************************************
 ** Action: Debug function, notifies the user if any warnings occured.
-** Return: null
+** Return: Warningstring if warnings occured. Null if none occured
 *******************************************************************************/
 function checkWarnings(warn) {
-  if (warn != 0) {console.log("%cThere are " + warn + " Warnings overall!", "color: " + red);
-                        alert("There are " + warn + " Warnings overall!" + "\n \n" + "Please check your console log.");}
-  else           {console.log("%cNo Warnings overall", "color: " + green);}
+  let str;
+  if (warn != 0) {
+    str = "There are " + warn + " Warnings overall!"
+    console.log("%c" + str, "color: " + red);
+    return str;
+  } else {
+    console.log("%cNo Warnings overall", "color: " + green);
+    return null;
+  }
   console.log(" ");
 }
