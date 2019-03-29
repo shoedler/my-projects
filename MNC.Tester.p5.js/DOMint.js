@@ -41,8 +41,10 @@ document.getElementById("query-submit").onclick = function() {
           switch (memDefAttr[0]) {
               case "byteType":    memDefString += "<b>Address:</b> " + memDefAttr[1];                break;
               case "byteAddress": memDefString += memDefAttr[1];                                     break;
-              case "bitAddress":  memDefString += "." + memDefAttr[1];                                     break;
-              case "length":      memDefString += " | <b>length:</b> " + memDefAttr[1] + " byte(s)"; break;
+              case "bitAddress":  memDefString += "." + memDefAttr[1];                               break;
+              case "length":      let bitStr = " bits";
+                                  if (memDefAttr[1] == 1) {bitStr = " bit"};
+                                  memDefString += " | <b>length:</b> " + memDefAttr[1] + bitStr;     break;
               case "symbol":      memDefString += "<br><b>" + "Symbol:</b> " + memDefAttr[1];        break;
           }
       })
@@ -69,7 +71,6 @@ document.getElementById("query-submit").onclick = function() {
   addDOMlastLine();
 
   /* Update State */
-  Warnings = null;
   updateDOMStatus(Warnings);
 }
 
