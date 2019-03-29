@@ -63,7 +63,8 @@ document.getElementById("query-submit").onclick = function() {
         addDOMelement(content.lineString,
                       content.actionString,
                       content.operationString,
-                      content.moduleString);
+                      content.moduleString,
+                      content.highlight);
     }
   }
 
@@ -99,7 +100,7 @@ function addDOMtitle(title) {
 **                           content3 = moduleString
 ** Return: null
 *******************************************************************************/
-function addDOMelement(title, content1, content2, content3) {
+function addDOMelement(title, content1, content2, content3, highlight = false) {
     let tlBody =      document.getElementsByTagName("ol").item(0);
     let liElement =   document.createElement("li");   liElement.setAttribute  ("id", tlElementId);
     let timeElement = document.createElement("time"); timeElement.setAttribute("id", tlElementId);
@@ -107,6 +108,10 @@ function addDOMelement(title, content1, content2, content3) {
 
     /* Assemble text content of "modal" */
     timeElement.innerHTML += "L" + title;
+    if (highlight) {
+      let currentAttr = divElement.getAttribute("class");
+      divElement.setAttribute("class", currentAttr + " highlight-div");
+    }
     divElement.appendChild(timeElement);
     divElement.innerHTML += content1 + " " + content2 + "<br>";
     divElement.innerHTML += content3;
@@ -148,10 +153,10 @@ function updateDOMStatus(warn) {
 
   if (warn != null) {
     circleElement.setAttribute("fill", stateRed);
-    pElement.innerHTML = warn;
+    pElement.innerHTML = Data.sourceLines[8] + ": " + warn;
   } else {
     circleElement.setAttribute("fill", stateGreen);
-    pElement.innerHTML = "All Good!"
+    pElement.innerHTML = Data.sourceLines[8] + ": All Good!"
   }
 }
 
@@ -166,6 +171,7 @@ function parseToOutput(result, action, query) {
   let OperationString = "";
   let ModuleString = "";
   let LineString = "";
+  let Highlight = false;
 
   /* Loop trough each property of all objects in result array */
   Object.entries(result).forEach(entry => {
@@ -178,9 +184,11 @@ function parseToOutput(result, action, query) {
         break;
       case "writes":
         if (value != null && OperationString == "") {
+          Highlight = true; /* Set highlight if it's a instruction */
           OperationString = "is overwritten by " + result.reads + " (" + result.instruction + ")";
         } break;
       case "reads":
+        Highlight = true; /* Set highlight if it's a instruction */
         if (value != null && OperationString == "") {
           OperationString = "is overriding " + result.writes + " (" + result.instruction + ")";
         } break;
@@ -200,7 +208,8 @@ function parseToOutput(result, action, query) {
     actionString: ActionString,
     operationString: OperationString,
     moduleString: ModuleString,
-    lineString: LineString
+    lineString: LineString,
+    highlight: Highlight
   }
 }
 
