@@ -1,19 +1,32 @@
 # This program prints Hello, world!
+import random
+
+
+chars = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"]
+line = 80
+amount = 40
+j = 0
+i = 0
+string = ""
 
 while True:
-    a = int(input("a = "))
-    b = int(input("b = "))
-    c = int(input("c = "))
 
-    if a == 1:
-        print("a = " + str(a))
-    elif c == 1:
-        print("c = " + str(c))
-    else:
-        print("a, b, c = " +
-              str(a) +
-              ", " +
-              str(b) +
-              ", " +
-              str(c))
-    print("-----DONE------")
+    # x = raw_input("Start")
+    j = 0
+
+    while j < amount:
+
+        while i < line:
+            rnd = random.randint(0, chars.__len__() - 1)
+            string = string + chars[rnd]
+            i = i + 1;
+            pass
+
+        print(string)
+
+        string = ""
+        i = 0
+        j = j + 1
+        pass
+
+    pass
