@@ -1,3 +1,5 @@
+/* this code is very crude. sorry */
+
 let MAX_ITERATIONS = 100;
 let MB_MAX_VIEW = 2.5
 let MB_MIN_VIEW = -2.5
@@ -72,11 +74,11 @@ function keyPressed()
       break;
 
     case ENTER:
-      zoomAdjust(zoomLevel);
+      zoomAdjust(zoomLevel, zoomLevel);
       break;
 
     case SHIFT:
-      zoomAdjust(-1 * zoomLevel);
+      zoomAdjust(-1 * zoomLevel, -1 * zoomLevel);
       break;
 
     default:
@@ -87,12 +89,12 @@ function keyPressed()
 
 
 
-function zoomAdjust(level)
+function zoomAdjust(x, y)
 {
-  ViewXm += level;
-  ViewXp -= level;
-  ViewYm += level;
-  ViewYp -= level;
+  ViewXm += x
+  ViewXp -= x
+  ViewYm += y
+  ViewYp -= y
 
   mandelbrot(ViewXm, ViewXp, ViewYm, ViewYp);
 }
@@ -121,7 +123,6 @@ function zoomIn(zoomRange = ZOOM_RANGE)
 
   ViewXm = zx - zoomRange
   ViewXp = zx + zoomRange
-
   ViewYm = zy - zoomRange
   ViewYp = zy + zoomRange
 
@@ -156,13 +157,6 @@ function mandelbrot(x0 = MB_MIN_VIEW, x1 = MB_MAX_VIEW, y0 = MB_MIN_VIEW, y1 = M
     /* loop over height pixels */
     for (let y = 0; y < height; y++)
     {
-
-      // minSlider = createSlider(-2.5, 0, -2.5, 0.01);
-      // maxSlider = createSlider(0, 2.5, 2.5, 0.01);
-
-      // let a = map(x, 0, width, minSlider.value(), maxSlider.value());
-      // let b = map(y, 0, height, minSlider.value(), maxSlider.value());
-
       let a = map(x, 0, width, x0, x1);
       let b = map(y, 0, height, y0, y1);
 
