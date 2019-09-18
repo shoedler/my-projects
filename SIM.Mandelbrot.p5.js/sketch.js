@@ -1,34 +1,170 @@
-let minval = -0.5;
-let maxval = 0.5;
+let MAX_ITERATIONS = 100;
+let MB_MAX_VIEW = 2.5
+let MB_MIN_VIEW = -2.5
 
-let minSlider;
-let maxSlider;
+let ZOOM_RANGE = 0.3
 
-let frDiv;
+let ViewXm = MB_MIN_VIEW;
+let ViewXp = MB_MAX_VIEW;
+let ViewYm = MB_MIN_VIEW;
+let ViewYp = MB_MAX_VIEW;
+
+
+
 
 function setup()
 {
-  createCanvas(window.innerWidth, window.innerHeight);
+  noLoop();
+  createCanvas(500, 500);
   pixelDensity(1);
 
-  minSlider = createSlider(-2.5, 0, -2.5, 0.01);
-  maxSlider = createSlider(0, 2.5, 2.5, 0.01);
-
-  frDiv = createDiv('');
+  ViewXm = MB_MIN_VIEW;
+  ViewXp = MB_MAX_VIEW;
+  ViewYm = MB_MIN_VIEW;
+  ViewYp = MB_MAX_VIEW;
 }
+
+
+
 
 function draw()
 {
-  let MAX_ITERATIONS = 100;
+  mandelbrot(ViewXm, ViewXp, ViewYm, ViewYp);
+}
 
+
+
+
+function mouseClicked()
+{
+  zoomIn(ZOOM_RANGE);
+  mandelbrot(ViewXm, ViewXp, ViewYm, ViewYp);
+}
+
+
+
+
+function keyPressed()
+{
+  let zoomStep = (abs(ViewXm) + abs(ViewXp)) * 0.05;
+  let zoomLevel = (abs(ViewXm) + abs(ViewXp)) * 0.1;
+
+  switch (keyCode)
+  {
+    case ESCAPE:
+      zoomOut();
+      break;
+
+    case LEFT_ARROW:
+      zoomMove(-1 * zoomStep, 0);
+      break;
+
+    case RIGHT_ARROW:
+      zoomMove(zoomStep, 0);
+      break;
+
+    case UP_ARROW:
+      zoomMove(0, -1 * zoomStep);
+      break;
+
+    case DOWN_ARROW:
+      zoomMove(0, zoomStep);
+      break;
+
+    case ENTER:
+      zoomAdjust(zoomLevel);
+      break;
+
+    case SHIFT:
+      zoomAdjust(-1 * zoomLevel);
+      break;
+
+    default:
+
+  }
+}
+
+
+
+
+function zoomAdjust(level)
+{
+  ViewXm += level;
+  ViewXp -= level;
+  ViewYm += level;
+  ViewYp -= level;
+
+  mandelbrot(ViewXm, ViewXp, ViewYm, ViewYp);
+}
+
+
+
+
+function zoomMove(x, y)
+{
+  ViewXm += x
+  ViewXp += x
+  ViewYm += y
+  ViewYp += y
+
+  mandelbrot(ViewXm, ViewXp, ViewYm, ViewYp);
+}
+
+
+
+
+
+function zoomIn(zoomRange = ZOOM_RANGE)
+{
+  let zx = map(mouseX, 0, width, MB_MIN_VIEW, MB_MAX_VIEW);
+  let zy = map(mouseY, 0, height, MB_MIN_VIEW, MB_MAX_VIEW);
+
+  ViewXm = zx - zoomRange
+  ViewXp = zx + zoomRange
+
+  ViewYm = zy - zoomRange
+  ViewYp = zy + zoomRange
+
+  mandelbrot(ViewXm, ViewXp, ViewYm, ViewYp);
+}
+
+
+
+
+
+function zoomOut()
+{
+  ViewXm = MB_MIN_VIEW;
+  ViewXp = MB_MAX_VIEW;
+  ViewYm = MB_MIN_VIEW;
+  ViewYp = MB_MAX_VIEW;
+
+  mandelbrot(ViewXm, ViewXp, ViewYm, ViewYp);
+}
+
+
+
+
+
+function mandelbrot(x0 = MB_MIN_VIEW, x1 = MB_MAX_VIEW, y0 = MB_MIN_VIEW, y1 = MB_MAX_VIEW)
+{
   loadPixels();
+
+  /* loop over width pixels */
   for (let x = 0; x < width; x++)
   {
+    /* loop over height pixels */
     for (let y = 0; y < height; y++)
     {
 
-      let a = map(x, 0, width, minSlider.value(), maxSlider.value());
-      let b = map(y, 0, height, minSlider.value(), maxSlider.value());
+      // minSlider = createSlider(-2.5, 0, -2.5, 0.01);
+      // maxSlider = createSlider(0, 2.5, 2.5, 0.01);
+
+      // let a = map(x, 0, width, minSlider.value(), maxSlider.value());
+      // let b = map(y, 0, height, minSlider.value(), maxSlider.value());
+
+      let a = map(x, 0, width, x0, x1);
+      let b = map(y, 0, height, y0, y1);
 
       let ca = a;
       let cb = b;
@@ -48,22 +184,38 @@ function draw()
         n++;
       }
 
-      let bright = map(n, 0, MAX_ITERATIONS, 0, 1);
-      bright = map(sqrt(bright), 0, 1, 0, 255);
+      /* map the numbers amount of iterations [n] to a color
+      map(value, lBoundCurrentRange, uBoundCurrentRange, lBoundTargetRange, uBoundTargetRange) */
+      let pixVal = map(n, 0, MAX_ITERATIONS, 0, 1);
+      pixVal = map(sqrt(pixVal), 0, 1, 0, 255);
 
       if (n == MAX_ITERATIONS)
       {
-        bright = 0;
+        pixVal = 0;
+      }
+
+      /* map colors according to [pixVal]. make sure the
+      ranges overlap */
+      /* 0-90 | 70-170 | 150-255 */
+      let red   = map(pixVal,  150, 255, 0, 255);
+      let green = map(pixVal,  70,  170, 0, 255);
+      if (pixVal > 170)
+      {
+        green = map(pixVal, 170, 190, 255, 0)
+      }
+      let blue  = map(pixVal,   0,  90, 0, 255);
+      if (pixVal > 90)
+      {
+        blue = map(pixVal, 90, 110, 255, 0)
       }
 
       let pix = (x + y * width) * 4;
-      pixels[pix + 0] = bright;
-      pixels[pix + 1] = bright;
-      pixels[pix + 2] = bright;
-      pixels[pix + 3] = 255;
+      pixels[pix + 0] = red;   /* red */
+      pixels[pix + 1] = green; /* green */
+      pixels[pix + 2] = blue;  /* blue */
+      pixels[pix + 3] = 255;   /* alpha */
     }
   }
-  updatePixels();
 
-  frDiv.html(floor(frameRate()));
+  updatePixels();
 }
