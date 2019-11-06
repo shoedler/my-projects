@@ -1,7 +1,6 @@
 # This program prints Hello, world!
 import random
 
-
 chars = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"]
 line = 80
 amount = 40
