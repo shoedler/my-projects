@@ -15,6 +15,7 @@ Projects are named with one of the following prefixes and suffixes for improved 
 - SIM.  = Simulations
 - FNC.  = Functions
 - APP.  = Application
+- SCL.  = School related
 
 
 # Additionally
