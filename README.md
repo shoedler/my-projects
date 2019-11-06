@@ -1,19 +1,21 @@
-# Simon's Repo - an Introduction
+# Simon's Repo - Introduction
 This is a place where I collect useful info and upload my
-sketches (js) and my progress.
+sketches, small utilities and work on my progress.
 
 # Structure
-Folders are prefixed with a `+`
+Structural folders are prefixed with a `+`
+Projects are named with one of the following prefixes and suffixes for improved visual grepping.
+> Prefixes are used to divide the project into rough supergroups.
+> Suffixes are used to specify the subprojects main programming language
 
 ## Project prefixes
-- NN. = NeuralNetwork based projects
-- BG. = Background. JS based website backgrounds
-- GAME. = js based Games
+- NN.   = NeuralNetwork
+- BG.   = Backgrounds for Web use
+- GAME. = Self explanatory
+- SIM.  = Simulations
+- FNC.  = Functions
+- APP.  = Application
 
-Source directories for projects are the prefixes without the dot.
-For example source directory for NeuralNetworks is the `NN` directory,
 
-# Prerequisities and Integration
-- Projects should include a README.md file to get into
-  further detail
-- projects are mainly based on the newest p5js libs
+# Additionally
+- Subprojects should include their own README.md file if further information is required
