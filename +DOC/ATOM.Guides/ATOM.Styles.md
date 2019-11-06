@@ -1,4 +1,5 @@
 # Atom - Styles
+[DEPRECATED]
 ### Ergänzungen fürs ```styles.less```
 Dazu ```Ctrl+Shift+P``` > "styles" eintippen > "Application: Open your stylesheet" anklicken / **ENTER**.
 Der gewünschte, folgende Code aus dem Markdownpreview (```Ctrl+Shift+M```) kopieren und dort einfügen.

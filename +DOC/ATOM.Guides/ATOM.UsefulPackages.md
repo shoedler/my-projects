@@ -9,6 +9,7 @@ Tabs to spaces  | Change all tabs to spaces. No! more! Tabs!       | [atom.io](h
 Auto-encoding   | Change encoding depending on the file            | [atom.io](https://atom.io/packages/auto-encoding)
 p5-js Snippets  | Includes p5js snippets when handling `.js` files | [atom.io](https://atom.io/packages/p5js-snippets), [p5js](https://p5js.org/)
 Split Diff      | Diff files in atom using Editors                 | [atom.io](https://atom.io/packages/split-diff)
+Color Picker    | Convert or define color codes                    | [atom.io](https://atom.io/packages/color-picker)
 
 
 ## Source management & workflow
