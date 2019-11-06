@@ -1,17 +1,17 @@
-
-
 let r,g,b;
 let brain;
 let which = "black";
 
-function setup() {
+function setup()
+{
   createCanvas(window.innerWidth, window.innerHeight);
   noLoop();
   // new neural netork instance, 3 Inputs, 3 Hidden Nodes, 2 outputs
   brain = new NeuralNetwork(3, 3, 2);
 
   // train neural nework, i times
-  for (let i = 0; i < 10000; i++) {
+  for (let i = 0; i < 10000; i++)
+  {
     let r = random(255);
     let g = random(255);
     let b = random(255);
@@ -19,11 +19,11 @@ function setup() {
     let inputs = [r / 255, g / 255, b / 255];
     brain.train(inputs, targets);
   }
-
   pickColor();
 }
 
-function draw() {
+function draw()
+{
   background(r, g, b);
 
   strokeWeight(5);
@@ -40,16 +40,20 @@ function draw() {
 
   let which = colorPredictor(r, g, b);
 
-  if (which == "black") {
+  if (which == "black")
+  {
     fill(0);
     ellipse(window.innerWidth / 4 , window.innerHeight / 7 * 4, 60);
-  } else {
+  }
+  else
+  {
     fill(255);
     ellipse(window.innerWidth / 4 * 3, window.innerHeight / 7 * 4, 60)
   }
 }
 
-function colorPredictor(r, g, b) {
+function colorPredictor(r, g, b)
+{
   let inputs = [r / 255, g / 255, b / 255];
   // Feed forward data trough neural network
   let outputs = brain.predict(inputs);
@@ -61,30 +65,39 @@ function colorPredictor(r, g, b) {
   console.log(round(g));
   console.log(round(b));
 
-  if (outputs[0] > outputs[1]) {
+  if (outputs[0] > outputs[1])
+  {
     return "black";
-  } else {
+  }
+  else
+  {
     return "white";
   }
 
 }
 
-function trainColor(r, g, b) {
-  if (r + g + b > 300) {
+function trainColor(r, g, b)
+{
+  if (r + g + b > 300)
+  {
     return [1, 0];
-  } else {
+  }
+  else
+  {
     return [0, 1];
   }
 }
 
-function pickColor() {
+function pickColor()
+{
   r = random(255);
   g = random(255);
   b = random(255);
   redraw();
 }
 
-function mousePressed() {
+function mousePressed()
+{
   // let targets;
   // let inputs = [r / 255, g / 255, b / 255];
   //

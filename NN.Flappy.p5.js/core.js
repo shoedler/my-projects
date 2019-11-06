@@ -24,7 +24,8 @@ let loadedTextDelay = 3000;
 let loadedTextTimer = Infinity;
 
 
-function setup() {
+function setup()
+{
   createCanvas(window.innerWidth, window.innerHeight);
 
   paceSlider = createSlider(0, 50, 1);
@@ -33,15 +34,20 @@ function setup() {
   loadURLInput = createInput("Link to .JSON file. Use http://myjson.com/");
   styleElements();
 
-  for (var i = 0; i < TOTAL; i++) {
+  for (var i = 0; i < TOTAL; i++)
+  {
     birds[i] = new Bird();
   }
 }
 
 
-function draw() {
+function draw()
+{
   // logic stuff
-  for (let n = 0; n < paceSlider.value(); n++) {logic();}
+  for (let n = 0; n < paceSlider.value(); n++)
+  {
+    logic();
+  }
 
   // events
   saveButton.mousePressed(saveBestBird);
@@ -49,57 +55,77 @@ function draw() {
 
   // drawing stuff
   background(51);
-  for (let bird of birds) {
+  for (let bird of birds)
+  {
     bird.show();
   }
-  for (let pipe of pipes) {
+
+  for (let pipe of pipes)
+  {
     pipe.show();
   }
-  if (alltimeBestBirdScore < birds[0].score) {alltimeBestBirdScore = birds[0].score;}
-  if (loadedBirdBrainSuccess == true) {
-    if (millis() > loadedTextTimer + loadedTextDelay) {
+
+  if (alltimeBestBirdScore < birds[0].score)
+  {
+    alltimeBestBirdScore = birds[0].score;
+  }
+
+  if (loadedBirdBrainSuccess == true)
+  {
+    if (millis() > loadedTextTimer + loadedTextDelay)
+    {
       loadedBirdBrainSuccess = false;
       loadedTextTimer = Infinity;
     }
-    if (millis() < loadedTextTimer) {loadedTextTimer = millis();}
+    if (millis() < loadedTextTimer)
+    {
+      loadedTextTimer = millis();
+    }
   }
   stats();
 }
 
-
-function windowResized() {
+function windowResized()
+{
   resizeCanvas(window.innerWidth, window.innerHeight);
 }
 
-
-function logic() {
-  if (counter % 120 == 0) {
+function logic()
+{
+  if (counter % 120 == 0)
+  {
     pipes.push(new Pipe());
   }
   counter++;
 
-  for (let i = pipes.length - 1; i >= 0 ; i--) {
+  for (let i = pipes.length - 1; i >= 0 ; i--)
+  {
     pipes[i].update();
 
-    for (let j = birds.length - 1; j >= 0; j-- ) {
+    for (let j = birds.length - 1; j >= 0; j-- )
+    {
       // when does the bird die?
-      if (pipes[i].hits(birds[j]) || birds[j].life()) {
+      if (pipes[i].hits(birds[j]) || birds[j].life())
+      {
         // save bird when it dies, don't make array of arrays! [0]
         savedBirds.push(birds.splice(j, 1)[0]);
       }
     }
 
-    if (pipes[i].offscreen()) {
+    if (pipes[i].offscreen())
+    {
       pipes.splice(i, 1);
     }
   }
 
-  for (let bird of birds) {
+  for (let bird of birds)
+  {
     bird.think(pipes);
     bird.update();
   }
 
-  if (birds.length === 0) {
+  if (birds.length === 0)
+  {
     counter = 0;
     nextGeneration();
     pipes = [];
@@ -107,27 +133,34 @@ function logic() {
 }
 
 
-function saveBestBird() {
+function saveBestBird()
+{
   let best = 0;
   let bird;
-  for (bird of birds) {
-    if (bird.score > best) {best = bird.score;}
+  for (bird of birds)
+  {
+    if (bird.score > best)
+    {
+      best = bird.score;
+    }
   }
   saveJSON(bird.brain, 'bestBirdBrain.json');
 }
 
-
-function loadBird() {
+function loadBird()
+{
   console.log('Brain loading...');
   loadedBirdBrainJSON = loadJSON('https://api.myjson.com/bins/19nc2k' , brainLoaded());
 }
-function brainLoaded() {
+
+function brainLoaded()
+{
   loadedBirdBrainFlag = true;
   console.log('Brain loaded. Initializing injection...');
 }
 
-
-function stats() {
+function stats()
+{
   fill(31, 31, 31, 100);
   noStroke();
   rect(0, 0, window.innerWidth, posValue * 8);
@@ -155,8 +188,15 @@ function stats() {
   // special
   textAlign(CENTER, CENTER);
   textSize(window.innerWidth / 5);
-  if (paceSlider.value() == 0) {text("PAUSE", window.innerWidth / 2, window.innerHeight / 2);}
-  if (loadedBirdBrainSuccess == true) {text("LOADED", window.innerWidth / 2, window.innerHeight / 2);}
+  if (paceSlider.value() == 0)
+  {
+    text("PAUSE", window.innerWidth / 2, window.innerHeight / 2);
+  }
+
+  if (loadedBirdBrainSuccess == true)
+  {
+    text("LOADED", window.innerWidth / 2, window.innerHeight / 2);
+  }
 
   blendMode(BLEND);
 }

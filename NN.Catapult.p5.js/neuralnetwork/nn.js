@@ -1,7 +1,9 @@
 // Other techniques for learning
 
-class ActivationFunction {
-  constructor(func, dfunc) {
+class ActivationFunction
+{
+  constructor(func, dfunc)
+  {
     this.func = func;
     this.dfunc = dfunc;
   }
@@ -18,10 +20,13 @@ let tanh = new ActivationFunction(
 );
 
 
-class NeuralNetwork {
+class NeuralNetwork
+{
   // TODO: document what a, b, c are
-  constructor(a, b, c) {
-    if (a instanceof NeuralNetwork) {
+  constructor(a, b, c)
+  {
+    if (a instanceof NeuralNetwork)
+    {
       this.input_nodes = a.input_nodes;
       this.hidden_nodes = a.hidden_nodes;
       this.output_nodes = a.output_nodes;
@@ -31,7 +36,9 @@ class NeuralNetwork {
 
       this.bias_h = a.bias_h.copy();
       this.bias_o = a.bias_o.copy();
-    } else {
+    }
+    else
+    {
       this.input_nodes = a;
       this.hidden_nodes = b;
       this.output_nodes = c;
@@ -54,8 +61,8 @@ class NeuralNetwork {
 
   }
 
-  predict(input_array) {
-
+  predict(input_array)
+  {
     // Generating the Hidden Outputs
     let inputs = Matrix.fromArray(input_array);
     let hidden = Matrix.multiply(this.weights_ih, inputs);
@@ -72,15 +79,18 @@ class NeuralNetwork {
     return output.toArray();
   }
 
-  setLearningRate(learning_rate = 0.1) {
+  setLearningRate(learning_rate = 0.1)
+  {
     this.learning_rate = learning_rate;
   }
 
-  setActivationFunction(func = sigmoid) {
+  setActivationFunction(func = sigmoid)
+  {
     this.activation_function = func;
   }
 
-  train(input_array, target_array) {
+  train(input_array, target_array)
+  {
     // Generating the Hidden Outputs
     let inputs = Matrix.fromArray(input_array);
     let hidden = Matrix.multiply(this.weights_ih, inputs);
@@ -138,14 +148,18 @@ class NeuralNetwork {
     // error.print();
   }
 
-  serialize() {
+  serialize()
+  {
     return JSON.stringify(this);
   }
 
-  static deserialize(data) {
-    if (typeof data == 'string') {
+  static deserialize(data)
+  {
+    if (typeof data == 'string')
+    {
       data = JSON.parse(data);
     }
+
     let nn = new NeuralNetwork(data.input_nodes, data.hidden_nodes, data.output_nodes);
     nn.weights_ih = Matrix.deserialize(data.weights_ih);
     nn.weights_ho = Matrix.deserialize(data.weights_ho);
@@ -157,16 +171,22 @@ class NeuralNetwork {
 
 
   // Adding function for neuro-evolution
-  copy() {
+  copy()
+  {
     return new NeuralNetwork(this);
   }
 
-  mutate(rate) {
-    function mutate(val) {
-      if (Math.random() < rate) {
+  mutate(rate)
+  {
+    function mutate(val)
+    {
+      if (Math.random() < rate)
+      {
         // return 2 * Math.random() - 1;
         return val + randomGaussian(0, 0.1);
-      } else {
+      }
+      else
+      {
         return val;
       }
     }
@@ -175,7 +195,4 @@ class NeuralNetwork {
     this.bias_h.map(mutate);
     this.bias_o.map(mutate);
   }
-
-
-
 }

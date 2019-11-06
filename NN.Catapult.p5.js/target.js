@@ -1,5 +1,7 @@
-class Target {
-  constructor() {
+class Target
+{
+  constructor()
+  {
     this.w = wWidth / 40;
     // this.x = random(wWidth / 2, wWidth - this.w);
     this.x = wWidth / 2;
@@ -9,10 +11,10 @@ class Target {
     this.color = color(200, 0, 0, 100);
   }
 
-  show() {
+  show()
+  {
     fill(this.color);
     noStroke();
     rect(this.x, wHeight - groundLevel, this.w, groundLevel);
   }
-
 }

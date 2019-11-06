@@ -1,7 +1,7 @@
 const Rows = 200;
 const Cols = 200;
 
-const wWidth = window.innerHeight  ;
+const wWidth = window.innerHeight;
 let wHeight = wWidth;
 
 let current = [];
@@ -11,17 +11,20 @@ let pixDensity;
 const Dampening = 0.98;
 const Contrast = 0;
 
-function setup() {
+function setup()
+{
   /* set pixel density according to desired window width */
   pixDensity = Rows / wWidth;
   pixelDensity(pixDensity);
 
   /* initialize 2d arrays */
-  for (let x = 0; x < Rows; x++) {
+  for (let x = 0; x < Rows; x++)
+  {
     current[x] = new Array(Cols);
     previous[x] = new Array(Cols);
     /* add value to each pixel */
-    for (let y = 0; y < Cols; y++) {
+    for (let y = 0; y < Cols; y++)
+    {
       current[x][y] = 0;
       previous[x][y] = 0;
     }
@@ -29,25 +32,29 @@ function setup() {
 
   /* give middle pixel an arbitrary value */
   current[ceil(Rows/2)][ceil(Cols/2)] = 5000;
-
   createCanvas(wWidth, wHeight);
 }
 
-function mouseDragged() {
+function mouseDragged()
+{
   current[floor(mouseX * pixDensity)][floor(mouseY * pixDensity)] = 5000;
 }
 
-function draw() {
+function draw()
+{
   background(0);
 
   /* ripple algorhytm" */
   loadPixels();
-  for (let x = 1; x < Rows - 1; x++) {
-    for (let y = 1; y < Cols - 1; y++) {
-
+  for (let x = 1; x < Rows - 1; x++)
+  {
+    for (let y = 1; y < Cols - 1; y++)
+    {
       /* zero the cells if smaller than zero */
-      for (let i = -1; i == 1; i++) {
-        for (let j = -1; j == 1; j++) {
+      for (let i = -1; i == 1; i++)
+      {
+        for (let j = -1; j == 1; j++)
+        {
           if (previous[x+i][y+j] < 0) {previous[x+i][y+j] = 0};
         }
       }

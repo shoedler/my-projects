@@ -1,6 +1,7 @@
-
-class Bird {
-  constructor(brain) {
+class Bird
+{
+  constructor(brain)
+  {
     this.y = window.innerHeight / 2;
     this.x = 60;
     this.r = 32;
@@ -15,36 +16,43 @@ class Bird {
 
     // only make brain if it doesn't have one (1st generation)
     // and there's no loaded brain in "queue" (loadedBirdBrainFlag)
-    if (brain && loadedBirdBrainFlag == false) {
+    if (brain && loadedBirdBrainFlag == false)
+    {
       this.brain = brain.copy();
-    } else if (loadedBirdBrainFlag) {
+    }
+    else if (loadedBirdBrainFlag)
+    {
       let loadedBirdBrain = NeuralNetwork.deserialize(loadedBirdBrainJSON);
       this.brain = loadedBirdBrain.copy();
       console.log('Brain injected!');
       loadedBirdBrainSuccess = true;
       loadedBirdBrainJSON = null;
       loadedBirdBrainFlag = false;
-    } else {
+    }
+    else
+    {
       this.brain = new NeuralNetwork(5, 8, 2);
     }
   }
 
-
-  show() {
+  show()
+  {
     fill(255, 100);
     noStroke();
     ellipse(this.x, this.y, this.r, this.r);
   }
 
 
-  think(pipes) {
-
+  think(pipes)
+  {
     // find the closest pipe
     let closestPipe = null;
     let closestPipeD = Infinity;
-    for (let i = 0; i < pipes.length; i++) {
+    for (let i = 0; i < pipes.length; i++)
+    {
       let d = (pipes[i].x + pipes[i].w) - this.x;
-      if (d < closestPipeD && d > 0) {
+      if (d < closestPipeD && d > 0)
+      {
         closestPipe = pipes[i];
         closestPipeD = d;
       }
@@ -57,33 +65,36 @@ class Bird {
     inputs[3] = closestPipe.x / window.innerWidth;
     inputs[4] = this.v / this.vNormalize;
     let output = this.brain.predict(inputs);
-    if (output[0] > output[1]) {
+
+    if (output[0] > output[1])
+    {
       this.up();
     }
   }
 
-
-  update() {
+  update()
+  {
     this.score++;
 
     this.v += this.g;
     this.y += this.v;
   }
 
-
-  up() {
+  up()
+  {
     this.v -= this.lift;
   }
 
-
-  mutate() {
+  mutate()
+  {
     this.brain.mutate(0.1);
   }
 
-
-  life() {
+  life()
+  {
     // bird dies if it hits the top or the bottom of the screen
-    if (this.y > window.innerHeight || this.y < 0) {
+    if (this.y > window.innerHeight || this.y < 0)
+    {
       return true;
     }
     return false;

@@ -11,9 +11,6 @@ let ViewXp = MB_MAX_VIEW;
 let ViewYm = MB_MIN_VIEW;
 let ViewYp = MB_MAX_VIEW;
 
-
-
-
 function setup()
 {
   noLoop();
@@ -26,25 +23,16 @@ function setup()
   ViewYp = MB_MAX_VIEW;
 }
 
-
-
-
 function draw()
 {
   mandelbrot(ViewXm, ViewXp, ViewYm, ViewYp);
 }
-
-
-
 
 function mouseClicked()
 {
   zoomIn(ZOOM_RANGE);
   mandelbrot(ViewXm, ViewXp, ViewYm, ViewYp);
 }
-
-
-
 
 function keyPressed()
 {
@@ -86,9 +74,6 @@ function keyPressed()
   }
 }
 
-
-
-
 function zoomAdjust(x, y)
 {
   ViewXm += x
@@ -99,9 +84,6 @@ function zoomAdjust(x, y)
   mandelbrot(ViewXm, ViewXp, ViewYm, ViewYp);
 }
 
-
-
-
 function zoomMove(x, y)
 {
   ViewXm += x
@@ -111,10 +93,6 @@ function zoomMove(x, y)
 
   mandelbrot(ViewXm, ViewXp, ViewYm, ViewYp);
 }
-
-
-
-
 
 function zoomIn(zoomRange = ZOOM_RANGE)
 {
@@ -129,10 +107,6 @@ function zoomIn(zoomRange = ZOOM_RANGE)
   mandelbrot(ViewXm, ViewXp, ViewYm, ViewYp);
 }
 
-
-
-
-
 function zoomOut()
 {
   ViewXm = MB_MIN_VIEW;
@@ -142,10 +116,6 @@ function zoomOut()
 
   mandelbrot(ViewXm, ViewXp, ViewYm, ViewYp);
 }
-
-
-
-
 
 function mandelbrot(x0 = MB_MIN_VIEW, x1 = MB_MAX_VIEW, y0 = MB_MIN_VIEW, y1 = MB_MAX_VIEW)
 {
@@ -197,6 +167,7 @@ function mandelbrot(x0 = MB_MIN_VIEW, x1 = MB_MAX_VIEW, y0 = MB_MIN_VIEW, y1 = M
       {
         green = map(pixVal, 170, 190, 255, 0)
       }
+      
       let blue  = map(pixVal,   0,  90, 0, 255);
       if (pixVal > 90)
       {

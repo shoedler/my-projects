@@ -7,8 +7,10 @@ const PADDING = 1.2;
 const MIN_Z = 5;
 const MAX_Z = 20;
 
-class line {
-  constructor(x) {
+class line
+{
+  constructor(x)
+  {
     this.x = x;
     this.z = random(MIN_Z, MAX_Z);
     this.content = [];
@@ -18,29 +20,34 @@ class line {
     this.color = [col_rb, col_g, col_rb];
 
     /* fill content array with random content */
-    for (let i = 0; i < CONTENT_AMOUNT; i++) {
+    for (let i = 0; i < CONTENT_AMOUNT; i++)
+    {
       let j = Math.round(random(0, CONTENT.length));
       this.content.push(CONTENT[j]);
     }
 
     /* add empty strings to array */
-    for (let l = 0; l < BLANKS; l++) {
+    for (let l = 0; l < BLANKS; l++)
+    {
       this.content.push(" ");
     }
 
     /* set random starting point of array */
     let start = ceil(random(0, this.content.length - 1));
-    for (let y = 0; y < start; y++) {
+    for (let y = 0; y < start; y++)
+    {
       this.content.unshift(this.content.pop());
     }
   }
 
-  update() {
+  update()
+  {
     fill(this.color);
     textSize(this.z);
 
     /* display text */
-    for (let i = 0; i < this.content.length; i++) {
+    for (let i = 0; i < this.content.length; i++)
+    {
       text(this.content[i], this.x, (this.z * i * PADDING));
     }
 

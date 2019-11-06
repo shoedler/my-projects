@@ -8,7 +8,8 @@ let dataSetButton;
 
 let d = new Diagram(wWidth / 20, wHeight / 5);
 
-function setup() {
+function setup()
+{
   dataSetInput = createInput("")
   dataSetButton = createButton("Load");
 
@@ -40,7 +41,8 @@ function setup() {
   gui();
 }
 
-function draw() {
+function draw()
+{
   background(51);
   gui();
 
@@ -52,24 +54,31 @@ function draw() {
   d.showLegend();
 }
 
-function windowResized() {
+function windowResized()
+{
   wWidth = window.innerWidth;
   wHeight = window.innerHeight;
   resizeCanvas(wWidth, wHeight);
 }
 
-function loadDataSet() {
+function loadDataSet()
+{
   dataSet = dataSetInput.value();
-  if (dataSet == "" ) {
+
+  if (dataSet == "" )
+  {
     alert("Nichts eingegeben");
-  } else {
+  }
+  else
+  {
     dataSetInput.value = ("");
     dataSetLines = handleDataSet(dataSet);
     console.log(dataSetLines);
   }
 }
 
-function handleDataSet(str) {
+function handleDataSet(str)
+{
   let lines = [];
   let categories = [];
   let dataLine = [];
@@ -79,25 +88,31 @@ function handleDataSet(str) {
   categories.splice(0,1); // remove "Day" label
 
   // get categories (in line 0). start at index 1, since the first row contains only indexes and the "Day" label
-  for (let i = 1; i < categories.length; i++) {
-    if (categories[i] == "") {
+  for (let i = 1; i < categories.length; i++)
+  {
+    if (categories[i] == "")
+    {
       categories.splice(i);
       break;
     }
   }
 
   // create new lines of categories
-  for (let cat of categories) {
+  for (let cat of categories)
+  {
     d.addLine(cat, random(100, 255), random(100, 255), random(100, 255));
   }
 
   // go trough each data line
-  for (let j = 1; j < lines.length; j++) {
+  for (let j = 1; j < lines.length; j++)
+  {
     dataLine = lines[j].split(/\;/g);
 
     // go trough each value in one line, start at index 1, since the first row contains only indexes and the "Day" label
-    for(let ii = 1; ii < dataLine.length; ii++) {
-      if (dataLine[ii] != "") {
+    for(let ii = 1; ii < dataLine.length; ii++)
+    {
+      if (dataLine[ii] != "")
+      {
         d.addLinePoints(categories[ii - 1], j, dataLine[ii]);
       }
     }
@@ -105,7 +120,8 @@ function handleDataSet(str) {
 }
 
 
-function gui() {
+function gui()
+{
   dataSetInput.position(wWidth / 20, wHeight / 20);
   dataSetButton.position(wWidth / 20, (wHeight / 20) * 2);
 

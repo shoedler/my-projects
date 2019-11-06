@@ -1,28 +1,34 @@
 var bird;
 var pipes = [];
 
-function setup() {
+function setup()
+{
   createCanvas(window.innerWidth, window.innerHeight);
   bird = new Bird();
   pipes.push(new Pipe());
 }
 
-function draw() {
+function draw()
+{
   background(51);
 
-  if (bird.life()) {
+  if (bird.life())
+  {
     gameOver();
   }
 
-  for (var i = pipes.length - 1; i > 0 ; i--) {
+  for (var i = pipes.length - 1; i > 0 ; i--)
+  {
     pipes[i].show();
     pipes[i].update();
 
-    if (pipes[i].hits(bird)) {
+    if (pipes[i].hits(bird))
+    {
       gameOver();
     }
 
-    if (pipes[i].offscreen()) {
+    if (pipes[i].offscreen())
+    {
       pipes.splice(i, 1);
     }
   }
@@ -30,7 +36,8 @@ function draw() {
   bird.update();
   bird.show();
 
-  if (frameCount % 80 == 0) {
+  if (frameCount % 80 == 0)
+  {
     pipes.push(new Pipe());
   }
 
@@ -38,13 +45,16 @@ function draw() {
 
 }
 
-function keyPressed() {
-  if (key == ' ') {
+function keyPressed()
+{
+  if (key == ' ')
+  {
     bird.up();
   }
 }
 
-function gameOver() {
+function gameOver()
+{
   noLoop();
   textAlign(CENTER, CENTER);
   fill(255);
@@ -55,7 +65,8 @@ function gameOver() {
   text(frameCount / 10, window.innerWidth / 2, window.innerHeight / 2 + 80);
 }
 
-function stats() {
+function stats()
+{
   textAlign(LEFT, CENTER);
   fill (255);
   textFont("consolas");

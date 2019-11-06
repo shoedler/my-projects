@@ -13,7 +13,8 @@ let particles = [];
 let dead = [];
 
 
-function setup() {
+function setup()
+{
   createCanvas(wWidth, wHeight);
   textFont("consolas");
 
@@ -25,7 +26,8 @@ function setup() {
                       1);
 
   // create enemies
-  for (var i = 0; i < 30; i++) {
+  for (var i = 0; i < 30; i++)
+  {
     flock.push(new Entity(random(wWidth),     // initial x position
                           random(wHeight),    // initial y position
                           random(15, 40),     // radius
@@ -35,8 +37,10 @@ function setup() {
                           random(190, 230),   // green component
                           random(190, 230))); // blue  component
   }
+
   // create particles
-  for (var j = 0; j < 150; j++) {
+  for (var j = 0; j < 150; j++)
+  {
     particles.push(new Entity(random(wWidth),     // initial x position
                               random(wHeight),    // initial y position
                               random(1, 3),       // radius
@@ -53,12 +57,14 @@ function setup() {
 }
 
 
-function draw() {
+function draw()
+{
   background(bgColor);
   showScore(dead.length);
 
   // update particles
-  for (let j = 0; j < particles.length; j++) {
+  for (let j = 0; j < particles.length; j++)
+  {
     particles[j].update();
     particles[j].show();
   }
@@ -66,20 +72,31 @@ function draw() {
   // update player
   player.update();
   player.show();
-  for (let entity of flock) {
-    if (player.life(entity)) {gameOver()}
+  for (let entity of flock)
+  {
+    if (player.life(entity))
+    {
+      gameOver()
+    }
   }
-  if (player.life(hole)) {gameOver()}
+  if (player.life(hole))
+  {
+    gameOver()
+  }
 
   // show blackhole
   hole.show();
 
   // update flock
-  for (let i = 0; i < flock.length; i++) {
+  for (let i = 0; i < flock.length; i++)
+  {
     flock[i].update();
     flock[i].show();
     // check collision with blackhole
-    if (flock[i].life(hole)) {dead.push(flock.splice(i, 1)[0]);}
+    if (flock[i].life(hole))
+    {
+      dead.push(flock.splice(i, 1)[0]);
+    }
   }
 
 }

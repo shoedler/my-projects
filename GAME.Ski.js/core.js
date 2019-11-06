@@ -1,8 +1,10 @@
 
-function setup() {
+function setup()
+{
   createCanvas(window.innerWidth, window.innerHeight);
 }
 
-function draw() {
+function draw()
+{
   background(51);
 }

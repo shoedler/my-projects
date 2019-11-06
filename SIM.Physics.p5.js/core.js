@@ -4,7 +4,8 @@ let wHeight = window.innerHeight;
 
 let myBodies = [];
 
-function setup() {
+function setup()
+{
   createCanvas(wWidth, wHeight);
 
   // add top & bottom borders
@@ -17,18 +18,18 @@ function setup() {
 
   addBody(myBodies, 0, 0, wWidth / 2, wHeight / 2, 30, 20, 1, color(255,0,0), 0.5, "dynamic");
   addBody(myBodies, 0, 0, wWidth / 3, wHeight / 3, 30, 20, 1, color(0,255,0), 0.6, "dynamic");
-
 }
 
 
-function draw() {
+function draw()
+{
   background(51);
-
   updateBodies(myBodies);
 }
 
 
-function windowResized() {
+function windowResized()
+{
   wWidth = window.innerWidth;
   wHeight = window.innerHeight;
   resizeCanvas(wWidth, wHeight);

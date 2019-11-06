@@ -20,77 +20,98 @@ let paceSlider;
 let posValue = 12;
 let fontColor = 255;
 
-function setup() {
+function setup()
+{
   createCanvas(wWidth, wHeight);
   paceSlider = createSlider(0, 200, 1);
 
   // initial population
-  for (var i = 0; i < TOTAL; i++) {projectiles[i] = new Projectile();}
+  for (var i = 0; i < TOTAL; i++)
+  {
+    projectiles[i] = new Projectile();
+  }
 
   // make initial target, let NN think of the target
   mainTarget = new Target();
   mainTarget.show();
-  for (let projectile of projectiles) {projectile.think(mainTarget);}
+  for (let projectile of projectiles)
+  {
+    projectile.think(mainTarget);
+  }
 }
 
-function draw() {
+function draw()
+{
   // drawing stuff
   background(51);
   drawGround();
   mainTarget.show();
-  for (let projectile of projectiles) {
+  for (let projectile of projectiles)
+  {
       projectile.show();
       projectile.updateTrail();
   }
 
-  for (let projectile of savedProjectiles) {
+  for (let projectile of savedProjectiles)
+  {
       projectile.color = color(255, 50, 50, 50);
       projectile.show();
   }
   gui();
 
   // logic stuff
-  for (let n = 0; n < paceSlider.value(); n++) {logic();}
+  for (let n = 0; n < paceSlider.value(); n++)
+  {
+    logic();
+  }
 }
 
 
-function logic() {
+function logic()
+{
   checkVelocity = 0;
-  for (let projectile of projectiles) {
+  for (let projectile of projectiles)
+  {
     checkVelocity += projectile.vx;
     checkVelocity += projectile.vy;
     projectile.update(mainTarget);
   }
 
-  for (let i = projectiles.length - 1; i >= 0; i-- ) {
+  for (let i = projectiles.length - 1; i >= 0; i-- )
+  {
     // determine if the projectile is "dead". Then
     // remove from main arr, and append to savedArr
-    if (projectiles[i].life()) {
+    if (projectiles[i].life())
+    {
       savedProjectiles.push(projectiles.splice(i, 1)[0]);
     }
   }
 
-  if (checkVelocity == 0) {
+  if (checkVelocity == 0)
+  {
     nextGeneration();
   }
 }
 
 
-function windowResized() {
+function windowResized()
+{
   wWidth = window.innerWidth;
   wHeight = window.innerHeight;
   resizeCanvas(wWidth, wHeight);
 }
 
 
-function drawGround() {
+function drawGround()
+{
   fill(75, 135, 85);
   noStroke();
   rect(0, wHeight - groundLevel, wWidth, groundLevel);
 }
 
 
-function gui() {
+function gui()
+{
   fill(31, 31, 31, 100);
   noStroke();
   rect(0, 0, window.innerWidth, posValue * 8);
@@ -115,7 +136,10 @@ function gui() {
   // special
   textAlign(CENTER, CENTER);
   textSize(window.innerWidth / 5);
-  if (paceSlider.value() == 0) {text("PAUSE", window.innerWidth / 2, window.innerHeight / 2);}
+  if (paceSlider.value() == 0)
+  {
+    text("PAUSE", window.innerWidth / 2, window.innerHeight / 2);
+  }
 
   blendMode(BLEND);
 }
