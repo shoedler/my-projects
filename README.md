@@ -1,6 +1,5 @@
 # Simon's Repo - Introduction
-This is a place where I collect useful info and upload my
-sketches, small utilities and my progress.
+This is a place where I collect useful information and manage my smaller project, utilities and my progress.
 
 # Structure
 Structural folders are prefixed with a `+`.
