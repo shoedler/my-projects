@@ -17,7 +17,7 @@ Add `csc.exe` to your PATH system variable
 2. Press the Windows key > "env" > Enter > Click "Environment Variables" Button
 3. Under the Systemvariables double click "Path" > Enter
 4. Paste your path into the next empty row > Ok > Ok > Close
-5. Test by opening `cmd` and entering `csc.exe`
+5. Test by opening `cmd` and entering `csc`
 
 Configuring the `process-palette` package
 
@@ -45,9 +45,9 @@ They need to be added in your `commands : [` array (make sure you check the comm
 {
   "namespace": "C#",
   "action": "Compile File",
-  "command": "csc.exe {fileNameExt}",
+  "command": "csc {fileNameExt}",
   "arguments": [],
-  "cwd": "{fileProjectPath}",
+  "cwd": "{fileDirAbsPath}",
   "inputDialogs": [],
   "env": {},
   "keystroke": "f5",
@@ -86,9 +86,9 @@ They need to be added in your `commands : [` array (make sure you check the comm
 {
   "namespace": "C#",
   "action": "Compile All",
-  "command": "csc.exe *.cs",
+  "command": "csc *.cs",
   "arguments": [],
-  "cwd": "{fileProjectPath}",
+  "cwd": "{fileDirAbsPath}",
   "inputDialogs": [],
   "env": {},
   "keystroke": "f10",
@@ -127,9 +127,9 @@ They need to be added in your `commands : [` array (make sure you check the comm
 {
   "namespace": "C#",
   "action": "Build as Executable",
-  "command": "csc.exe -out:build/{fileName}.exe {fileNameExt}",
+  "command": "csc -out:build/{fileName}.exe {fileNameExt}",
   "arguments": [],
-  "cwd": "{fileProjectPath}",
+  "cwd": "{fileDirAbsPath}",
   "inputDialogs": [],
   "env": {},
   "keystroke": "f8",
@@ -168,9 +168,9 @@ They need to be added in your `commands : [` array (make sure you check the comm
 {
   "namespace": "C#",
   "action": "Build as Library (DLL)",
-  "command": "csc.exe -target:library -out:lib/{fileName}.dll {fileNameExt}",
+  "command": "csc -target:library -out:lib/{fileName}.dll {fileNameExt}",
   "arguments": [],
-  "cwd": "{fileProjectPath}",
+  "cwd": "{fileDirAbsPath}",
   "inputDialogs": [],
   "env": {},
   "keystroke": "f9",
