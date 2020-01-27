@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
+using System.Diagnostics;
 
 namespace SCL.Serialization.Example
 {
@@ -14,8 +15,10 @@ namespace SCL.Serialization.Example
             Random rndMy = new Random();
             string tmp_sName;
             double tmp_dPrice;
+            Stopwatch swTime = new Stopwatch();
 
-            /* Generate 100 random <Product> Objects */
+
+            /* Generate 1000 random <Product> Objects */
             for (int n = 0; n < 100; n++)
             {
                 tmp_sName = "Product #" + n.ToString();
@@ -25,12 +28,29 @@ namespace SCL.Serialization.Example
                 lProducts.Add(pTemp);
             }
 
+            /* Start Stopwatch */
+            swTime.Start();
+
             /* Write List to Binary Stream */
             WriteBinaryStream(lProducts);
 
             /* Get List from Binary Stream */
             lProducts = ReadBinaryStream();
 
+            /* Stop Stopwatch */
+            swTime.Stop();
+
+            /* Results: (HP Spectre x360 13", i7-1065G7 w/ 16GB RAM
+             * Objs                 |      Time [ms]        |   Filesize [kb]
+             * ---------------------|-----------------------|--------------------
+             * 100                  |  4                    |   4
+             * 1'000                |  8                    |   40
+             * 10'000               |  88                   |   400
+             * 100'000              |  682                  |   4'096
+             * 1'000'000            |  65'205               |   41'885
+            */
+
+            Console.WriteLine("Elapsed Time: " + swTime.ElapsedMilliseconds + "ms");
             Console.Read();
         }
 
