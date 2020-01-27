@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // Allgemeine Informationen über eine Assembly werden über die folgenden
 // Attribute gesteuert. Ändern Sie diese Attributwerte, um die Informationen zu ändern,
 // die einer Assembly zugeordnet sind.
-[assembly: AssemblyTitle("SCL.OOP.Diary")]
+[assembly: AssemblyTitle("SCL.Serialization.Example")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("HP Inc.")]
-[assembly: AssemblyProduct("SCL.OOP.Diary")]
+[assembly: AssemblyProduct("SCL.Serialization.Example")]
 [assembly: AssemblyCopyright("Copyright © HP Inc. 2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // Die folgende GUID bestimmt die ID der Typbibliothek, wenn dieses Projekt für COM verfügbar gemacht wird
-[assembly: Guid("804baa6a-dd08-4daf-aaf5-6faab3ca57ca")]
+[assembly: Guid("9432deb7-1130-4133-b320-3e1105781506")]
 
 // Versionsinformationen für eine Assembly bestehen aus den folgenden vier Werten:
 //
