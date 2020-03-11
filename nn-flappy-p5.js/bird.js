@@ -59,11 +59,11 @@ class Bird
     }
 
     let inputs = [];
-    inputs[0] = this.y / window.innerHeight;
-    inputs[1] = closestPipe.top / window.innerHeight;
-    inputs[2] = closestPipe.bottom / window.innerHeight;
-    inputs[3] = closestPipe.x / window.innerWidth;
-    inputs[4] = this.v / this.vNormalize;
+    inputs[0] = this.y / window.innerHeight;                // Bird's Y Position
+    inputs[1] = closestPipe.top / window.innerHeight;       // Closest Pipe Top Y Position
+    inputs[2] = closestPipe.bottom / window.innerHeight;    // Closest Pipe Bottom Y Position
+    inputs[3] = closestPipe.x / window.innerWidth;          // Closest Pipe X Position
+    inputs[4] = this.v / this.vNormalize;                   // Bird's Velocity
     let output = this.brain.predict(inputs);
 
     if (output[0] > output[1])

@@ -11,7 +11,8 @@ class Target
     this.color = color(200, 0, 0, 100);
   }
 
-  show()
+
+  draw = () =>
   {
     fill(this.color);
     noStroke();

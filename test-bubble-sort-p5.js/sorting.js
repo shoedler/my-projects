@@ -3,7 +3,7 @@ let minheight = 0;
 
 let data = [];
 
-let sortStepAmount = 10;
+let sortStepAmount = 1000;
 
 let bi = 0;
 let bj = 0;

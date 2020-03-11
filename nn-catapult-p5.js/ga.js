@@ -1,72 +1,128 @@
-
-function nextGeneration()
+class Generation
 {
-  calculateFitness();
-  calculateBest(); // only for visual appeal
-
-  generation++;
-
-  for (var i = 0; i < TOTAL; i++)
+  constructor(population = []) 
   {
-    projectiles[i] = pickOneAndMutate();
+    this.population = population;
+    this.dead = [];
+
+    // Increment Generation Counter
+    generation++;
   }
-  savedProjectiles = [];
 
-  // make a new target, let NN think of the target
-  mainTarget = new Target();
-  mainTarget.show();
-  for (let projectile of projectiles)
+
+  populateNew = (amount) =>
   {
-    projectile.think(mainTarget);
-  }
-}
-
-
-function pickOneAndMutate()
-{
-  let index = 0;
-  let r = random(1);
-
-  // pick from pop algorhytm
-  while (r > 0)
-  {
-    r = r - savedProjectiles[index].fitness;
-    index++;
-  }
-  index--;
-
-  let pickedProjectile = savedProjectiles[index];
-
-  let child = new Projectile(pickedProjectile.brain);
-  // do crossover here
-  child.mutate();
-  return child;
-}
-
-
-function calculateFitness()
-{
-  let sum = 0;
-  for (let projectile of savedProjectiles)
-  {
-    sum += projectile.score;
-  }
-  // normalize fitness between 1 and 0
-  for (let projectile of savedProjectiles)
-  {
-    projectile.fitness = projectile.score / sum;
-  }
-}
-
-
-function calculateBest()
-{
-  bestProjectileScore = 0;
-  for (let i = savedProjectiles.length - 1; i >= 0; i--)
-  {
-    if (savedProjectiles[i].score > bestProjectileScore)
+    for (let i = 0; i < amount; i++)
     {
-      bestProjectileScore = savedProjectiles[i].score;
+      this.population.push(new Projectile());
     }
+  }
+
+  
+  calculateFitness = () => 
+  {
+    let sum = 0;
+
+    this.dead.forEach(p => sum += p.score);
+    this.dead.forEach(p => p.fitness = p.score / sum);
+
+    // Normalize fitness between 1 and 0
+    this.dead.forEach(p => p.fitness = p.score / sum);
+  }
+
+
+  draw = () =>
+  {
+    // Draw Projectiles and their Trail
+    this.population.forEach(p => 
+    {
+      p.draw();
+      p.drawTrail();
+    });
+
+    // Draw Saved (Dead) Projectiles
+    this.dead.forEach( p =>
+    {
+      p.color = color(255, 50, 50, 50);
+      p.draw();
+    });
+  }
+
+
+  mutate = () =>
+  {
+    let index = 0;
+    let r = random(1);
+
+    // Pick from pop algorithm
+    while (r > 0) 
+    {
+      r = r - this.dead[index].fitness;
+      index++;
+    }
+    index--;    
+
+    let child = new Projectile(this.dead[index].brain);
+
+    // Do crossover here
+    child.mutate();
+    
+    return child;
+  }
+
+
+  start = (target) =>
+  {
+    this.population.forEach(p =>
+    {
+      let launchVelocities = p.think(target);
+      p.launch(launchVelocities);
+    })
+  }
+
+  
+  isFinished = () =>
+  {
+    return new Promise((resolve, reject) =>
+    {
+      if (this.population.length == 0)
+      {
+        this.calculateFitness();
+        
+        let newPopulation = [];
+
+        for (let i = 0; i < TOTAL; i++) 
+        {
+          newPopulation[i] = this.mutate();
+        }
+        
+        resolve(newPopulation);
+      }
+      else
+      {
+        resolve(false);
+      }
+    })
+  }
+
+
+  run = (target) =>
+  {
+    // Update Physics  & Score of each Projectile
+    this.population.forEach(p => p.update(target));
+
+    // Move dead Projectiles to the saved Array
+    for (let i = this.population.length - 1; i >= 0; i-- )
+    {
+      if (this.population[i].life()) this.dead.push(this.population.splice(i, 1)[0]);
+    }
+  }
+
+
+  getBest = () =>
+  {
+    // Get Best Score of current Generation 
+    let best = this.dead.reduce((p, c) => { return (p.score > c.score) ? p : c });
+    return best.score.toFixed(3);
   }
 }
