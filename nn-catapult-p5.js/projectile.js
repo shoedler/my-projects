@@ -6,7 +6,7 @@ class Projectile
   constructor(brain)
   {
     // Visual properties
-    this.color = color(255, 255, 255, 150);
+    this.color = color(255, 255, 255, 200);
     this.r = 7;
 
     // Physical properties
@@ -16,6 +16,7 @@ class Projectile
     this.velocityY = 0;
     this.x = wWidth / 30;
     this.y = (wHeight - groundLevel) - this.r / 2;
+    this.id;
 
     this.trail = [];
     this.trailLength = 10;
@@ -67,16 +68,32 @@ class Projectile
 
   draw = () =>
   {
+    let yOffset = wHeight / 2;
+    let xOffset = (this.id + 1) * 100;
+    let textPoint = 10;
+
+    // Draw Fitness & Score 
+    textAlign(LEFT, BOTTOM);
+    fill(this.color);
+    noStroke();
+    textSize(textPoint);
+
+    text(`id:     ${this.id}\n` + 
+        `fitness: ${nfc(this.fitness, 3)}\n` + 
+        `score:   ${nfc(this.score, 3)}` ,
+         xOffset, yOffset);
+
+    // Draw Line
+    stroke(this.color);
+    strokeWeight(1)
+    drawingContext.setLineDash([5, 15]);
+    line(this.x, this.y, xOffset, yOffset);
+    drawingContext.setLineDash([]);
+
     // Draw Projectile
     fill(this.color);
     noStroke();
     ellipse(this.x, this.y, this.r, this.r);
-
-    // Draw Score
-    textAlign(CENTER, TOP);
-    fill(255);
-    textSize(10);
-    text(nfc(this.score,3), this.x, this.y - 2* this.r);
   }
 
 
@@ -99,7 +116,7 @@ class Projectile
       this.y = (wHeight - groundLevel) - this.r / 2;
 
       isOnGround = true;
-      
+
       // Zero Velocity if it's smaller than gravity
       if (abs(this.velocityY) < gravity)
       {
@@ -148,7 +165,12 @@ class Projectile
 
   life = () =>
   {
-    return (this.velocityX == 0 && this.velocityY == 0) ? true : false;
+    if (this.velocityX == 0 && this.velocityY == 0) 
+    {
+      this.color = color(255, 50, 50, 100);
+      return true;
+    }
+    return false;
   }
 }
 

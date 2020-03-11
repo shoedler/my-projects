@@ -5,9 +5,9 @@ const wHeight = window.innerHeight;
 // Environment Constants
 const gravity = 0.1;
 const bounciness = 0.2;
-const airResistance = 0.01
+const airResistance = 0.01;
 const groundFriction = 0.05;
-const groundLevel = wHeight / 30
+const groundLevel = wHeight / 30;
 
 // Genetic Algorithm Properties
 let TOTAL = 5;
@@ -57,7 +57,7 @@ function draw()
 
 let evolve = async() =>
 {
-  let newPopulation = await currentGeneration.isFinished()
+  let newPopulation = await currentGeneration.isFinished();
 
   if (!newPopulation)
   {
@@ -106,7 +106,7 @@ let gui = () =>
   fill (fontColor);
   textFont("consolas");
   textSize(posValue);
-  
+
   text(`Active Projectiles: ${currentGeneration.population.length}`,  window.innerWidth / 100, 1 * posValue);
   text(`Last Best Score:    ${bestProjectileScore}`, window.innerWidth / 100, 2 * posValue);
   text(`Alltime Best Score: ${bestScoreOfAllTime}`,  window.innerWidth / 100, 3 * posValue);
@@ -123,4 +123,19 @@ let gui = () =>
   if (paceSlider.value() == 0) text("PAUSE", window.innerWidth / 2, window.innerHeight / 2);
 
   blendMode(BLEND);
+}
+
+
+let plot = (arr) =>
+{
+  let ret = "[";
+  arr.forEach(n => 
+  {
+    ret += n.substring(1, 5);
+    ret += `, `;
+  });
+  ret = ret.substring(0, ret.length - 3);
+  ret += "]";
+
+  return ret;
 }

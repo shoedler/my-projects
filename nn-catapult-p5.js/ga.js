@@ -14,7 +14,8 @@ class Generation
   {
     for (let i = 0; i < amount; i++)
     {
-      this.population.push(new Projectile());
+      this.population[i] = new Projectile();
+      this.population[i].id = i;
     }
   }
 
@@ -33,17 +34,23 @@ class Generation
 
   draw = () =>
   {
+    // Get sum of scores
+    let sum = 0;
+    [...this.population, ...this.dead].forEach((p) => sum += p.score);
+
     // Draw Projectiles and their Trail
-    this.population.forEach(p => 
+    this.population.forEach((p) => 
     {
-      p.draw();
       p.drawTrail();
+      p.draw();
+
+      // Calculate fitness
+      p.fitness = p.score / sum;
     });
 
     // Draw Saved (Dead) Projectiles
     this.dead.forEach( p =>
     {
-      p.color = color(255, 50, 50, 50);
       p.draw();
     });
   }
@@ -94,6 +101,7 @@ class Generation
         for (let i = 0; i < TOTAL; i++) 
         {
           newPopulation[i] = this.mutate();
+          newPopulation[i].id = i;
         }
         
         resolve(newPopulation);
