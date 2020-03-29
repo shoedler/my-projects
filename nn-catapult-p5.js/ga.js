@@ -82,8 +82,8 @@ class Generation
   {
     this.population.forEach(p =>
     {
-      let launchVelocities = p.think(target);
-      p.launch(launchVelocities);
+      p.think(target);
+      p.launch();
     })
   }
 

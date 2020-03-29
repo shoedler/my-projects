@@ -1,4 +1,4 @@
-let vxMax = 8;
+let vxMax = 15;
 let vyMax = 15;
 
 class Projectile
@@ -10,8 +10,6 @@ class Projectile
     this.r = 7;
 
     // Physical properties
-    this.launchVelocityX = 0;
-    this.launchVelocityY = 0;
     this.velocityX = 0;
     this.velocityY = 0;
     this.x = wWidth / 30;
@@ -24,6 +22,8 @@ class Projectile
     // Genetic properties
     this.score = 0;
     this.fitness = 0;
+    this.guessedVelocityX = 0;
+    this.guessedVelocityY = 0;
     if (brain)
     {
       this.brain = brain.copy();
@@ -46,17 +46,16 @@ class Projectile
 
     let output = this.brain.predict(inputs);
 
-    return { 
-              velocityX: vxMax * output[0], 
-              velocityY: vyMax * output[1]
-            }
+    this.guessedVelocityX = vxMax * output[0], 
+    this.guessedVelocityY = vyMax * output[1]
+
   }
 
 
-  launch = (velocities) =>
+  launch = () =>
   {
-    this.velocityX = velocities.velocityX;
-    this.velocityY = velocities.velocityY;
+    this.velocityX = this.guessedVelocityX;
+    this.velocityY = this.guessedVelocityY;
   }
 
 
@@ -78,15 +77,16 @@ class Projectile
     noStroke();
     textSize(textPoint);
 
-    text(`id:     ${this.id}\n` + 
-        `fitness: ${nfc(this.fitness, 3)}\n` + 
-        `score:   ${nfc(this.score, 3)}` ,
+    text(`gvx:     ${nfc(this.guessedVelocityX, 3)}\n` + 
+         `gvy:     ${nfc(this.guessedVelocityY, 3)}\n` + 
+         `fitness: ${nfc(this.fitness, 3)}\n` + 
+         `score:   ${nfc(this.score, 3)}` ,
          xOffset, yOffset);
 
     // Draw Line
-    stroke(this.color);
+    stroke(255, 255, 255, 50);
     strokeWeight(1)
-    drawingContext.setLineDash([5, 15]);
+    drawingContext.setLineDash([2, 4]);
     line(this.x, this.y, xOffset, yOffset);
     drawingContext.setLineDash([]);
 
@@ -105,7 +105,6 @@ class Projectile
 
     
     // Physics, Y Axis
-    
     let isOnGround = false;
     this.velocityY -= gravity;
     
@@ -118,25 +117,18 @@ class Projectile
       isOnGround = true;
 
       // Zero Velocity if it's smaller than gravity
-      if (abs(this.velocityY) < gravity)
-      {
-        this.velocityY = 0;
-      }
+      this.velocityY = (abs(this.velocityY) < gravity) ? 0 : this.velocityY;
     }
 
     this.y -= this.velocityY;
 
     // Physics, X Axis
-  
     // Subtract Air Resistance
-    if (this.velocityX > 0 && this.velocityX - airResistance > 0) this.velocityX -= airResistance * this.velocityX;
-    if (this.velocityX < 0 && this.velocityX + airResistance < 0) this.velocityX += airResistance * -this.velocityX;
+    this.velocityX -= (this.velocityX > 0 && this.velocityX - airResistance > 0) ? airResistance * this.velocityX : 0;
+    this.velocityX += (this.velocityX < 0 && this.velocityX + airResistance < 0) ? airResistance * -this.velocityX : 0;
     
     // Zero Velocity if in certain range
-    if (this.velocityX <= airResistance + groundFriction && this.velocityX >= -airResistance - groundFriction)
-    {
-      this.velocityX = 0;
-    }
+    this.velocityX = (this.velocityX <= airResistance + groundFriction && this.velocityX >= -airResistance - groundFriction) ? 0 : this.velocityX;
 
     // Subtract Ground Friction
     if (isOnGround)
@@ -146,10 +138,7 @@ class Projectile
     }
 
     // Right Wall bounce
-    if (this.x + (this.r / 2) >= wWidth)
-    {
-      this.velocityX = -this.velocityX;
-    }
+    this.velocityX *= (this.x + (this.r / 2) >= wWidth) ? -1 : 1;
 
     this.x += this.velocityX;
   }
