@@ -14,7 +14,9 @@ function draw()
 {
     background(53);
     MC.render();
-    MC.move();
+    MC.run();
+    console.log(MC.state);
+    
 }
 
 
@@ -22,18 +24,23 @@ class Machine
 {
     constructor()
     {
-        this.slotSize = 100;
+        this.slotSize = 95;
         this.slotPadding = 5;
         this.slots = 5*5;
 
-        this.X = 0;     /* Current X Pos */
-        this.Y = 0;     /* Current Y Pos */
-        this.XT = 0;    /* Target X Pos  */
-        this.YT = 0;    /* Target Y Pos  */
-        this.XR = 0;    /* Rest X Travel */
-        this.YR = 0;    /* Rest Y Travel */
+        this.commandBuffer = [];
 
-        this.feedRate = 0; /* mm / minute */
+        this.state = false;
+        
+        this.X = 0;  /* Current X Pos */
+        this.Y = 0;  /* Current Y Pos */
+        this.XT = 0; /* Target X Pos  */
+        this.YT = 0; /* Target Y Pos  */
+        this.XR = 0; /* Rest X Travel */
+        this.YR = 0; /* Rest Y Travel */
+
+        this.XF = 0; /* X Feedrate in mm / minute */
+        this.YF = 0; /* Y Feedrate in mm / minute */
     }
 
     command = (command) =>
@@ -41,8 +48,7 @@ class Machine
         const pattern = /G53\s*(X|Y)\s*(-?\d*\.\d*|-?\d*)\s*F\s*(\d*\.\d*|\d*)/;
 
         let match = pattern.exec(command);
-        console.log(match);
-        
+
         if (!match) 
         {
             console.error("Command is illegal");
@@ -50,38 +56,48 @@ class Machine
         }
         else
         {
-            this[`${match[1]}T`] = parseFloat(match[2], 100);
-            this.feedRate = parseFloat(match[3], 100);
+            let c = {};
+            c[`${match[1]}T`] = parseFloat(match[2], 100);
+            c[`${match[1]}F`] = parseFloat(match[3], 100)
+            this.commandBuffer.push(c);
+            
+            // this[`${match[1]}T`] = parseFloat(match[2], 100);
+            // this[`${match[1]}F`] = parseFloat(match[3], 100);
         }
     }
 
-    move = () =>
+    run = () =>
     {
+        this.state = this.XR != 0 || this.YR != 0;
+
+        if (!this.state)
+        {
+            if (this.commandBuffer.length > 0)
+            {
+                let c = this.commandBuffer[0];
+                
+                this[Object.keys(c)[0]] = c[Object.keys(c)[0]];
+                this[Object.keys(c)[1]] = c[Object.keys(c)[1]];
+
+                this.commandBuffer.splice(0, 1);
+            }
+        }
+
         let sec = frameRate() / 60; /* Attempt to sync the movement to the framerate */
-        let stepSize = this.feedRate / (sec * 60);
+
+        let xStep = this.XF / (sec * 60);
+        let yStep = this.YF / (sec * 60);
 
         this.XR = this.XT - this.X;
         this.YR = this.YT - this.Y;
 
-        let XDir = this.XR > 0 ? 1 : -1;
-        if (abs(this.XR) > abs(stepSize))
-        {
-            this.X += stepSize * XDir;
-        }
-        else 
-        {
-            this.X += this.XR /* Effectively moving it to this.XT... */
-        }
+        let xDir = this.XR > 0 ? 1 : -1;
+        if (abs(this.XR) > abs(xStep)) { this.X += xStep * xDir; }
+        else                           { this.X += this.XR; }
 
-        let YDir = this.YR > 0 ? 1 : -1;
-        if (abs(this.YR) > abs(stepSize))
-        {
-            this.Y += stepSize * YDir
-        }
-        else
-        {
-            this.Y += this.YR;
-        }
+        let yDir = this.YR > 0 ? 1 : -1;
+        if (abs(this.YR) > abs(yStep)) { this.Y += yStep * yDir; }
+        else                           { this.Y += this.YR; }
     }
 
     render = () =>
@@ -104,15 +120,19 @@ class Machine
 
     renderDRO = () =>
     {
-        const size = 20;
+        const size = 18;
+        let state = this.state ? 'processing...' : 'idle';
+
         fill(255);
         noStroke();
         textSize(size);
-        text(`X:  ${this.X.toFixed(3).pad('0', 3)}`, -this.slotSize * 1.5, -this.slotSize * 1.5);
-        text(`Y:  ${this.Y.toFixed(3)}`, -this.slotSize * 1.5, -this.slotSize * 1.5 + size);
+        text(`X:  ${toDRO(this.X, 3, 3)}`, -this.slotSize * 1.5, -this.slotSize * 1.5);
+        text(`Y:  ${toDRO(this.Y, 3, 3)}`, -this.slotSize * 1.5, -this.slotSize * 1.5 + size);
         fill(150);
-        text(`XR: ${this.XR.toFixed(3)}`, -this.slotSize * 1.5, -this.slotSize * 1.5 + size * 2);
-        text(`YR: ${this.YR.toFixed(3)}`, -this.slotSize * 1.5, -this.slotSize * 1.5 + size * 3);
+        text(`XR: ${toDRO(this.XR, 3, 3)}`, -this.slotSize * 1.5, -this.slotSize * 1.5 + size * 2);
+        text(`YR: ${toDRO(this.YR, 3, 3)}`, -this.slotSize * 1.5, -this.slotSize * 1.5 + size * 3);
+        
+        text(state, -this.slotSize * 1.5, -this.slotSize * 1.5 + size * 5);
     }
 
     renderTool = () =>
@@ -170,14 +190,19 @@ class Machine
     }
 }
 
-COMBAK
-String.prototype.pad = function (padString, length) 
-{
-    let str = this;
-    let dec = str.indexOf(".");
 
-    let len = dec == -1 ? str.length : dec
-    while (len < length)
-        str = padString + str;
-    return str;
+let toDRO = (number, leadingZeros, decimalPlaces) =>
+{
+    const delimiter = ".";
+    const zero = "0";
+
+    let str = number.toFixed(decimalPlaces);
+
+    let pre = str.indexOf(delimiter);
+
+    if (pre >= leadingZeros) return str;
+
+    return zero.repeat(leadingZeros - pre) + str;
 }
+
+
