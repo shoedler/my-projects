@@ -15,7 +15,6 @@ function draw()
     background(53);
     MC.render();
     MC.run();
-    console.log(MC.state);
     
 }
 
