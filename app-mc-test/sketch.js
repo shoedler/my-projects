@@ -1,6 +1,6 @@
 let MC;
 
-const PRG = ["G53X100F60", "G53Y100F60", "G53X0F40", "G53Y0F40"];
+const PRG = ["G53X100F10", "G53Y100F10", "G53X0F40", "G53Y0F40"];
 
 function setup() 
 {
@@ -14,7 +14,7 @@ function draw()
 {
     background(63);
     MC.render();
-    MC.run();
+    MC.run();    
 }
 
 
@@ -25,6 +25,19 @@ class Machine
         this.slotSize = slotSize;
         this.slotPadding = slotPadding;
         this.slots = slots;
+
+        this.cells = []
+
+        for (let j = 0; j < sqrt(this.slots); j++)
+        {
+            this.cells.push([]);
+            for (let i = 0; i < sqrt(this.slots); i++)
+            {
+                this.cells[j].push({X: (this.slotSize + this.slotPadding) * i + this.slotSize / 2 + this.slotPadding, 
+                                    Y: (this.slotSize + this.slotPadding) * j + this.slotSize / 2 + this.slotPadding});
+            };
+        
+        };
 
         this.commandStack = [];
         this.state = false;
@@ -43,6 +56,12 @@ class Machine
             this[`${axis}F`] = 0;           /* Feedrate    [mm / minute] */
             this[`${axis}BUSY`] = false;
         })
+    }
+
+    moveToCell = (x, y, fr) =>
+    {
+        this.pushCommand(`G53X${this.cells[x][y].X}F${fr}`);
+        this.pushCommand(`G53Y${this.cells[x][y].Y}F${fr}`);
     }
 
     loadProgram = (commandArray) =>
@@ -117,49 +136,49 @@ class Machine
 
     move = () =>
     {
-        /* Move each axis */
-        this.axes.forEach(axis =>
-        {
-            /* Attempt to sync the movement to the framerate */
-            let sec = frameRate() / 60;
+        // /* Move each axis */
+        // this.axes.forEach(axis =>
+        // {
+        //     /* Attempt to sync the movement to the framerate */
+        //     let sec = frameRate() / 60;
 
-            /* Get step size depending on the axis' feedrate and current frameRate */
-            let axisStep = this[`${axis}F`] / (sec * 60);
+        //     /* Get step size depending on the axis' feedrate and current frameRate */
+        //     let axisStep = this[`${axis}F`] / (sec * 60);
             
-            COMBAK
+        //     COMBAK
             
-            /* Update rest travel-value */
-            this[`${axis}R`] = this[`${axis}T`] - this[`${axis}`];
+        //     /* Update rest travel-value */
+        //     this[`${axis}R`] = this[`${axis}T`] - this[`${axis}`];
 
-            let axisDir = this[`${axis}R`] > 0 ? 1 : -1;
+        //     let axisDir = this[`${axis}R`] > 0 ? 1 : -1;
 
-            if (abs([`${axis}R`]) > abs(axisStep)) 
-            { 
-                this[`${axis}`] += axisStep * axisDir; 
-            }
-            else                           
-            { 
-                this[`${axis}`] += this[`${axis}R`]; 
-            }
+        //     if (abs([`${axis}R`]) > abs(axisStep)) 
+        //     { 
+        //         this[`${axis}`] += axisStep * axisDir; 
+        //     }
+        //     else                           
+        //     { 
+        //         this[`${axis}`] += this[`${axis}R`]; 
+        //     }
 
-        })
+        // })
 
-        // /* Attempt to sync the movement to the framerate */
-        // let sec = frameRate() / 60;
+        /* Attempt to sync the movement to the framerate */
+        let sec = frameRate() / 60;
 
-        // let xStep = this.XF / (sec * 60);
-        // let yStep = this.YF / (sec * 60);
+        let xStep = this.XF / (sec * 60);
+        let yStep = this.YF / (sec * 60);
 
-        // this.XR = this.XT - this.X;
-        // this.YR = this.YT - this.Y;
+        this.XR = this.XT - this.X;
+        this.YR = this.YT - this.Y;
 
-        // let xDir = this.XR > 0 ? 1 : -1;
-        // if (abs(this.XR) > abs(xStep)) { this.X += xStep * xDir; }
-        // else                           { this.X += this.XR; }
+        let xDir = this.XR > 0 ? 1 : -1;
+        if (abs(this.XR) > abs(xStep)) { this.X += xStep * xDir; }
+        else                           { this.X += this.XR; }
 
-        // let yDir = this.YR > 0 ? 1 : -1;
-        // if (abs(this.YR) > abs(yStep)) { this.Y += yStep * yDir; }
-        // else                           { this.Y += this.YR; }
+        let yDir = this.YR > 0 ? 1 : -1;
+        if (abs(this.YR) > abs(yStep)) { this.Y += yStep * yDir; }
+        else                           { this.Y += this.YR; }
     }
 
     render = () =>
