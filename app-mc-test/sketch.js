@@ -1,13 +1,13 @@
 let MC;
 
-const PRG = ["G53X100F10", "G53Y100F10", "G53X0F40", "G53Y0F40"];
+const PRG = ["G53X100F20", "G53Y100F20", "G53X0F40", "G53Y0F40"];
 
 function setup() 
 {
     createCanvas(window.innerWidth, window.innerHeight);
     textFont('Consolas');
 
-    MC = new Machine(95, 5, 5 * 5);
+    MC = new Machine();
 }
 
 function draw()
@@ -20,7 +20,7 @@ function draw()
 
 class Machine
 {
-    constructor(slotSize, slotPadding, slots)
+    constructor(slotSize = 95, slotPadding = 5, slots = 5 * 5)
     {
         this.slotSize = slotSize;
         this.slotPadding = slotPadding;
@@ -28,6 +28,7 @@ class Machine
 
         this.cells = []
 
+        /* Initialize Cells-Array */
         for (let j = 0; j < sqrt(this.slots); j++)
         {
             this.cells.push([]);
@@ -58,11 +59,95 @@ class Machine
         })
     }
 
+
+    pushCommand = (command) =>
+    {
+        const checkIfG53 = /G53\s*(X|Y)\s*(-?\d*\.\d*|-?\d*)\s*F\s*(\d*\.\d*|\d*)/;
+
+        let match = checkIfG53.exec(command);
+
+        if (!match) 
+        {
+            console.error("Command is illegal");
+            return false;
+        }
+        else
+        {
+            let c = {};
+            /* Command format: [axisLetter]T: Float, [axisLetter]F: Float
+            T -> Target position, F -> Feedrate */
+            c[`${match[1]}T`] = parseFloat(match[2], 100);
+            c[`${match[1]}F`] = parseFloat(match[3], 100);
+            this.commandStack.push(c);
+            return true;
+        }
+    }
+
+
+    popCommand = () =>
+    {
+        if (this.commandStack.length > 0)
+        {
+            let c = this.commandStack[0];
+
+            /* Retrieve axisLetter from current stackHead command and
+            check this axis's Busy signal */
+            let thisAxisIsBusy = this[`${Object.keys(c)[0][0]}BUSY`];
+
+            if (!thisAxisIsBusy)
+            {
+                this[Object.keys(c)[0]] = c[Object.keys(c)[0]]; /* Set Target Position */
+                this[Object.keys(c)[1]] = c[Object.keys(c)[1]]; /* Set Feedrate */
+                this.commandStack.splice(0, 1);
+            }
+        }
+    }
+
+
+    run = () =>
+    {
+        /* Update axis-busy signal */
+        this.axes.forEach(axis => this[`${axis}BUSY`] = this[`${axis}R`] != 0);
+ 
+        /* Update machine state */
+        this.state = false;
+        this.axes.forEach(axis => { if (this[`${axis}BUSY`]) this.state = true; });
+
+        /* If ideling or if doInterpolate, run the next Command. */
+        if (!this.state || this.doInterpolate) this.popCommand();
+        this.move();
+    }
+
+
+    move = () =>
+    {
+        /* Attempt to sync the movement to the framerate */
+        let sec = frameRate() / 60;
+       
+        /* Move each axis */
+        this.axes.forEach(axis =>
+        {
+            /* Get step size depending on the axis' feedrate and current frameRate */
+            let axisStep = this[`${axis}F`] / (sec * 60);
+            
+            /* Update rest travel-value */
+            this[`${axis}R`] = this[`${axis}T`] - this[axis];
+
+            let axisDir = this[`${axis}R`] > 0 ? 1 : -1;
+
+            /* Move the axis. If the axis-rest value is smaller than axisStep, move the axis-rest value.
+            This ensures that we end up on the correct position and won't overshoot */
+            this[axis] += (abs(this[`${axis}R`]) > abs(axisStep)) ? axisStep * axisDir : this[`${axis}R`];
+        })
+    }
+
+
     moveToCell = (x, y, fr) =>
     {
         this.pushCommand(`G53X${this.cells[x][y].X}F${fr}`);
         this.pushCommand(`G53Y${this.cells[x][y].Y}F${fr}`);
     }
+
 
     loadProgram = (commandArray) =>
     {
@@ -83,103 +168,6 @@ class Machine
         });
     }
 
-    pushCommand = (command) =>
-    {
-        const checkIfG53 = /G53\s*(X|Y)\s*(-?\d*\.\d*|-?\d*)\s*F\s*(\d*\.\d*|\d*)/;
-
-        let match = checkIfG53.exec(command);
-
-        if (!match) 
-        {
-            console.error("Command is illegal");
-            return false;
-        }
-        else
-        {
-            let c = {};
-            c[`${match[1]}T`] = parseFloat(match[2], 100);
-            c[`${match[1]}F`] = parseFloat(match[3], 100)
-            this.commandStack.push(c);
-            return true;
-        }
-    }
-
-    popCommand = () =>
-    {
-        if (this.commandStack.length > 0)
-        {
-            let c = this.commandStack[0];
-
-            let thisAxisIsBusy = this[`${Object.keys(c)[0][0]}BUSY`];
-
-            if (!thisAxisIsBusy)
-            {
-                this[Object.keys(c)[0]] = c[Object.keys(c)[0]];
-                this[Object.keys(c)[1]] = c[Object.keys(c)[1]];
-                this.commandStack.splice(0, 1);
-            }
-        }
-    }
-
-    run = () =>
-    {
-        /* Update axis-busy signal */
-        this.axes.forEach(axis => this[`${axis}BUSY`] = this[`${axis}R`] != 0);
- 
-        this.state = this.XBUSY || this.YBUSY;
-
-        /* If ideling, run the next command or if doInterpolate is true */
-        if (!this.state || this.doInterpolate) this.popCommand();
-        this.move();
-    }
-
-
-    move = () =>
-    {
-        // /* Move each axis */
-        // this.axes.forEach(axis =>
-        // {
-        //     /* Attempt to sync the movement to the framerate */
-        //     let sec = frameRate() / 60;
-
-        //     /* Get step size depending on the axis' feedrate and current frameRate */
-        //     let axisStep = this[`${axis}F`] / (sec * 60);
-            
-        //     COMBAK
-            
-        //     /* Update rest travel-value */
-        //     this[`${axis}R`] = this[`${axis}T`] - this[`${axis}`];
-
-        //     let axisDir = this[`${axis}R`] > 0 ? 1 : -1;
-
-        //     if (abs([`${axis}R`]) > abs(axisStep)) 
-        //     { 
-        //         this[`${axis}`] += axisStep * axisDir; 
-        //     }
-        //     else                           
-        //     { 
-        //         this[`${axis}`] += this[`${axis}R`]; 
-        //     }
-
-        // })
-
-        /* Attempt to sync the movement to the framerate */
-        let sec = frameRate() / 60;
-
-        let xStep = this.XF / (sec * 60);
-        let yStep = this.YF / (sec * 60);
-
-        this.XR = this.XT - this.X;
-        this.YR = this.YT - this.Y;
-
-        let xDir = this.XR > 0 ? 1 : -1;
-        if (abs(this.XR) > abs(xStep)) { this.X += xStep * xDir; }
-        else                           { this.X += this.XR; }
-
-        let yDir = this.YR > 0 ? 1 : -1;
-        if (abs(this.YR) > abs(yStep)) { this.Y += yStep * yDir; }
-        else                           { this.Y += this.YR; }
-    }
 
     render = () =>
     {
@@ -198,6 +186,7 @@ class Machine
         pop();
     }
 
+
     renderDRO = () =>
     {
         const size = 18;
@@ -214,6 +203,7 @@ class Machine
         
         text(state, -this.slotSize * 1.5, -this.slotSize * 1.5 + size * 5);
     }
+
 
     renderToolhead = (tool = 0) =>
     {
@@ -247,6 +237,7 @@ class Machine
         ellipse(this.X, this.Y, 2, 2);
     }
 
+
     renderGantry = (edgeLength) =>
     {
         const width = 10;
@@ -262,6 +253,7 @@ class Machine
         rect(0, this.Y - width * 2, edgeLength, width);
         rect(this.X + width, - width * 2, width, edgeLength + 2 * width);
     }
+
 
     renderPrimaryGuides = (edgeLength) =>
     {
@@ -285,6 +277,7 @@ class Machine
 
     }
 
+
     renderSecondaryGuides = (edgeLength) =>
     {
         const spacing2 = 5;
@@ -298,6 +291,7 @@ class Machine
         }
     }
 
+
     renderSlots = (slotAmount, edgeLength) =>
     {
         noStroke();
@@ -309,6 +303,7 @@ class Machine
         }
     }
 }
+
 
 let toDRO = (number, leadingZeros, decimalPlaces) =>
 {
