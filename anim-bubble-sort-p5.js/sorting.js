@@ -15,22 +15,19 @@ function setup()
   maxheight = height * 0.7;
   minheight = height * 0.05;
 
-  /* create data */
+  /* Create data */
   let step = maxheight / width;
-  for (let i = 0; i < width; i++)
-  {
-    data.push(step * i);
-  }
+  for (let i = 0; i < width; i++)data.push(step * i);
 
-  /* shuffle data */
+  /* Shuffle data */
   let i = data.length, temp, irand;
   while (0 !== i) 
   {
-    /* pick a remaining element */
+    /* Pick a remaining element */
     irand = Math.floor(Math.random() * i);
     i -= 1;
 
-    /* swap it with the current element */
+    /* Swap it with the current element */
     temp = data[i];
     data[i] = data[irand];
     data[irand] = temp;
@@ -43,13 +40,13 @@ function draw()
   translate(0, height);
   stroke(255);
 
-  /* bubble sort */
+  /* Bubble sort */
   for (let n = 0; n < sortStepAmount; n++)
   {
     data = bubbleOnce(data);
   }
 
-  /* draw data */
+  /* Draw data */
   for (let i = 0; i < data.length; i++)  { line(i, -data[i] - minheight, i, -minheight)  };
 }
 

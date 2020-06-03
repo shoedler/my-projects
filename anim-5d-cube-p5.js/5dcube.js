@@ -1,236 +1,121 @@
-/* 5DCube
-Simon Schödler
-Source by David faivre-macon & daniel shiffman
-19.12.2018
-*/
-
-let dimensions;
+const dimensions = 5;
 const scale = 190;
-const pgHeightDiv = 1; // Not needed, because we want the full height of the div we place it in
+
 let angle = 0.01;
-let thePoints, rotsLabels;
+let points;
+let rotsLabels;
 
-// the coordinates of the points
-const createPointsAndRotationsLabels = function()
+function setup() 
 {
+  frameRate(30);
+  createCanvas(window.innerWidth, window.innerHeight);
+  createPointsAndRotationsLabels();
+}
 
-  // points
-  const p = Math.pow(2, dimensions);
-  thePoints = [];
-
-  for (let j = p - 1; j >= 0; j--)
-  {
-    const n = parseInt(j, 10).toString(2);
-    const col = (pad(n, dimensions));
-    const row = [];
-
-    for (let i = 0; i < dimensions; i++)
-    {
-      row.push(col[i] * 2 - 1);
-    }
-
-    thePoints.push(row);
-  }
-  rotsLabels = combineUnique(dimensions, 2);
-};
-
-const rotationMatrix = function(rotIndex, a)
+function draw()
 {
-  let rotationArray = [];
+  const newDimensions = 5;
 
-  for (let row = 1; row <= dimensions; row++)
+  if (dimensions !== newDimensions) 
   {
-    let rotationArrayX = [];
-
-    for (let col = 1; col <= dimensions; col++)
-    {
-      if (col === rotIndex[0] && row === rotIndex[0])
-      {
-        rotationArrayX.push(Math.cos(a));
-      }
-      else if (col === rotIndex[1] && row === rotIndex[0])
-      {
-        rotationArrayX.push(-Math.sin(a));
-      }
-      else if (col === rotIndex[0] && row === rotIndex[1])
-      {
-        rotationArrayX.push(Math.sin(a));
-      }
-      else if (col === rotIndex[1] && row === rotIndex[1])
-      {
-        rotationArrayX.push(Math.cos(a));
-      }
-      else if (col === row)
-      {
-        rotationArrayX.push(1);
-      }
-      else
-      {
-        rotationArrayX.push(0);
-      }
-    }
-    rotationArray.push(rotationArrayX);
-  }
-
-  return rotationArray;
-};
-
-
-const fivedcube_sketch = function(p)
-{
-  p.setup = function()
-  {
-    var cnv = p.createCanvas(document.getElementById("anim_5dcube").offsetWidth, document.getElementById("anim_5dcube").offsetHeight / pgHeightDiv);
-    cnv.style('display', 'block');
     dimensions = 5;
-    p.frameRate(30);
     createPointsAndRotationsLabels();
-  };
+  }
 
-  // Update canvas size in case the user resizes his browser window
-  window.addEventListener('resize', function(event)
-  {
-    p.resizeCanvas(document.getElementById("anim_5dcube").offsetWidth, document.getElementById("anim_5dcube").offsetHeight / pgHeightDiv);
-  });
+  background(53, 53, 53);
+  fill(0);
 
-  p.draw = function()
+  const points2d = [];
+
+  for (let i = 0; i < points.length; i++) 
   {
-    const newDimensions = 5;
-    if (dimensions !== newDimensions)
+    // Rotate
+    let rotated = points[i];
+
+    for (let j = 0; j < rotsLabels.length; j++) 
     {
-      dimensions = 5;
-      createPointsAndRotationsLabels();
+      rotated = math.multiply(rotationMatrix(rotsLabels[j], angle), rotated);
     }
 
-    var isMobile =
+    // Projection
+    const distance = 3;
+    const f = 1 / (distance - rotated[dimensions - 1]);
+    const projection = [[], []];
+
+    for (let j = 0; j < dimensions; j++) 
     {
-      Android: function()
-      {
-        return navigator.userAgent.match(/Android/i);
-      },
-      BlackBerry: function()
-      {
-        return navigator.userAgent.match(/BlackBerry/i);
-      },
-      iOS: function()
-      {
-        return navigator.userAgent.match(/iPhone|iPad|iPod/i);
-      },
-      Opera: function()
-      {
-        return navigator.userAgent.match(/Opera Mini/i);
-      },
-      Windows: function()
-      {
-        return navigator.userAgent.match(/IEMobile/i);
-      },
-      any: function()
-      {
-        return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
-      }
-    };
-
-    p.background(53,53,53);
-    p.fill(0);
-
-    const points2d = [];
-    for (let i = 0; i < thePoints.length; i++)
-    {
-      //rotate
-      let rotated = thePoints[i];
-      for (let j = 0; j < rotsLabels.length; j++)
-      {
-        rotated = math.multiply(rotationMatrix(rotsLabels[j], angle), rotated);
-      }
-
-      //projection
-      const distance = 3;
-      const f = 1 / (distance - rotated[dimensions - 1]);
-      const projection = [[], []];
-      for (let j = 0; j < dimensions; j++)
-      {
-        projection[0].push(0);
-        projection[1].push(0);
-      }
-      projection[0][0] = f;
-      projection[1][1] = f;
-      points2d[i] = [math.multiply(projection, rotated), f];
+      projection[0].push(0);
+      projection[1].push(0);
     }
 
-    psets(points2d);
-    angle += 0.03 / dimensions;
-  };
+    projection[0][0] = f;
+    projection[1][1] = f;
+    points2d[i] = [math.multiply(projection, rotated), f];
+  }
 
-  function psets(points2d)
+  psets(points2d);
+
+  angle += 0.03 / dimensions;
+}
+
+const psets = (points2d) => 
+{
+  push();
+  translate(-width / 2,-height / 2);
+
+  // Edge
+  for (let j = 0; j < points.length; j++) 
   {
-    // edge
-    for(let j = 0; j < thePoints.length; j++)
+    for (let i = 0; i < points.length; i++) 
     {
-      for(let i = 0; i < thePoints.length; i++)
+      if (i === j) continue;
+
+      let squareSum = 0;
+      for (let k = 0; k < dimensions; k++) 
       {
-        if (i === j) continue;
-        let squareSum = 0;
-        for (let k = 0; k < dimensions; k++)
-        {
-          squareSum += Math.pow(thePoints[j][k] - thePoints[i][k], 2);
-        }
-
-        const d = Math.sqrt(squareSum);
-        if (d === 2)
-        {
-          p.line(points2d[i][0][0] * scale + p.canvas.width / 2, points2d[i][0][1] * scale + p.canvas.height / 2, points2d[j][0][0] * scale + p.canvas.width / 2, points2d[j][0][1] * scale + p.canvas.height / 2);
-        }
+        squareSum += Math.pow(points[j][k] - points[i][k], 2);
       }
-    }
 
-    // points
-    for (let i = 0; i < points2d.length; i++)
-    {
-      const x = points2d[i][0][0];
-      const y = points2d[i][0][1];
-      const size = Math.pow((points2d[i][1])*6,2) - 10;
-      p.fill(233, 30, 99);
-      p.stroke(233, 30, 99);
-      p.ellipse(x * scale + p.canvas.width / 2, y * scale + p.canvas.height / 2, size, size);
+      const d = Math.sqrt(squareSum);
+      stroke(233, 30, 99);
+      if (d === 2) line(points2d[i][0][0] * scale + canvas.width / 2, 
+                        points2d[i][0][1] * scale + canvas.height / 2, 
+                        points2d[j][0][0] * scale + canvas.width / 2, 
+                        points2d[j][0][1] * scale + canvas.height / 2);
+    
     }
   }
-};
 
-var fivedcube_canvas = new p5(fivedcube_sketch, 'anim_5dcube');
+  // Points
+  for (let i = 0; i < points2d.length; i++) 
+  {
+    const x = points2d[i][0][0];
+    const y = points2d[i][0][1];
+    const size = Math.pow((points2d[i][1]) * 6, 2) - 10;
 
-function combineUnique(n, k)
+    fill(233, 30, 99);
+    stroke(233, 30, 99);
+    ellipse(x * scale + canvas.width / 2, y * scale + canvas.height / 2, size, size);
+  }
+  pop();
+}
+
+const combineUnique = (n, k) =>
 {
   const result = [];
   const values = [];
-  for (let i = 1; i <= n; i++)
-  {
-    values[i - 1] = i;
-  }
-
   let perm = [];
-  for (let i = 0; i < n; i++)
-  {
-    if (i < k)
-    {
-      perm[i] = 1;
-    }
-    else
-    {
-      perm[i] = 0;
-    }
-  }
+
+  for (let i = 1; i <= n; i++) values[i - 1] = i;
+  for (let i = 0; i < n; i++) perm[i] = i < k ? 1 : 0;
+
   perm.sort();
 
-  whileloop: while(true) // yieks
+  whileloop: while(true) // Yieks
   {
     const subresult = [];
-    for (let i = 0; i < n; i++)
-    {
-      if (perm[i] === 1)
-      {
-        subresult.push(values[i]);
-      }
-    }
+    for (let i = 0; i < n; i++) if (perm[i] === 1) subresult.push(values[i]);
+
     result.push(subresult);
 
     for (let i = n - 1; i > 0; i--)
@@ -249,9 +134,51 @@ function combineUnique(n, k)
   return result;
 }
 
-// pad(1, 6) // '000001'
-function pad(n, length)
+const pad = (n, length) =>
 {
   let len = length - ('' + n).length;
   return (len > 0 ? new Array(++len).join('0') : '') + n
 }
+
+const createPointsAndRotationsLabels = () => 
+{
+  // Points
+  const p = Math.pow(2, dimensions);
+  points = [];
+
+  for (let j = p - 1; j >= 0; j--) 
+  {
+    const n = parseInt(j, 10).toString(2);
+    const col = (pad(n, dimensions));
+    const row = [];
+
+    for (let i = 0; i < dimensions; i++) row.push(col[i] * 2 - 1);
+
+    points.push(row);
+  }
+
+  rotsLabels = combineUnique(dimensions, 2);
+};
+
+const rotationMatrix = function (rotIndex, a) 
+{
+  let rotationArray = [];
+
+  for (let row = 1; row <= dimensions; row++) 
+  {
+    let rotationArrayX = [];
+
+    for (let col = 1; col <= dimensions; col++) 
+    {
+      if (col === rotIndex[0] && row === rotIndex[0])       rotationArrayX.push(Math.cos(a));
+      else if (col === rotIndex[1] && row === rotIndex[0])  rotationArrayX.push(-Math.sin(a));
+      else if (col === rotIndex[0] && row === rotIndex[1])  rotationArrayX.push(Math.sin(a));
+      else if (col === rotIndex[1] && row === rotIndex[1])  rotationArrayX.push(Math.cos(a)); 
+      else if (col === row)                                 rotationArrayX.push(1);
+      else                                                  rotationArrayX.push(0);
+    }
+    rotationArray.push(rotationArrayX);
+  }
+
+  return rotationArray;
+};

@@ -31,17 +31,14 @@ function setup()
 
 
 let feistel = (message, decrypt = false) =>
-{
-    /*
-     * Initialize
-     */
-    
+{  
     /* Defeisteling requires the Keys order to be reversed */
     if (decrypt) 
     {
         Keys = Keys.reverse();
         console.log("Feistel Cypher [Decrypting]");
     }
+
     else console.log("Feistel Cypher [Encripting]");
     console.log("Using " + KeyCount + " Keys");
     console.log("Input: " + message);
@@ -66,9 +63,7 @@ let feistel = (message, decrypt = false) =>
     R = [...Chars]
     L = R.splice(0, R.length / 2);
 
-    /* 
-     * Do Rounds depending on amount of Keys
-     */
+    /* Do Rounds depending on amount of Keys */
     for (let i = 0; i < Keys.length; i++)
     {
         fRK = [...crypt(R, Keys[i])]; // Run crypt-function (f) on R and the current round's key
@@ -77,9 +72,7 @@ let feistel = (message, decrypt = false) =>
         R =   [...tL]; 
     }
 
-    /*
-     * Finalize
-     */
+    /* Finalize */
     let End = [...R, ...L]; // Swap L and R again, concat
 
     /* Create output string */
@@ -89,21 +82,21 @@ let feistel = (message, decrypt = false) =>
     /* Log Output */
     console.log("Output: " + Result);
     console.log("Action took " + Time + "ms");
+
     if (KeyCount < 20)
     {
         console.log("Used Keys:");
         for (let i = 0; i < Keys.length; i++) console.log("   #" + i + " = 0x" + Keys[i].value.toString(16));
     }
+
     console.log(" ");
     
     return Result
 }
 
 
-/*
- * Encrypts R using the key K and returns the result
- * Expects L and R to be Arrays of type Byte
- */
+/* Encrypts R using the key K and returns the result
+Expects L and R to be Arrays of type Byte */
 let crypt = (R, K) =>
 {
     /* Check if 'bytes' is an Array */
@@ -125,10 +118,8 @@ let crypt = (R, K) =>
     return eR  
 } 
 
-/*
- * XOR's L to R and returns the result
- * Expects L and R to be Arrays of type Byte
- */
+/* XOR's L to R and returns the result
+Expects L and R to be Arrays of type Byte */
 let XOR = (L, R) =>
 {
     /* Check if 'bytes' is an Array */
@@ -148,9 +139,7 @@ let XOR = (L, R) =>
     return nL  
 }
 
-/*
- * Converts Byte Array to String
- */
+/* Converts Byte Array to String */
 let ByteArrayToString = (bytes) =>
 {
     /* Check if 'bytes' is an Array */
