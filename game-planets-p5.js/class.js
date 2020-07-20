@@ -11,23 +11,8 @@ class Entity
     this.player = player;
     this.mass = mass;
 
-    if (x < wWidth / 2)
-    {
-      this.vx = random(-0.1, -1);
-    }
-    else
-    {
-      this.vx = random(0.1, 1);
-    }
-
-    if (y < wHeight / 2)
-    {
-      this.vy = random(-0.1, -1);
-    }
-    else
-    {
-      this.vy = random(0.1, 1);
-    }
+    this.vx = x < wWidth / 2 ? random(-0.1, -1) : random(0.1, 1)
+    this.vy = y < wHeight / 2 ? random(-0.1, -1) : random(0.1, 1);
   }
 
   show()
@@ -47,25 +32,12 @@ class Entity
 
   update()
   {
-    // y physics
-    if (this.y < wHeight / 2)
-    {
-      this.vy += (this.mass * gravity_y);
-    } else
-    {
-      this.vy -= (this.mass * gravity_y);
-    }
+    // Y 
+    this.vy += this.y < wHeight / 2 ? (this.mass * gravity_y) : (-this.mass * gravity_y);
     this.y += this.vy;
 
-    if (this.x < wWidth / 2)
-    {
-      this.vx += (this.mass * gravity_x);
-    }
-    else
-    {
-      this.vx -= (this.mass * gravity_x);
-    }
-
+    // X
+    this.vx += this.x < wWidth / 2 ? (this.mass * gravity_x) : (-this.mass * gravity_x);
     this.x += this.vx
 
   }
@@ -78,11 +50,11 @@ class Entity
 
   life(entity)
   {
-    // detect collision with another entity
+    // Detect collision with another entity
     let x = entity.x - this.x;
     let y = entity.y - this.y;
 
-    // detect collision using the phytagorean theorem
+    // Detect collision using the phytagorean theorem
     let distance = sqrt(x*x + y*y)-(entity.r / 2 + this.r / 2);
 
     if (distance <= 0)
@@ -99,12 +71,8 @@ class Entity
       }
     }
 
-    // true if dead
-    if (this.r <= 0)
-    {
-      return true;
-    }
-
+    // True if dead
+    if (this.r <= 0) return true;
   }
 }
 
@@ -125,15 +93,8 @@ class BlackHole
     for (let i = this.r; i > 0; i--)
     {
       reverse_i = this.r - i;
-      if ((this.startGradient + reverse_i) > this.endGradient)
-      {
-        fill(this.endGradient);
-      }
-      else
-      {
-        fill(this.startGradient + reverse_i);
-      }
-
+      let gradient = (this.startGradient + reverse_i) > this.endGradient ? this.endGradient : (this.startGradient + reverse_i);
+      fill(gradient);
       ellipse(this.x, this.y, i, i);
     }
   }

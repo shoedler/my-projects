@@ -49,7 +49,6 @@ function setup()
 function draw()
 {
     background(53);
-
     
     // Do Test
     if (testIndex == bitAmount)

@@ -12,34 +12,21 @@ function draw()
 {
   background(51);
 
-  if (bird.life())
-  {
-    gameOver();
-  }
+  if (bird.life()) gameOver();
 
   for (var i = pipes.length - 1; i > 0 ; i--)
   {
     pipes[i].show();
     pipes[i].update();
 
-    if (pipes[i].hits(bird))
-    {
-      gameOver();
-    }
-
-    if (pipes[i].offscreen())
-    {
-      pipes.splice(i, 1);
-    }
+    if (pipes[i].hits(bird)) gameOver();
+    if (pipes[i].offscreen()) pipes.splice(i, 1);
   }
 
   bird.update();
   bird.show();
 
-  if (frameCount % 80 == 0)
-  {
-    pipes.push(new Pipe());
-  }
+  if (frameCount % 80 == 0) pipes.push(new Pipe()); 
 
   stats();
 
@@ -47,13 +34,10 @@ function draw()
 
 function keyPressed()
 {
-  if (key == ' ')
-  {
-    bird.up();
-  }
+  if (key == ' ') bird.up();
 }
 
-function gameOver()
+const gameOver = () =>
 {
   noLoop();
   textAlign(CENTER, CENTER);
@@ -65,7 +49,7 @@ function gameOver()
   text(frameCount / 10, window.innerWidth / 2, window.innerHeight / 2 + 80);
 }
 
-function stats()
+const stats = () =>
 {
   textAlign(LEFT, CENTER);
   fill (255);
