@@ -1,0 +1,9 @@
+html {
+  height: 100%;
+  background: #291139;
+  background: -webkit-gradient(linear, left bottom, left top, from(#291139), to(#05050f));
+  background: linear-gradient(0deg, #291139 0%, #05050f 100%);
+  position: absolute;
+  overflow: hidden;
+}
+/*# sourceMappingURL=style.css.map */
