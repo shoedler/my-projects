@@ -1,166 +1,149 @@
 
-const TOTAL = 300;
+let TOTAL = 300;
+
 let birds = [];
 let savedBirds = [];
 let pipes = [];
 let counter = 0;
 let posValue = 12;
-let bestBirdScore = 0;
+let previousBestBirdScore = 0;
 let alltimeBestBirdScore = 0;
 let generation = 0;
 let mainColor = 'rgb(202, 202, 202)';
 let fontColor = 255;
 
+const NORMAL = 0;
+const SIMULATING = 1;
+const SIMULATION_DONE = 2;
+let gameState = NORMAL
+
 // gui elements
 let paceSlider;
 let saveButton;
-let loadButton;
-let loadURLInput;
 
-let loadedBirdBrainJSON;
-let loadedBirdBrainFlag = false;
-let loadedBirdBrainSuccess = false;
-let loadedTextDelay = 3000;
-let loadedTextTimer = Infinity;
-
-
-function setup()
-{
+function setup() {
   createCanvas(window.innerWidth, window.innerHeight);
 
   paceSlider = createSlider(0, 50, 1);
-  saveButton = createButton("save best bird's brain");
-  loadButton = createButton("load brain for next gen");
-  loadURLInput = createInput("Link to .JSON file. Use http://myjson.com/");
-  styleElements();
+  paceSlider.style('width', String(round(window.innerWidth / 5)) + 'px');
 
-  for (var i = 0; i < TOTAL; i++)
-  {
+  for (var i = 0; i < TOTAL; i++) {
     birds[i] = new Bird();
   }
 }
 
+function draw() {
+  if (gameState == SIMULATING) {
+    // Simulate until generation is finished (All birds are dead)
+    while (gameLogic()) { }
+  
+    drawSimulationEnd()
 
-function draw()
-{
-  // logic stuff
-  for (let n = 0; n < paceSlider.value(); n++)
-  {
-    logic();
+    TOTAL = 10
+
+    // Update game state
+    gameState = SIMULATION_DONE;
   }
+  else if (gameState == SIMULATION_DONE) {
+    const t = millis()
+    while (t + 2000 > millis()) { }
 
-  // events
-  saveButton.mousePressed(saveBestBird);
-  loadButton.mousePressed(loadBird);
-
-  // drawing stuff
-  background(51);
-  for (let bird of birds)
-  {
-    bird.show();
+    // Update game state
+    gameState = NORMAL;
   }
+  else if (gameState == NORMAL) {
+    // Run game logic
+    for (let n = 0; n < paceSlider.value(); n++) 
+      gameLogic();
 
-  for (let pipe of pipes)
-  {
-    pipe.show();
-  }
+    // Draw routines
+    background(51);
 
-  if (alltimeBestBirdScore < birds[0].score)
-  {
-    alltimeBestBirdScore = birds[0].score;
-  }
+    birds.forEach(bird => bird.show())
+    pipes.forEach(pipe => pipe.show())
 
-  if (loadedBirdBrainSuccess == true)
-  {
-    if (millis() > loadedTextTimer + loadedTextDelay)
-    {
-      loadedBirdBrainSuccess = false;
-      loadedTextTimer = Infinity;
+    drawStats();
+
+    // Update game state
+    if (counter / 10 > 1000) {
+      gameState = SIMULATING;
+      drawSimulating()
     }
-    if (millis() < loadedTextTimer)
-    {
-      loadedTextTimer = millis();
-    }
+  } 
+  else {
+    console.error(`Unknown gameState: ${gameState}`)
+    gameState = NORMAL
   }
-  stats();
 }
 
-function windowResized()
-{
+function windowResized() {
   resizeCanvas(window.innerWidth, window.innerHeight);
 }
 
-function logic()
-{
-  if (counter % 120 == 0)
-  {
+function gameLogic() {
+  if (counter % 120 == 0) {
     pipes.push(new Pipe());
   }
   counter++;
 
-  for (let i = pipes.length - 1; i >= 0 ; i--)
-  {
+  for (let i = pipes.length - 1; i >= 0 ; i--) {
     pipes[i].update();
 
-    for (let j = birds.length - 1; j >= 0; j-- )
-    {
-      // when does the bird die?
-      if (pipes[i].hits(birds[j]) || birds[j].life())
-      {
-        // save bird when it dies, don't make array of arrays! [0]
+    for (let j = birds.length - 1; j >= 0; j-- ) {
+      // When does the bird die?
+      if (pipes[i].hits(birds[j]) || birds[j].life()) {
         savedBirds.push(birds.splice(j, 1)[0]);
       }
     }
 
-    if (pipes[i].offscreen())
-    {
+    // Remove off-screen pipes
+    if (pipes[i].offscreen()) {
       pipes.splice(i, 1);
     }
   }
 
-  for (let bird of birds)
-  {
+  // Update birds
+  for (let bird of birds) {
     bird.think(pipes);
     bird.update();
   }
 
-  if (birds.length === 0)
-  {
+  // Check if the current generation is finished (All birds are dead)
+  if (birds.length === 0) {
     counter = 0;
     nextGeneration();
     pipes = [];
+    return false;
   }
-}
 
-
-function saveBestBird()
-{
-  let best = 0;
-  let bird;
-  for (bird of birds)
-  {
-    if (bird.score > best)
-    {
-      best = bird.score;
-    }
+  if (alltimeBestBirdScore < birds[0].score) {
+    alltimeBestBirdScore = birds[0].score;
   }
-  saveJSON(bird.brain, 'bestBirdBrain.json');
+
+  if (counter % 1e5 == 0) {
+    console.log(`Current score: ${counter / 10}`)
+  }
+
+  return true;
 }
 
-function loadBird()
-{
-  console.log('Brain loading...');
-  loadedBirdBrainJSON = loadJSON('https://api.myjson.com/bins/19nc2k' , brainLoaded());
+function drawSimulationEnd() {
+  background(51);
+
+  textAlign(CENTER, CENTER);
+  textSize(window.innerWidth / 10);
+  text(`Got to ${previousBestBirdScore / 10}`, window.innerWidth / 2, window.innerHeight / 2);
 }
 
-function brainLoaded()
-{
-  loadedBirdBrainFlag = true;
-  console.log('Brain loaded. Initializing injection...');
+function drawSimulating() {
+  background(51);
+
+  textAlign(CENTER, CENTER);
+  textSize(window.innerWidth / 10);
+  text("Simulating...", window.innerWidth / 2, window.innerHeight / 2);
 }
 
-function stats()
-{
+function drawStats() {
   fill(31, 31, 31, 100);
   noStroke();
   rect(0, 0, window.innerWidth, posValue * 8);
@@ -174,28 +157,20 @@ function stats()
   textSize(posValue);
   text("Score: " + counter / 10, window.innerWidth / 100, posValue);
   text("Currently Alive Birds: " + birds.length, window.innerWidth / 100, 2 * posValue);
-  text("Last Best Score: " + bestBirdScore / 10, window.innerWidth / 100, 3 * posValue);
+  text("Last Best Score: " + previousBestBirdScore / 10, window.innerWidth / 100, 3 * posValue);
   text("Alltime Best Score: " + alltimeBestBirdScore / 10, window.innerWidth / 100, 4 * posValue);
   text("Generation: " + generation, window.innerWidth / 100, 5 * posValue);
 
   // top right
   text("Logic Cycles per Frame: " + paceSlider.value(), window.innerWidth / 4, 3.5 * posValue);
   paceSlider.position(window.innerWidth / 4, posValue);
-  saveButton.position(window.innerWidth / 2, posValue);
-  loadButton.position(window.innerWidth / 2, posValue * 3);
-  loadURLInput.position(window.innerWidth / 2, posValue * 5);
 
   // special
   textAlign(CENTER, CENTER);
   textSize(window.innerWidth / 5);
-  if (paceSlider.value() == 0)
-  {
-    text("PAUSE", window.innerWidth / 2, window.innerHeight / 2);
-  }
 
-  if (loadedBirdBrainSuccess == true)
-  {
-    text("LOADED", window.innerWidth / 2, window.innerHeight / 2);
+  if (paceSlider.value() == 0) {
+    text("PAUSE", window.innerWidth / 2, window.innerHeight / 2);
   }
 
   blendMode(BLEND);

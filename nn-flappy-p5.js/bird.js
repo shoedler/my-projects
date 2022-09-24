@@ -14,25 +14,7 @@ class Bird
     this.score = 0;
     this.fitness = 0;
 
-    // only make brain if it doesn't have one (1st generation)
-    // and there's no loaded brain in "queue" (loadedBirdBrainFlag)
-    if (brain && loadedBirdBrainFlag == false)
-    {
-      this.brain = brain.copy();
-    }
-    else if (loadedBirdBrainFlag)
-    {
-      let loadedBirdBrain = NeuralNetwork.deserialize(loadedBirdBrainJSON);
-      this.brain = loadedBirdBrain.copy();
-      console.log('Brain injected!');
-      loadedBirdBrainSuccess = true;
-      loadedBirdBrainJSON = null;
-      loadedBirdBrainFlag = false;
-    }
-    else
-    {
-      this.brain = new NeuralNetwork(5, 8, 2);
-    }
+    this.brain = brain? brain.copy() : new NeuralNetwork(5, 8, 2)
   }
 
   show()
@@ -80,23 +62,10 @@ class Bird
     this.y += this.v;
   }
 
-  up()
-  {
-    this.v -= this.lift;
-  }
+  up = () => this.v -= this.lift; 
 
-  mutate()
-  {
-    this.brain.mutate(0.1);
-  }
-
-  life()
-  {
-    // bird dies if it hits the top or the bottom of the screen
-    if (this.y > window.innerHeight || this.y < 0)
-    {
-      return true;
-    }
-    return false;
-  }
+  mutate = (v = 0.1) => this.brain.mutate(v);
+  
+  // bird dies if it hits the top or the bottom of the screen
+  life = () => this.y > window.innerHeight || this.y < 0
 }
