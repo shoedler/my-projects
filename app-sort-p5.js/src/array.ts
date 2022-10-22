@@ -2,10 +2,10 @@ import p5 from "p5";
 import { EColor } from "./colors";
 
 export type ArraySorterColorConfig = { [key: number]: EColor}
-export type ArraySorterReturn = { array: number[], coloredIndices: ArraySorterColorConfig }
+export type ArraySorterStep = { array: number[], coloredIndices: ArraySorterColorConfig }
 export interface IArraySorter {
   init?: (array: number[]) => void;
-  step: (array: number[]) => ArraySorterReturn
+  compute: (array: number[]) => ArraySorterStep[]
 }
 
 export class ArrayVisualisation {
@@ -27,8 +27,8 @@ export class ArrayVisualisation {
 
   public get cellWidth() { return this.usableWidth / this._size; }
 
-  private _arr: number[] = []
-  private _currentColorConfig: ArraySorterColorConfig = {};
+  private _computedSteps: ArraySorterStep[] = [];
+  private _stepIndex = 0;
   private _size: number;
   public get size(): number { return this._size; }
 
@@ -36,42 +36,52 @@ export class ArrayVisualisation {
     this._size = size;
   }
 
-  public execSortOnce = (sorter: IArraySorter): void => {
-    const r = sorter.step(this._arr);
-    this._arr = r.array;
-    this._currentColorConfig = r.coloredIndices;
-  }
-
   public init = (sorter: IArraySorter): void => {
+    this._computedSteps = []
+    
     // Initialize Array
-    this._arr = [];
+    let array = [];
     for (let i = 0; i < this._size; i++) 
-      this._arr.push(i);
+      array.push(i);
+
+    // Shuffle Array
+    array = array.sort(() => Math.random() - 0.5)
 
     // Initialize Sorter, if it has an init method
     if (sorter.init) 
-      sorter.init(this._arr);
+      sorter.init(array);
+
+    this._computedSteps = sorter.compute(array);
+
+    console.log(`Computed ${this._computedSteps.length} steps`);
   }
     
-  public shuffle = (): void => {
-    this._arr = this._arr.sort(() => Math.random() - 0.5)
-  }
-
   public draw = () => {
     this._p.background(this._bgColor);
+
+    if (!this._computedSteps.length) {
+      this._p.textAlign(this._p.CENTER, this._p.CENTER);
+      this._p.textSize(32);
+      this._p.fill(this._fgColor);
+      this._p.text("No Sorter Initialized", this._p.width / 2, this._p.height / 2);
+      return;
+    }
+
+    const array = this._computedSteps[this._stepIndex].array;
+    const coloredIndices = this._computedSteps[this._stepIndex].coloredIndices;
 
     this._p.textAlign(this._p.CENTER, this._p.CENTER);
     this._p.textSize(this.cellWidth * this._textWidthFactor);
     this._p.strokeWeight(2)
 
-    this._arr.forEach((el, i) => {
+    array.forEach((el, i) => {
       const cellHeight = this.usableHeight / this._size * el;
       
       this._p.stroke(this._bgColor)
 
       // Use color config if available
-      if (this._currentColorConfig[i] !== undefined)
-        this._p.fill(this._currentColorConfig[i]);
+      if (coloredIndices[i] !== undefined)
+        this._p.fill(coloredIndices[i]);
       else
         this._p.fill(this._fgColor)
 
@@ -95,5 +105,8 @@ export class ArrayVisualisation {
         this.leftAndRightMargin + this.cellWidth * i + (this.cellWidth / 2), 
         this.topAndBottomMargin + this.usableHeight - (cellHeight / 2))
     })
+
+    if (this._stepIndex < this._computedSteps.length - 1)
+      this._stepIndex++;
   }
 }
