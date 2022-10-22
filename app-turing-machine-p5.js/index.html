@@ -1,14 +1,78 @@
 <html>
+
   <head>
-    <style>
-      * {
-        padding: 0px;
-        margin: 0px;
-      }
-    </style>
+    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
   </head>
+
   <body>
     <script> var exports = {}; </script>
     <script defer src="dist/bundle.js"></script>
+
+
+    <div class="automa" id="automa-div">
+      <div>
+        <span>Status from</span>
+        <span>Char reading</span>
+        <span>Char writing</span>
+        <span>Status to</span>
+        <span>Move to</span>
+      </div>
+    </div>
+
+    <div id="rule"></div>
+    <div id="app">
+      <div id="controlbox">
+        <div>
+          <h4>Instructions</h4>
+          <ul>
+            <li>Edit addends</li>
+            <li>Press reset/prepare</li>
+            <li>Press start/stop</li>
+          </ul>
+          <div id="buttons">
+            <button @click="reset">Reset/Prepare</button>
+            <button @click="startStop">Start/Stop</button>
+            <button @click="clockTick(true)">Single step</button>
+            <br />Clock ticks per sec:
+            <div>
+              <button @click="slowDown">-</button>
+              <input v-model="ticks_per_sec" min="1" max="200" />
+              <button @click="speedUp">+</button>
+            </div>
+          </div>
+        </div>
+        <!--
+        {{a | binary}}
+        {{b | binary}}<br/>-->
+      </div>
+      <div>
+        <div class="turingmachine history">
+          <div class="a" :style="{ left: ((5+4) * tapecellsize)+'px' }"><input v-model="a" /></div>
+          <div class="b" :style="{ left: ((5+13) * tapecellsize)+'px' }"><input v-model="b" /></div>
+          <div class="tape" :style="{ left: ((5-cursor_offset) * tapecellsize)+'px' }">
+            <div v-for="(t, i) in tapePreview" :key="i" :class="classTapeCell(t,i)">{{t}}</div>
+          </div>
+        </div>
+        Cursor position: {{cursor - cursor_offset}}
+        <div class="turingmachine">
+          <div class="tape" :style="{ left: ((5 - cursor) * tapecellsize)+'px' }">
+            <div v-for="(t, i) in tape" :key="i" :class="classTapeCell(t,i)">{{t}}</div>
+          </div>
+          <div class="cursor" :style="{ left: (5 * tapecellsize)+'px' }" v-if="computed !== true">^</div>
+          <div v-else class="c" :style="{ left: ((-cursor+cursor_offset+9) * tapecellsize)+'px' }">{{result | decimal}}</div>
+        </div>
+        <div v-if="computed === true">Done! Result: {{result | decimal}}, number of operations: {{clock}}</div>
+        <div v-else-if="computed === false">The clock has run out!</div>
+        <div v-else-if="!running">Stopped, clock {{clock}}</div>
+        <div v-else>Computing, clock {{clock}}</div>
+        <h4>Deterministic finite state machine</h4>
+        <automa :nodes="automa" :order="['q0', 'q1', 'q2', 'q3', 'q4', 'q5', 'q6', 'q7', 'q8', 'q9', 'end']" :current-status="statusName" :current-char="tape[cursor]" />
+      </div>
+    </div>
+
+
+
   </body>
+
 </html>

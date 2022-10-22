@@ -1,4 +1,4 @@
-export type char = ' ' | '+' | '-' | '*' | '/' | '|' | '.' | ';' | ':' |
+export type char = ' ' | '+' | '-' | '*' | '/' | '|' | '.' | ';' | ':' | '#' |
     '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '0' | 
     'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h' | 'i' | 'j' | 'k' | 'l' | 'm' | 'n' | 'o' | 'p' | 'q' | 'r' | 's' | 't' | 'u' | 'v' | 'w' | 'x' | 'y' | 'z' |
     'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' | 'L' | 'M' | 'N' | 'O' | 'P' | 'Q' | 'R' | 'S' | 'T' | 'U' | 'V' | 'W' | 'X' | 'Y' | 'Z'
@@ -14,7 +14,7 @@ export type Tape = { [key: number]: char }
 export type Program = { initialState: string, acceptStates: string[], commands: Cmd[] }
 
 export class TuringMachine {
-    static DEFAULT_CHAR: char = ' ';
+    static DEFAULT_CHAR: char = '#';
     static MAX_STEPS: number = 1e3;
 
     public tapePtr = 0;
@@ -24,10 +24,11 @@ export class TuringMachine {
 
     public tape: Tape = { }
 
-    private _commands : Cmd[];
-    public get commands() : Cmd[] { return this._commands; }
+    private _commands: Cmd[];
+    public get commands(): Cmd[] { return this._commands; }
     
-    private rules: RuleSet = {}
+    private _rules: RuleSet = {}
+    public get rules(): RuleSet { return this._rules }
 
     private readCell = (): char => {
         if (this.tape[this.tapePtr] == undefined) {
@@ -44,7 +45,7 @@ export class TuringMachine {
 
     public exec = () => {
         const read = this.readCell()
-        const stateRules = this.rules[this.currentState]
+        const stateRules = this._rules[this.currentState]
         const possibleTransitions = stateRules.filter(cmd => cmd.read == read)
 
         if (possibleTransitions.length > 1) 
@@ -100,7 +101,7 @@ export class TuringMachine {
         this._commands = prog.commands
 
         this._commands.forEach(cmd => 
-            this.rules[cmd.current] == undefined ? this.rules[cmd.current] = [cmd] : this.rules[cmd.current].push(cmd)
+            this._rules[cmd.current] == undefined ? this._rules[cmd.current] = [cmd] : this._rules[cmd.current].push(cmd)
         )
     }
 }
