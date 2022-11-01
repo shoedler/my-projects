@@ -1,0 +1,95 @@
+:root {
+  --bg-color: rgb(31,31,31);
+  --accent-color: rgb(239, 239, 239);
+  --accent-color-disabled: rgb(127, 127, 127);
+}
+
+body {
+  background-color: var(--bg-color);
+}
+
+* {
+  font-family: Roboto, sans-serif;
+}
+
+.header {
+  margin-top: 20px;
+  margin-right: 20vw;
+  margin-left: 20vw;
+  text-align: center;
+  font-size: 30px;
+  color: var(--accent-color);
+}
+
+.current-action {
+  margin-top: 55px;
+  margin-right: 20vw;
+  margin-left: 20vw;
+  text-align: center;
+  font-size: 30px;
+  color: var(--accent-color);
+}
+
+.data-container {
+  width: 1000px;
+  height: 500px;
+  position: relative;
+  margin: 0 auto;
+}
+
+/* Bar class with element */
+.bar-red { background-color: #f44336 !important; }
+.bar-green { background-color: #4CAF50 !important; }
+.bar-blue { background-color: rgb(24, 190, 255) !important; }
+.bar-yellow { background-color: #ffeb3b !important; }
+.bar-darkblue { background-color: #3f51b5 !important; }
+
+.data-container > div {
+  /* [Computed] width: 28px; */
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  background-color: var(--accent-color);
+  transition: 0.1s all ease;
+}
+
+.data-container > div > label {
+  color:var(--accent-color);
+  position: absolute;
+  top: -24px;
+  width: 100%;
+  text-align: center;
+}
+
+.btn1 {
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 16px;
+  margin-left: 37vw;
+  margin-top: 4vw;
+  margin-right: 1vw;
+  cursor: pointer;
+  background-color: var(--bg-color);
+  color: var(--accent-color);
+  border: var(--accent-color) solid;
+}
+
+.btn2 {
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: var(--bg-color);
+  color: var(--accent-color);
+  border: var(--accent-color) solid;
+}
+
+.btn1:disabled, .btn2:disabled {
+  border: var(--accent-color-disabled) solid;
+  color: var(--accent-color-disabled);
+  cursor: not-allowed;
+}
+
+.btn1:hover, .btn2:hover {
+  border-style: dotted;
+}
