@@ -1,5 +1,35 @@
-// import { ArrayEngineColorMap, IArraySorter } from "./array";
-// import { EColor } from "./colors";
+import { IObservableArraySorter, ObservableArray, ObservableArrayStats } from "./observableArray";
+
+export class ObservableBubbleSort implements IObservableArraySorter {
+  public sort = async (array: ObservableArray): Promise<ObservableArrayStats> => {
+    for (let i = 0; i < array.length; i++) {
+      for (let j = 0; j < array.length - i - 1; j++) {
+        if (await array.compare(j, '>', j + 1)) {
+          await array.swap(j, j + 1);
+        }
+      }
+    }
+    return array.stats;
+  }
+}
+
+export class ObservableInserionSort implements IObservableArraySorter {
+  public sort = async (array: ObservableArray): Promise<ObservableArrayStats> => {
+    for (let i = 1; i < array.length; i++) {
+
+      const key = await array.get(i);
+      let j = i - 1;
+
+      while (j >= 0 && await array.compare(j, '>', i)) {
+        await array.swap(j + 1, j);
+        j = j - 1;
+      }
+
+      await array.set(j + 1, key);
+    }
+    return array.stats;
+  }
+}
 
 // export class BubbleSort implements IArraySorter {
 //   public compute = (array: number[]): SorterFrame<number>[] => {

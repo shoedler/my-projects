@@ -1,47 +1,60 @@
-export type ObservableArrayActions<T> = {
-  read: (index: number) => T;
-  write: (index: number, value: T) => void;
+import { CONFIG } from "./index";
+
+export type ObservableArrayContext = {
+  read: (index: number) => number;
+  write: (index: number, value: number) => void;
+  setClassName: (index: number, className: string) => void;
+  pause: () => Promise<void>;
 }
 
-export type ObservableArrayCommand<TReturns, TArray> = {
+export type ObservableArrayCommand<TReturns> = {
   name: string,
-  action: (actions: ObservableArrayActions<TArray>) => Promise<TReturns>
+  action: (actions: ObservableArrayContext) => Promise<TReturns>
 }
 
-export type ObservableArrayStats = {
-  reads: number,
-  writes: number,
-  comparisons: number,
-  swaps: number
+export class ObservableArrayStats {
+  public reads: number = 0;
+  public writes: number = 0;
+  public comparisons: number = 0;
+  public swaps: number = 0;
 }
 
-export class ObservableArray<T> {
+export interface IObservableArraySorter {
+  sort(array: ObservableArray): Promise<ObservableArrayStats>;
+}
+
+export class ObservableArray {
   private _array: HTMLElement[] = [];
-  private _propertySelector: { name: string, converter: (rawType: string) => T};
   private _stats: ObservableArrayStats = {} as ObservableArrayStats;
 
+  public get stats(): ObservableArrayStats { return this._stats; }
   public get length(): number { return this._array.length; }
 
-  constructor(
-    domDivArray: HTMLDivElement[], 
-    propertySelector: { name: string, converter: (rawType: string) => T}) {
-    this._propertySelector = propertySelector;
+  constructor(domDivArray: HTMLDivElement[]) {
     this._array = domDivArray
-    this._stats = {} as ObservableArrayStats;
+    this._stats = new ObservableArrayStats();
   }
 
-  private read = (index: number): T => {
+  private pause = (ms: number): Promise<void> => new Promise(resolve => setTimeout(resolve, ms));
+
+  private read = (index: number): number => {
     this._stats.reads++;
-    return this._propertySelector.converter((this._array[index] as any)[this._propertySelector.name] );
+    return parseInt(this._array[index].style.height);
   }
 
-  private write = (index: number, value: T): void => {
+  private write = (index: number, value: number): void => {
     this._stats.writes++;
-    (this._array[index] as any)[this._propertySelector.name] = value.toString();
+    this._array[index].style.height = `${value}px`;
   }
   
-  public command = async <TRet>(name: string, fn: (actions: ObservableArrayActions<T>) => Promise<TRet>): Promise<TRet> => {
-    return fn({ read: this.read, write: this.write });
+  public command = async <TRet>(name: string, fn: (actions: ObservableArrayContext) => Promise<TRet>): Promise<TRet> => {
+    this._array.forEach(div => div.className = "");
+    return fn({ 
+      read: this.read, 
+      write: this.write,
+      setClassName: (index: number, className: string) => this._array[index].className = className,
+      pause: () => this.pause(CONFIG.delay)
+    });
   }
 
   public compare = async (index1: number, op: '>' | '>=' | '<' | '<=' | '==' | '!=', index2: number): Promise<boolean> => {
@@ -52,10 +65,8 @@ export class ObservableArray<T> {
 
       this._array[index1].className = 'bar-red';
       this._array[index2].className = 'bar-blue';
-      await new Promise<void>((resolve) => setTimeout(() => { resolve(); }, 100) );
-      this._array[index1].className = '';
-      this._array[index2].className = '';
-      await new Promise<void>((resolve) => setTimeout(() => { resolve(); }, 100) );
+
+      await this.pause(CONFIG.delay);
       
       switch (op) {
         case '>':  return Promise.resolve(value1 >  value2);
@@ -75,7 +86,8 @@ export class ObservableArray<T> {
 
       this._array[index1].className = 'bar-yellow';
       this._array[index2].className = 'bar-green';
-      await new Promise<void>((resolve) => setTimeout(() => { resolve(); }, 100) );
+      
+      await this.pause(CONFIG.delay);
       
       const tmp = actions.read(index1);
       actions.write(index1, actions.read(index2));
@@ -83,24 +95,25 @@ export class ObservableArray<T> {
 
       this._array[index1].className = 'bar-green';
       this._array[index2].className = 'bar-yellow';
-      await new Promise<void>((resolve) => setTimeout(() => { resolve(); }, 100) );
-
-      this._array[index1].className = '';
-      this._array[index2].className = '';
-      await new Promise<void>((resolve) => setTimeout(() => { resolve(); }, 100) );
+      
+      await this.pause(CONFIG.delay);
     })
   }
 
-}
+  public set = async (index: number, value: number): Promise<void> => {
+    await this.command(`Set ${index} to ${value}`, async (actions) => {
+      this._array[index].className = 'bar-yellow';
+      actions.write(index, value);
+      await this.pause(CONFIG.delay);
+    })
+  }
 
-export class ObservableBubbleSort<T> {
-  public sort = async (array: ObservableArray<T>): Promise<void> => {
-    for (let i = 0; i < array.length; i++) {
-      for (let j = 0; j < array.length - i - 1; j++) {
-        if (await array.compare(j, '>', j + 1)) {
-          await array.swap(j, j + 1);
-        }
-      }
-    }
+  public get = async (index: number): Promise<number> => {
+    return await this.command(`Get ${index}`, async (actions) => {
+      this._array[index].className = 'bar-red';
+      const value = actions.read(index);
+      await this.pause(CONFIG.delay);
+      return value;
+    })
   }
 }
