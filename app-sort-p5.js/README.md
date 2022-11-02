@@ -3,6 +3,7 @@ TODO
 
 ## Todos
 - [ ] Writeup README
+- [ ] UI: Hide Dropdown when sorting is running
 - [ ] UI: Center Buttons
 - [ ] UI: Add slider for Array Count + Reload on change
 - [ ] Check all `TODO (classification)` Comments - some situations in the sorting algos probably need additional functionality in `observableArray`. This is just to make sure the displayed "stats" are correct.

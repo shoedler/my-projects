@@ -2,7 +2,7 @@ import { IObservableArraySorter, ObservableArray, ObservableArrayStats } from ".
 import { ObservableBubbleSort, ObservableHeapSort, ObservableInsertionSort, ObservableQuickSort, ObservableSelectionSort } from "./sorters";
 
 export const CONFIG = {
-  arraySize: 80,
+  arraySize: 30,
   barSpanFactor: 0.7, // Max: 1, represents the percentage of the available bar width that is filled
   delay: 100 // Delay in milliseconds between each step of the sort
 }

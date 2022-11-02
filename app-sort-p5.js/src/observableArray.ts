@@ -67,7 +67,7 @@ export class ObservableArray {
       const value2 = actions.read(index2);
 
       this._array[index1].className = 'bar-red';
-      this._array[index2].className = 'bar-blue';
+      this._array[index2].className = 'bar-yellow';
 
       await this.pause(CONFIG.delay);
       
@@ -87,25 +87,25 @@ export class ObservableArray {
     this._stats.swaps++;
     await this.command(`Swap ${index1} and ${index2}`, async (actions) => {
 
-      this._array[index1].className = 'bar-yellow';
+      this._array[index1].className = 'bar-blue';
       this._array[index2].className = 'bar-green';
       
-      await this.pause(CONFIG.delay);
+      await this.pause(CONFIG.delay / 2);
       
       const tmp = actions.read(index1);
       actions.write(index1, actions.read(index2));
       actions.write(index2, tmp);
 
       this._array[index1].className = 'bar-green';
-      this._array[index2].className = 'bar-yellow';
+      this._array[index2].className = 'bar-blue';
       
-      await this.pause(CONFIG.delay);
+      await this.pause(CONFIG.delay / 2);
     })
   }
 
   public set = async (index: number, value: number): Promise<void> => {
     await this.command(`Set ${index} to ${value}`, async (actions) => {
-      this._array[index].className = 'bar-yellow';
+      this._array[index].className = 'bar-blue';
       actions.write(index, value);
       await this.pause(CONFIG.delay);
     })
