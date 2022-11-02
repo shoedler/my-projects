@@ -13,82 +13,116 @@ export class ObservableBubbleSort implements IObservableArraySorter {
   }
 }
 
-export class ObservableInserionSort implements IObservableArraySorter {
+export class ObservableInsertionSort implements IObservableArraySorter {
   public sort = async (array: ObservableArray): Promise<ObservableArrayStats> => {
-    for (let i = 1; i < array.length; i++) {
-
-      const key = await array.get(i);
-      let j = i - 1;
-
-      while (j >= 0 && await array.compare(j, '>', i)) {
-        await array.swap(j + 1, j);
-        j = j - 1;
+    for (let i = 0; i < array.length; i++) {
+      let j = i;
+      let x = await array.get(i);
+      while (j > 0 && x < await array.get(j - 1)) { // TODO: (classification) isn't this a comparison?
+        await array.set(j, await array.get(--j)); // TODO: (classification) isn't this a swap?
       }
-
-      await array.set(j + 1, key);
+      await array.set(j, x);
     }
     return array.stats;
   }
 }
 
-// export class BubbleSort implements IArraySorter {
-//   public compute = (array: number[]): SorterFrame<number>[] => {
-//     let steps: SorterFrame<number>[] = [];
-//     let sorted = false;
+export class ObservableSelectionSort implements IObservableArraySorter {
+  public sort = async (array: ObservableArray): Promise<ObservableArrayStats> => {
+    for (let i = 0; i < array.length - 1; i++) {
+      let minIndex = i;
+      for (let j = i + 1; j < array.length; j++) {
+        if (await array.compare(j, '<', minIndex)) {
+          minIndex = j;
+        }
+      }
+      await array.swap(i, minIndex);
+    }
+    return array.stats;
+  }
+}
 
-//     while (!sorted) {
-//       sorted = true;
-//       for (let i = 0; i < array.length - 1; i++) {
-//         if (array[i] > array[i + 1]) {
-//           sorted = false;
-//           const temp = array[i];
-//           array[i] = array[i + 1];
-//           array[i + 1] = temp;
+export class ObservableQuickSort implements IObservableArraySorter {
+  public sort = async (array: ObservableArray): Promise<ObservableArrayStats> => {
+    await this.quickSort(array, 0, array.length - 1);
+    return array.stats;
+  }
 
-//           steps.push({
-//             array: [...array],
-//             cmap: { [i]: EColor.pomegranate, [i + 1]: EColor.carrot }
-//           });
-//         } 
-//         else {
-//           steps.push({
-//             array: [...array],
-//             cmap: { [i]: EColor.greenSea }
-//           });
-//         }
-//       }
-//     }
+  private quickSort = async (array: ObservableArray, low: number, high: number): Promise<void> => {
+    if (low < high) {;
+      const pi = await this.partition(array, low, high, await this.findPivot(array, low, high));
+      await this.quickSort(array, low, pi - 1);
+      await this.quickSort(array, pi + 1, high);
+    }
+  }
 
-//     return steps;
-//   }
-// }
+  private partition = async (array: ObservableArray, low: number, high: number, pivotIndex: number): Promise<number> => {
+    const pivot = await array.get(pivotIndex);
+    await array.swap(pivotIndex, high);
+    let i = low;
 
-// export class InsertionSort implements IArraySorter {
-//   public compute = (array: number[]): SorterFrame<number>[] => {
-//     let steps: SorterFrame<number>[] = [];
-    
-//     for (let i = 1; i < array.length; i++) {
-//       let j = i - 1;
-//       let temp = array[i];
-//       while (j >= 0 && array[j] > temp) {
-//         array[j + 1] = array[j];
-//         j--;
-//         steps.push({
-//           array: [...array],
-//           cmap: { [j + 1]: EColor.greenSea, [i]: EColor.pomegranate }
-//         });
-//       }
-//       array[j + 1] = temp;
-//       steps.push({
-//         array: [...array],
-//         cmap: { [i]: EColor.pomegranate }
-//       });   
-//     }
+    for (let j = low; j < high; j++) {
+      if (await array.get(j) <= pivot) { // TODO: (classification) isn't this a comparison?
+        await array.swap(i, j);
+        i++;
+      }
+    }
+    await array.swap(i, high);
+    return i;
+  }
 
-//     return steps;
-//   }
-// }
+  private findPivot = async (array: ObservableArray, low: number, high: number): Promise<number> => {
+		const mid = Math.floor((low + high) / 2);
 
+		const a = array.get(low);
+		const b = array.get(mid);
+		const c = array.get(high);
+
+    const xor = (a: boolean, b: boolean) => (a || b) && !(a && b);
+
+    if (xor((a > b), (a > c))) // TODO: (classification) arn't these comparisons?
+      return low;
+    else if (xor((b < a), (b < c))) // TODO: (classification) arn't these comparisons?
+      return mid;
+    else
+      return high;
+	}
+}
+
+export class ObservableHeapSort implements IObservableArraySorter {
+  public sort = async (array: ObservableArray): Promise<ObservableArrayStats> => {
+    // Build Heap
+    for (let i = Math.floor(array.length / 2) - 1; i >= 0; i--) {
+      await this.heapify(array, array.length, i);
+    }
+
+    // Sort
+    for (let i = array.length - 1; i > 0; i--) {
+      await array.swap(0, i);
+      await this.heapify(array, i, 0);
+    }
+    return array.stats;
+  }
+
+  private heapify = async (array: ObservableArray, n: number, i: number): Promise<void> => {
+    let largest = i;
+    const l = 2 * i + 1;
+    const r = 2 * i + 2;
+
+    if (l < n && await array.compare(l, '>', largest)) {
+      largest = l;
+    }
+
+    if (r < n && await array.compare(r, '>', largest)) {
+      largest = r;
+    }
+
+    if (largest !== i) {
+      await array.swap(i, largest);
+      await this.heapify(array, n, largest);
+    }
+  }
+}
 
 // export class MergeSort implements IArraySorter {
 //   public compute = (array: number[]): SorterFrame<number>[] => {

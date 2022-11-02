@@ -25,14 +25,16 @@ export interface IObservableArraySorter {
 
 export class ObservableArray {
   private _array: HTMLElement[] = [];
+  private _statsSink: HTMLSpanElement;
   private _stats: ObservableArrayStats = {} as ObservableArrayStats;
 
   public get stats(): ObservableArrayStats { return this._stats; }
   public get length(): number { return this._array.length; }
 
-  constructor(domDivArray: HTMLDivElement[]) {
-    this._array = domDivArray
+  constructor(domDivArray: HTMLDivElement[], statsSink: HTMLSpanElement) {
     this._stats = new ObservableArrayStats();
+    this._array = domDivArray
+    this._statsSink = statsSink;
   }
 
   private pause = (ms: number): Promise<void> => new Promise(resolve => setTimeout(resolve, ms));
@@ -48,6 +50,7 @@ export class ObservableArray {
   }
   
   public command = async <TRet>(name: string, fn: (actions: ObservableArrayContext) => Promise<TRet>): Promise<TRet> => {
+    this._statsSink.innerHTML = `Reads ${this._stats.reads} | Writes ${this._stats.writes} | Comparisons ${this._stats.comparisons} | Swaps ${this._stats.swaps}`;
     this._array.forEach(div => div.className = "");
     return fn({ 
       read: this.read, 

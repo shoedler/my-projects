@@ -1,7 +1,10 @@
 :root {
   --bg-color: rgb(31,31,31);
-  --accent-color: rgb(239, 239, 239);
-  --accent-color-disabled: rgb(127, 127, 127);
+  --fg-color: rgb(239, 239, 239);
+  --disabled-color: rgb(127, 127, 127);
+  --accent-color: rgb(233, 30, 99);
+
+  --border-radius: 20px;
 }
 
 body {
@@ -9,32 +12,7 @@ body {
 }
 
 * {
-  font-family: Roboto, sans-serif;
-}
-
-.header {
-  margin-top: 20px;
-  margin-right: 20vw;
-  margin-left: 20vw;
-  text-align: center;
-  font-size: 30px;
-  color: var(--accent-color);
-}
-
-.current-action {
-  margin-top: 55px;
-  margin-right: 20vw;
-  margin-left: 20vw;
-  text-align: center;
-  font-size: 30px;
-  color: var(--accent-color);
-}
-
-.data-container {
-  width: 1000px;
-  height: 500px;
-  position: relative;
-  margin: 0 auto;
+  font-family: "Fira Sans", sans-serif;
 }
 
 /* Bar class with element */
@@ -59,17 +37,43 @@ body {
 .bar-beige { background-color: #f5f5dc !important; }
 .bar-bisque { background-color: #ffe4c4 !important; }
 
+.header {
+  margin-top: 20px;
+  margin-right: 20vw;
+  margin-left: 20vw;
+  text-align: center;
+  font-size: 30px;
+  color: var(--fg-color);
+}
+
+.sorting-stats {
+  margin-top: 2vw;
+  margin-right: 20vw;
+  margin-left: 20vw;
+  text-align: center;
+  font-size: 12px;
+  color: var(--fg-color);
+}
+
+.data-container {
+  width: 1000px;
+  height: 400px;
+  position: relative;
+  margin: 0 auto;
+}
+
 .data-container > div {
   /* [Computed] width: 28px; */
   position: absolute;
   left: 0;
   bottom: 0;
-  background-color: var(--accent-color);
+  background-color: var(--fg-color);
   transition: 0.1s all ease;
+  border-radius: var(--border-radius);
 }
 
 .data-container > div > label {
-  color:var(--accent-color);
+  color:var(--fg-color);
   position: absolute;
   top: -24px;
   width: 100%;
@@ -77,35 +81,121 @@ body {
   font-size: 12px;
 }
 
-.btn1 {
-  padding: 12px;
-  border-radius: 10px;
+.sorting-stats > * {
+  color: var(--fg-color);
+}
+
+.button-generate {
+  padding: 7px;
+  border-radius: var(--border-radius);
   font-size: 16px;
   margin-left: 37vw;
-  margin-top: 4vw;
+  margin-top: 3vw;
   margin-right: 1vw;
   cursor: pointer;
   background-color: var(--bg-color);
-  color: var(--accent-color);
-  border: var(--accent-color) solid;
+  color: var(--fg-color);
+  border: var(--fg-color) solid;
 }
 
-.btn2 {
-  padding: 12px;
-  border-radius: 10px;
+.button-sort {
+  padding: 7px;
+  border-radius: var(--border-radius);
   font-size: 16px;
+  margin-right: 1vw;
   cursor: pointer;
   background-color: var(--bg-color);
-  color: var(--accent-color);
-  border: var(--accent-color) solid;
+  color: var(--fg-color);
+  border: var(--fg-color) solid;
 }
 
-.btn1:disabled, .btn2:disabled {
-  border: var(--accent-color-disabled) solid;
-  color: var(--accent-color-disabled);
+.button-drop {
+  padding: 7px;
+  border-radius: var(--border-radius);
+  font-size: 16px;
+  margin-right: 1vw;
+  cursor: pointer;
+  background-color: var(--bg-color);
+  color: var(--fg-color);
+  border: var(--fg-color) solid;
+}
+
+.button-cancel {
+  padding: 7px;
+  border-radius: var(--border-radius);
+  font-size: 14px;
+  cursor: pointer;
+  background-color: var(--accent-color);
+  color: var(--fg-color);
+  border: var(--fg-color) solid;
+}
+
+.button-generate:disabled, .button-sort:disabled, .button-drop:disabled {
+  border: var(--disabled-color) solid;
+  color: var(--disabled-color);
   cursor: not-allowed;
 }
 
-.btn1:hover, .btn2:hover {
-  border-style: dotted;
+.button-generate:hover, .button-sort:hover, .button-cancel:hover {
+  border-color: var(--accent-color);
+  background-color: var(--bg-color);
+  color: var(--accent-color);
+  box-shadow: 6px 6px var(--accent-color);
+}
+
+.slider {
+  border-radius: var(--border-radius);
+  font-size: 16px;
+  margin-left: 37vw;
+  margin-top: 3vw;
+  margin-right: 1vw;
+  cursor: pointer;
+  background-color: var(--bg-color);
+  color: var(--fg-color);
+  border: var(--fg-color) solid;
+}
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+  position: relative;
+  display: inline-block;
+  transition: 0.2s all ease;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+  border-radius: var(--border-radius);
+  display: none;
+  position: absolute;
+  background-color: var(--bg-color);
+  min-width: 160px;
+  border: var(--fg-color) solid;
+  /* border-top: none; */
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+  color: var(--fg-color);
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {
+  font-weight: bold;
+  color: var(--accent-color);
+  border-radius: var(--border-radius);
+}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* Change the background color of the dropdown button when the dropdown content is shown */
+.dropdown:hover .button-drop {
+  box-shadow: 6px 6px var(--accent-color);
+  border-color: var(--accent-color);
+  color: var(--accent-color);
 }
