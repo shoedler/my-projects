@@ -1,11 +1,10 @@
-$bottom-color: rgba(41,17,57,1);
-$top-color: rgba(5,5,15,1);
+$bottom-color: rgba(41, 17, 57, 1);
+$top-color: rgba(5, 5, 15, 1);
 
-html
-{
-    height: 100%;
-    background: $bottom-color;
-    background: linear-gradient(0deg, $bottom-color 0%, $top-color 100%);
-    position: absolute;
-    overflow: hidden;
+html {
+  height: 100%;
+  background: $bottom-color;
+  background: linear-gradient(0deg, $bottom-color 0%, $top-color 100%);
+  position: absolute;
+  overflow: hidden;
 }

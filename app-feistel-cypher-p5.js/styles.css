@@ -1,16 +1,13 @@
-#top-bar
-{
-    height: 50px;
+#top-bar {
+  height: 50px;
 }
 
-#tour-frame
-{
-    width: fit-content;
-    height: fit-content;
+#tour-frame {
+  width: fit-content;
+  height: fit-content;
 }
 
-iframe
-{
-    width: 980; 
-    height: 720;
+iframe {
+  width: 980;
+  height: 720;
 }

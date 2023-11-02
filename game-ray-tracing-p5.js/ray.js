@@ -1,14 +1,11 @@
-class Ray 
-{
-  constructor(pos, angle) 
-  {
+class Ray {
+  constructor(pos, angle) {
     this.pos = pos;
     this.dir = new p5.Vector.fromAngle(angle);
     this.color = color(200, 200, 200);
   }
 
-  render = () => 
-  {
+  render = () => {
     push();
     translate(this.pos.x, this.pos.y);
     stroke(this.color);
@@ -16,15 +13,13 @@ class Ray
     pop();
   };
 
-  lookAt = (x, y) => 
-  {
+  lookAt = (x, y) => {
     this.dir.x = x - this.pos.x;
     this.dir.y = y - this.pos.y;
     this.dir.normalize();
   };
 
-  trace = (boundary) => 
-  {
+  trace = (boundary) => {
     const x1 = boundary.a.x;
     const y1 = boundary.a.y;
     const x2 = boundary.b.x;
@@ -37,15 +32,12 @@ class Ray
 
     const den = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
 
-    if (den == 0)
-      return false;
+    if (den == 0) return false;
 
     const t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / den;
     const u = -((x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3)) / den;
 
-    if (t > 0 && t < 1 && u > 0)
-      return new p5.Vector(x1 + t * (x2 - x1), y1 + t * (y2 - y1));
-    else
-      return false;
+    if (t > 0 && t < 1 && u > 0) return new p5.Vector(x1 + t * (x2 - x1), y1 + t * (y2 - y1));
+    else return false;
   };
 }

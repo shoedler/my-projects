@@ -3,10 +3,13 @@
   "version": "0.0.1",
   "description": "TODO",
   "scripts": {
-    "build": "webpack --watch",
-    "start": "run-p start-compile build start-run",
-    "start-compile": "tsc --watch",
-    "start-run": "browser-sync start --server -w"
+    "build": "run-p compile bundle",
+    "compile": "tsc",
+    "bundle": "webpack",
+    "watch-compile": "tsc --watch",
+    "watch-bundle": "webpack --watch",
+    "start": "run-p watch-compile watch-bundle serve",
+    "serve": "browser-sync start --server -w"
   },
   "devDependencies": {
     "@types/p5": "^0.9.0",

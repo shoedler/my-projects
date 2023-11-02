@@ -1,4 +1,3 @@
-
 let TOTAL = 300;
 
 let birds = [];
@@ -15,7 +14,7 @@ let fontColor = 255;
 const NORMAL = 0;
 const SIMULATING = 1;
 const SIMULATION_DONE = 2;
-let gameState = NORMAL
+let gameState = NORMAL;
 
 // gui elements
 let paceSlider;
@@ -35,44 +34,38 @@ function setup() {
 function draw() {
   if (gameState == SIMULATING) {
     // Simulate until generation is finished (All birds are dead)
-    while (gameLogic()) { }
-  
-    drawSimulationEnd()
+    while (gameLogic()) {}
 
-    TOTAL = 10
+    drawSimulationEnd();
 
     // Update game state
     gameState = SIMULATION_DONE;
-  }
-  else if (gameState == SIMULATION_DONE) {
-    const t = millis()
-    while (t + 2000 > millis()) { }
+  } else if (gameState == SIMULATION_DONE) {
+    const t = millis();
+    while (t + 2000 > millis()) {}
 
     // Update game state
     gameState = NORMAL;
-  }
-  else if (gameState == NORMAL) {
+  } else if (gameState == NORMAL) {
     // Run game logic
-    for (let n = 0; n < paceSlider.value(); n++) 
-      gameLogic();
+    for (let n = 0; n < paceSlider.value(); n++) gameLogic();
 
     // Draw routines
     background(51);
 
-    birds.forEach(bird => bird.show())
-    pipes.forEach(pipe => pipe.show())
+    birds.forEach((bird) => bird.show());
+    pipes.forEach((pipe) => pipe.show());
 
     drawStats();
 
     // Update game state
     if (counter / 10 > 1000) {
       gameState = SIMULATING;
-      drawSimulating()
+      drawSimulating();
     }
-  } 
-  else {
-    console.error(`Unknown gameState: ${gameState}`)
-    gameState = NORMAL
+  } else {
+    console.error(`Unknown gameState: ${gameState}`);
+    gameState = NORMAL;
   }
 }
 
@@ -86,10 +79,10 @@ function gameLogic() {
   }
   counter++;
 
-  for (let i = pipes.length - 1; i >= 0 ; i--) {
+  for (let i = pipes.length - 1; i >= 0; i--) {
     pipes[i].update();
 
-    for (let j = birds.length - 1; j >= 0; j-- ) {
+    for (let j = birds.length - 1; j >= 0; j--) {
       // When does the bird die?
       if (pipes[i].hits(birds[j]) || birds[j].life()) {
         savedBirds.push(birds.splice(j, 1)[0]);
@@ -121,7 +114,7 @@ function gameLogic() {
   }
 
   if (counter % 1e5 == 0) {
-    console.log(`Current score: ${counter / 10}`)
+    console.log(`Current score: ${counter / 10}`);
   }
 
   return true;
@@ -140,7 +133,7 @@ function drawSimulating() {
 
   textAlign(CENTER, CENTER);
   textSize(window.innerWidth / 10);
-  text("Simulating...", window.innerWidth / 2, window.innerHeight / 2);
+  text('Simulating...', window.innerWidth / 2, window.innerHeight / 2);
 }
 
 function drawStats() {
@@ -152,17 +145,17 @@ function drawStats() {
 
   // top left
   textAlign(LEFT, TOP);
-  fill (fontColor);
-  textFont("consolas");
+  fill(fontColor);
+  textFont('consolas');
   textSize(posValue);
-  text("Score: " + counter / 10, window.innerWidth / 100, posValue);
-  text("Currently Alive Birds: " + birds.length, window.innerWidth / 100, 2 * posValue);
-  text("Last Best Score: " + previousBestBirdScore / 10, window.innerWidth / 100, 3 * posValue);
-  text("Alltime Best Score: " + alltimeBestBirdScore / 10, window.innerWidth / 100, 4 * posValue);
-  text("Generation: " + generation, window.innerWidth / 100, 5 * posValue);
+  text('Score: ' + counter / 10, window.innerWidth / 100, posValue);
+  text('Currently Alive Birds: ' + birds.length, window.innerWidth / 100, 2 * posValue);
+  text('Last Best Score: ' + previousBestBirdScore / 10, window.innerWidth / 100, 3 * posValue);
+  text('Alltime Best Score: ' + alltimeBestBirdScore / 10, window.innerWidth / 100, 4 * posValue);
+  text('Generation: ' + generation, window.innerWidth / 100, 5 * posValue);
 
   // top right
-  text("Logic Cycles per Frame: " + paceSlider.value(), window.innerWidth / 4, 3.5 * posValue);
+  text('Logic Cycles per Frame: ' + paceSlider.value(), window.innerWidth / 4, 3.5 * posValue);
   paceSlider.position(window.innerWidth / 4, posValue);
 
   // special
@@ -170,7 +163,7 @@ function drawStats() {
   textSize(window.innerWidth / 5);
 
   if (paceSlider.value() == 0) {
-    text("PAUSE", window.innerWidth / 2, window.innerHeight / 2);
+    text('PAUSE', window.innerWidth / 2, window.innerHeight / 2);
   }
 
   blendMode(BLEND);

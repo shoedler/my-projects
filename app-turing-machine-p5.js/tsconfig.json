@@ -10,6 +10,8 @@
     "rootDir": "./src/",
     "sourceMap": true,
     "sourceRoot": "./src/",
-    "target": "ESNext"
+    "target": "ESNext",
+    "types": []
   }
 }
+ 

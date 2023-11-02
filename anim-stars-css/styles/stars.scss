@@ -1,148 +1,137 @@
-@function  multiple-box-shadow ($n, $color) 
-{
+@function multiple-box-shadow($n, $color) {
+  $x-pos: random(2000);
+  $y-pos: random(2000);
+  $value: '#{$x-pos}px #{$y-pos}px #{$color}';
+
+  @for $i from 2 through $n {
     $x-pos: random(2000);
     $y-pos: random(2000);
-    $value: '#{$x-pos}px #{$y-pos}px #{$color}';
-    
-    @for $i from 2 through $n
-    {
-        $x-pos: random(2000);
-        $y-pos: random(2000);
-        $value: '#{$value} , #{$x-pos}px #{$y-pos}px #{$color}';
-    }
- 
-    @return unquote($value)
+    $value: '#{$value} , #{$x-pos}px #{$y-pos}px #{$color}';
+  }
+
+  @return unquote($value);
 }
 
-
-@keyframes animStar
-{
-  from { transform: translateY(-2000px) }
-  to   { transform: translateY(0px)     }
+@keyframes animStar {
+  from {
+    transform: translateY(-2000px);
+  }
+  to {
+    transform: translateY(0px);
+  }
 }
 
 $star-color: #eceb9e;
-$star-color-2: rgba(5,5,15,1);
+$star-color-2: rgba(5, 5, 15, 1);
 
-$shadows-small:  multiple-box-shadow(700, $star-color);
+$shadows-small: multiple-box-shadow(700, $star-color);
 $shadows-medium: multiple-box-shadow(200, $star-color);
-$shadows-big:    multiple-box-shadow(40,  $star-color);
-$shadows-huge:   multiple-box-shadow(20,  $star-color);
-$shadows-huge-2: multiple-box-shadow(10,  $star-color-2);
+$shadows-big: multiple-box-shadow(40, $star-color);
+$shadows-huge: multiple-box-shadow(20, $star-color);
+$shadows-huge-2: multiple-box-shadow(10, $star-color-2);
 
-$star-size-small:        1px;
-$star-size-medium:       3px;
-$star-size-big:          8px;
-$star-size-huge:        20px;
-$star-size-huge-inner:  40px;
+$star-size-small: 1px;
+$star-size-medium: 3px;
+$star-size-big: 8px;
+$star-size-huge: 20px;
+$star-size-huge-inner: 40px;
 
-#stars
-{ 
-    width: $star-size-small;
-    height: $star-size-small;
-    border-radius: $star-size-small;
-    background: transparent;
-    box-shadow: $shadows-small;
-    animation: animStar 100s linear infinite;
-}
-    
-#stars:after
-{
-    content: " ";
-    position: absolute;
-    top: 2000px;
-    width: $star-size-small;
-    height: $star-size-small;
-    border-radius: $star-size-small;
-    background: transparent;
-    box-shadow: $shadows-small;
-
-}
-    
-#stars2
-{
-    width: $star-size-medium;
-    height: $star-size-medium;
-    border-radius: $star-size-medium;
-    background: transparent;
-    box-shadow: $shadows-medium;
-    animation: animStar 80s linear infinite;
-}
-    
-#stars2:after
-{
-    content: " ";
-    position: absolute;
-    top: 2000px;
-    width: $star-size-medium;
-    height: $star-size-medium;
-    border-radius: $star-size-medium;
-    background: transparent;
-    box-shadow: $shadows-medium;
+#stars {
+  width: $star-size-small;
+  height: $star-size-small;
+  border-radius: $star-size-small;
+  background: transparent;
+  box-shadow: $shadows-small;
+  animation: animStar 100s linear infinite;
 }
 
-#stars3
-{
-    width: $star-size-big;
-    height: $star-size-big;
-    border-radius: $star-size-big;
-    background: transparent;
-    box-shadow: $shadows-big;
-    animation: animStar 10s linear infinite;
-}   
-
-#stars3:after
-{
-    content: " ";
-    position: absolute;
-    top: 2000px;
-    width: $star-size-big;
-    height: $star-size-big;
-    border-radius: $star-size-big;
-    background: transparent;
-    box-shadow: $shadows-big;
+#stars:after {
+  content: ' ';
+  position: absolute;
+  top: 2000px;
+  width: $star-size-small;
+  height: $star-size-small;
+  border-radius: $star-size-small;
+  background: transparent;
+  box-shadow: $shadows-small;
 }
 
-#stars4
-{
-    width: $star-size-huge;
-    height: $star-size-huge;
-    border-radius: $star-size-huge;
-    background: transparent;
-    box-shadow: $shadows-huge;
-    animation: animStar 5s linear infinite;
-}   
-
-#stars4:after
-{
-    content: " ";
-    position: absolute;
-    top: 2000px;
-    width: $star-size-huge;
-    height: $star-size-huge;
-    border-radius: $star-size-huge;
-    background: transparent;
-    box-shadow: $shadows-huge;
+#stars2 {
+  width: $star-size-medium;
+  height: $star-size-medium;
+  border-radius: $star-size-medium;
+  background: transparent;
+  box-shadow: $shadows-medium;
+  animation: animStar 80s linear infinite;
 }
 
-#stars4-2
-{
-    width: $star-size-huge-inner;
-    height: $star-size-huge-inner;
-    border-radius: $star-size-huge-inner;
-    background: transparent;
-    box-shadow: $shadows-huge-2;
-    animation: animStar 2s linear infinite;
-}   
+#stars2:after {
+  content: ' ';
+  position: absolute;
+  top: 2000px;
+  width: $star-size-medium;
+  height: $star-size-medium;
+  border-radius: $star-size-medium;
+  background: transparent;
+  box-shadow: $shadows-medium;
+}
 
-#stars4-2:after
-{
-    content: " ";
-    position: absolute;
-    top: 2000px;
-    width: $star-size-huge-inner;
-    height: $star-size-huge-inner;
-    border-radius: $star-size-huge-inner;
-    background: transparent;
-    box-shadow: $shadows-huge-2;
+#stars3 {
+  width: $star-size-big;
+  height: $star-size-big;
+  border-radius: $star-size-big;
+  background: transparent;
+  box-shadow: $shadows-big;
+  animation: animStar 10s linear infinite;
+}
+
+#stars3:after {
+  content: ' ';
+  position: absolute;
+  top: 2000px;
+  width: $star-size-big;
+  height: $star-size-big;
+  border-radius: $star-size-big;
+  background: transparent;
+  box-shadow: $shadows-big;
+}
+
+#stars4 {
+  width: $star-size-huge;
+  height: $star-size-huge;
+  border-radius: $star-size-huge;
+  background: transparent;
+  box-shadow: $shadows-huge;
+  animation: animStar 5s linear infinite;
+}
+
+#stars4:after {
+  content: ' ';
+  position: absolute;
+  top: 2000px;
+  width: $star-size-huge;
+  height: $star-size-huge;
+  border-radius: $star-size-huge;
+  background: transparent;
+  box-shadow: $shadows-huge;
+}
+
+#stars4-2 {
+  width: $star-size-huge-inner;
+  height: $star-size-huge-inner;
+  border-radius: $star-size-huge-inner;
+  background: transparent;
+  box-shadow: $shadows-huge-2;
+  animation: animStar 2s linear infinite;
+}
+
+#stars4-2:after {
+  content: ' ';
+  position: absolute;
+  top: 2000px;
+  width: $star-size-huge-inner;
+  height: $star-size-huge-inner;
+  border-radius: $star-size-huge-inner;
+  background: transparent;
+  box-shadow: $shadows-huge-2;
 }

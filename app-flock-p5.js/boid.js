@@ -1,5 +1,3 @@
-
-
 /**
  * @summary Specifies a single flock entity - a Boid
  * @property {number} id Unique identifier (Population Index)
@@ -29,8 +27,7 @@
  * @property {bool} showFieldOfView Debug: show general FOV Overlay
  * @class Boid
  */
-class Boid
-{
+class Boid {
   /**
    * @summary Creates an instance of Boid.
    * @param {number} [x=0] Initial x position
@@ -38,16 +35,15 @@ class Boid
    * @param {number} [id=0] Unique identifier (Population Index)
    * @memberof Boid
    */
-  constructor(x, y, id)
-  {
+  constructor(x, y, id) {
     this.id = id;
-    this.position =         createVector(x, y);
-    this.velocity =         createVector(random(-1, 1), random(-1, 1));
+    this.position = createVector(x, y);
+    this.velocity = createVector(random(-1, 1), random(-1, 1));
     this.courseCorrection = createVector(0, 0);
-    
+
     this.colorBody = cBoid;
     this.colorStroke = cBoidStroke;
-    
+
     /* The following properties are set upon instantiation of a Flock object */
     this.boidSize;
     this.maxVelocity;
@@ -74,84 +70,82 @@ class Boid
     this.showFieldOfView;
   }
 
-
   /**
    * @summary Highlights this boid
    * @memberof Boid
    */
-  highlight = () => { this.colorBody = cFocused; this.colorStroke = cFocusedStroke; }
-
+  highlight = () => {
+    this.colorBody = cFocused;
+    this.colorStroke = cFocusedStroke;
+  };
 
   /**
    * @summary Draws this boid at its current position and heading
    * @memberof Boid
    */
-  render = () =>
-  {
+  render = () => {
     push();
-      translate(this.position.x, this.position.y);
-      rotate(this.velocity.heading() + radians(90));
+    translate(this.position.x, this.position.y);
+    rotate(this.velocity.heading() + radians(90));
 
-      noStroke();
+    noStroke();
 
-      /* Debug: Visualize FOV overlays */
-      if (this.showAlignmentFieldOfView)  overlayFOV(this.alignmentRadius, this.fieldOfView, color(200, 200, 100, 15));
-      if (this.showCohesionFieldOfView)   overlayFOV(this.cohesionRadius, this.fieldOfView, color(100, 100, 255, 15)); 
-      if (this.showSeparationFieldOfView) overlayFOV(this.separationRadius, this.fieldOfView, color(100, 255, 100, 15));
-      if (this.showFieldOfView) overlayFOV(((this.alignmentRadius + this.cohesionRadius + this.separationRadius) / 3), this.fieldOfView, color(255, 255, 255, 15));
+    /* Debug: Visualize FOV overlays */
+    if (this.showAlignmentFieldOfView) overlayFOV(this.alignmentRadius, this.fieldOfView, color(200, 200, 100, 15));
+    if (this.showCohesionFieldOfView) overlayFOV(this.cohesionRadius, this.fieldOfView, color(100, 100, 255, 15));
+    if (this.showSeparationFieldOfView) overlayFOV(this.separationRadius, this.fieldOfView, color(100, 255, 100, 15));
+    if (this.showFieldOfView)
+      overlayFOV(
+        (this.alignmentRadius + this.cohesionRadius + this.separationRadius) / 3,
+        this.fieldOfView,
+        color(255, 255, 255, 15)
+      );
 
-      fill(this.colorBody); 
-      stroke(this.colorStroke);
+    fill(this.colorBody);
+    stroke(this.colorStroke);
 
-      beginShape();
-        vertex(0, 0);
-        vertex(-this.boidSize / 2, this.boidSize * 2);
-        vertex(this.boidSize / 2, this.boidSize * 2);
-      endShape(CLOSE);
+    beginShape();
+    vertex(0, 0);
+    vertex(-this.boidSize / 2, this.boidSize * 2);
+    vertex(this.boidSize / 2, this.boidSize * 2);
+    endShape(CLOSE);
     pop();
-  }
- 
+  };
 
   /**
    * @summary Updates this boids velocity and its position values
    * @memberof Boid
    */
-  applyForces = () =>
-  {        
+  applyForces = () => {
     this.velocity.add(this.courseCorrection);
     this.velocity.limit(this.maxVelocity);
 
     this.position.add(this.velocity);
 
     /* Reset courseCorrection after each update */
-    this.courseCorrection.mult(0); 
-  }
-
+    this.courseCorrection.mult(0);
+  };
 
   /**
    * @summary Checks for canvas borders and handles Wrap-around
    * @memberof Boid
    */
-  border = () =>
-  {
+  border = () => {
     if (this.position.x < -this.boidSize) this.position.x = width + this.boidSize;
     if (this.position.y < -this.boidSize) this.position.y = height + this.boidSize;
     if (this.position.x > width + this.boidSize) this.position.x = -this.boidSize;
     if (this.position.y > height + this.boidSize) this.position.y = -this.boidSize;
-  }
+  };
 }
 
 /**
- * @summary Draws the FOV overlay (Detection box) at 0, 0. rotate() to the appropriate heading is done outside this function.          
+ * @summary Draws the FOV overlay (Detection box) at 0, 0. rotate() to the appropriate heading is done outside this function.
  * @param {number} radius Radius of the detection box
  * @param {degrees} angle Angle of the detection box. 180 = half front circle
  * @param {constant} [mode=PIE] CHORD, PIE or OPEN
  * @param {p5Color} color Color of the detection box. A alpha channel value < 100 is recommended
  */
-const overlayFOV = (radius, angle, color, mode = PIE) =>
-{
+const overlayFOV = (radius, angle, color, mode = PIE) => {
   fill(color);
   arc(0, 0, radius * 2, radius * 2, radians(360 - (90 + angle / 2)), radians(360 - (90 - angle / 2)), mode);
-}
-
-
+};

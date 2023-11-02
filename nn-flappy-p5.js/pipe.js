@@ -1,15 +1,13 @@
-
 class Pipe {
   constructor() {
     this.spacing = 125;
-    this.top = random(window.innerHeight / 6, 3 / 4 * window.innerHeight);
+    this.top = random(window.innerHeight / 6, (3 / 4) * window.innerHeight);
     this.bottom = height - (this.top + this.spacing);
 
     this.x = window.innerWidth;
     this.w = 80;
     this.speed = 5;
   }
-
 
   hits(bird) {
     let halfBird = bird.r / 2;
@@ -23,7 +21,6 @@ class Pipe {
     return false;
   }
 
-
   show() {
     fill(255);
     noStroke();
@@ -32,15 +29,13 @@ class Pipe {
     rect(this.x, window.innerHeight - this.bottom, this.w, this.bottom);
   }
 
-
   update() {
     this.x -= this.speed;
   }
 
-
   offscreen() {
     if (this.x < -this.w) {
-      return true
+      return true;
     } else {
       return false;
     }

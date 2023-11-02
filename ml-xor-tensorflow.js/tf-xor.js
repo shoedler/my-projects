@@ -1,4 +1,3 @@
-
 let model;
 
 let resolution = 50;
@@ -11,37 +10,28 @@ const _tensor_x = tf.tensor2d([
   [0, 0],
   [1, 0],
   [0, 1],
-  [1, 1]
-])
+  [1, 1],
+]);
 
-const _tensor_y = tf.tensor2d([
-  [0],
-  [1],
-  [1],
-  [0]
-])
+const _tensor_y = tf.tensor2d([[0], [1], [1], [0]]);
 
-
-function setup() 
-{
+function setup() {
   createCanvas(window.innerWidth, window.innerHeight);
 
   /* Get grid dimensions */
-  grid[0] = (width / 2) / resolution;
-  grid[1] = (width / 2) / resolution;
+  grid[0] = width / 2 / resolution;
+  grid[1] = width / 2 / resolution;
 
   /* Create new sequential Model */
   model = tf.sequential();
 
   /* Create inputs for the Model*/
   let inputs = [];
-  for ( let i = 0; i < grid[0]; i++)
-  {
-    for (let j = 0; j < grid[1]; j++)
-    {
+  for (let i = 0; i < grid[0]; i++) {
+    for (let j = 0; j < grid[1]; j++) {
       let x1 = i / grid[0];
       let x2 = j / grid[1];
-      inputs = [...inputs, [x1, x2]]
+      inputs = [...inputs, [x1, x2]];
     }
   }
 
@@ -54,13 +44,13 @@ function setup()
   let hidden = tf.layers.dense({
     inputShape: [2],
     units: 4,
-    activation: 'sigmoid'
-  })
+    activation: 'sigmoid',
+  });
 
   let output = tf.layers.dense({
     units: 1,
-    activation: 'sigmoid'
-  })
+    activation: 'sigmoid',
+  });
 
   model.add(hidden);
   model.add(output);
@@ -70,44 +60,40 @@ function setup()
 
   model.compile({
     optimizer: optimizer,
-    loss: 'meanSquaredError'
-  })
+    loss: 'meanSquaredError',
+  });
 
   /* Launch model training loop */
   setTimeout(10, trainModel());
 }
 
-function draw()
-{
+function draw() {
   background(53, 53, 53);
 
   /* Draw results */
   let index = 0;
-  for (let i = 0; i < grid[0]; i++)
-  {
-    for (let j = 0; j < grid[1]; j++)
-    {
+  for (let i = 0; i < grid[0]; i++) {
+    for (let j = 0; j < grid[1]; j++) {
       let color = _ys[index] * 255;
       let xPos = i * resolution;
       let yPos = j * resolution;
 
       fill(color);
-      rect( xPos, yPos, resolution, resolution);
+      rect(xPos, yPos, resolution, resolution);
 
       fill(255, 255 - color, 255 - color);
-      textAlign(CENTER, CENTER)
+      textAlign(CENTER, CENTER);
       text(nf(_ys[index], 1, 3), xPos + resolution / 2, yPos + resolution / 2);
-      
+
       index++;
     }
   }
 }
 
-let trainModel = async() =>
-{
-  let result = await model.fit(_tensor_x, _tensor_y, { 
+let trainModel = async () => {
+  let result = await model.fit(_tensor_x, _tensor_y, {
     shuffle: true,
-    epochs: 10
+    epochs: 10,
   });
 
   //await tf.nextFrame()
@@ -116,17 +102,15 @@ let trainModel = async() =>
   _ys = await getPredictions(_tensor_inputs);
 
   trainModel();
-}
+};
 
-let getPredictions = async(_tensor) =>
-{
+let getPredictions = async (_tensor) => {
   let arr;
-  await tf.tidy(() => 
-  {
+  await tf.tidy(() => {
     /* Get Predictions */
     _tensor_out = model.predict(_tensor);
     arr = _tensor_out.dataSync();
   });
 
-  return arr
-}
+  return arr;
+};
