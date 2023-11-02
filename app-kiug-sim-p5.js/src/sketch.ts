@@ -1,4 +1,4 @@
-import p5, { Vector } from 'p5';
+import p5 from 'p5';
 import { SOLDIER_DETECTION_RANGE, SOLDIER_FOV_DEGREES, Soldier } from './soldier';
 import { Projectile } from './projectile';
 
@@ -7,42 +7,13 @@ export type State = {
   projectiles: Projectile[];
 };
 
-export interface Entity {
-  update(state: State): void;
-  markedForDeletion: boolean;
-}
-
 export const simulation = (p: p5) => {
   const state: State = {
     projectiles: [],
     soldiers: [
-      new Soldier(
-        'soldier-0',
-        p.createVector(100, 100),
-        p.createVector(0, 0),
-        p.createVector(0, 0),
-        p.createVector(1, 0),
-        100,
-        'blue'
-      ),
-      new Soldier(
-        'soldier-1',
-        p.createVector(150, 150),
-        p.createVector(0, 0),
-        p.createVector(0, 0),
-        p.createVector(1, 0),
-        100,
-        'red'
-      ),
-      new Soldier(
-        'soldier-2',
-        p.createVector(50, 150),
-        p.createVector(0, 0),
-        p.createVector(0, 0),
-        p.createVector(1, 0),
-        100,
-        'red'
-      ),
+      new Soldier('soldier-0', p.createVector(100, 100), 100, 'blue'),
+      new Soldier('soldier-1', p.createVector(150, 150), 100, 'red'),
+      new Soldier('soldier-2', p.createVector(50, 150), 100, 'red'),
     ],
   };
 
@@ -93,7 +64,7 @@ export const simulation = (p: p5) => {
 
       // Draw the soldier.
       p.fill(255, 255, 255);
-      if (soldier.highlight) p.fill(soldier.highlight);
+      if (soldier.team) p.fill(soldier.team);
       p.circle(soldier.pos.x, soldier.pos.y, 20);
 
       // If out of bounds, bounce

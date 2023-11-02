@@ -1,5 +1,6 @@
 import { Vector } from 'p5';
-import { Entity, State } from './sketch';
+import { State } from './sketch';
+import { Entity } from './entity';
 import { Projectile } from './projectile';
 
 export const SOLDIER_FOV_DEGREES = 135;
@@ -10,19 +11,22 @@ enum SoldierState {
   shooting,
 }
 
-export class Soldier implements Entity {
-  constructor(
-    public id: string,
-    public pos: Vector, // Position of the soldier. Origin is the top left corner of the canvas.
-    public vel: Vector, // Velocity of the soldier. Origin is the soldier's position.
-    public acc: Vector, // Acceleration of the soldier. Origin is the soldier's position.
-    public hdg: Vector, // Where the soldier is looking. Origin is the soldier's position.
+export class Soldier extends Entity {
+  public id: string;
+  public hdg: Vector; // Where the soldier is looking. Origin is the soldier's position.
+  public health: number;
+  public team: false | 'orange' | 'red' | 'blue' = false;
+  public state: SoldierState = SoldierState.patrolling;
 
-    public health: number,
-    public highlight: false | 'orange' | 'red' | 'blue' = false,
-    public state: SoldierState = SoldierState.patrolling,
-    public markedForDeletion = false
-  ) {}
+  constructor(id: Soldier['id'], pos: Soldier['pos'], health: Soldier['health'], team: Soldier['team']) {
+    super();
+
+    this.id = id;
+    this.pos = pos;
+    this.hdg = new Vector(1, 0);
+    this.health = health;
+    this.team = team;
+  }
 
   public update(state: State) {
     if (this.state === SoldierState.patrolling) this.patrol(state);
@@ -86,6 +90,7 @@ export class Soldier implements Entity {
   private scan(soldiers: Soldier[]) {
     const inRange = soldiers.filter((soldier) => {
       if (soldier === this) return false;
+      if (soldier.team === this.team) return false;
 
       const distance = this.pos.dist(soldier.pos);
 

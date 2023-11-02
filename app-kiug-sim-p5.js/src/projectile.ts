@@ -1,14 +1,19 @@
-import { Vector } from "p5";
-import { Entity, State } from "./sketch";
+import { Vector } from 'p5';
+import { State } from './sketch';
+import { Entity } from './entity';
 
-export class Projectile implements Entity {
-  constructor(
-    public pos: Vector,
-    public acc: Vector,
-    public vel: Vector,
-    public damage: number,
-    public markedForDeletion = false
-  ) {
+export class Projectile extends Entity {
+  public damage: number;
+  public markedForDeletion = false;
+
+  constructor(pos: Projectile['pos'], acc: Projectile['acc'], vel: Projectile['vel'], damage: Projectile['damage']) {
+    super();
+    this.pos = pos;
+    this.acc = acc;
+    this.vel = vel;
+
+    this.damage = damage;
+
     // Fire the projectile
     this.vel.add(this.acc);
     this.acc.mult(0);
@@ -21,7 +26,7 @@ export class Projectile implements Entity {
     this.damage *= 0.999;
 
     // Check for collisions
-    const hit = this.collides(state);
+    const hit = state.soldiers.find((soldier) => this.collides(soldier));
 
     if (hit) {
       // Deviate the trajectory
@@ -41,14 +46,5 @@ export class Projectile implements Entity {
     if (this.vel.mag() < 0.1) {
       this.markedForDeletion = true;
     }
-  }
-
-  private collides(state: State) {
-    const hit = state.soldiers.find(soldier => {
-      const distance = this.pos.dist(soldier.pos);
-      return distance < 5;
-    });
-
-    return hit;
   }
 }
