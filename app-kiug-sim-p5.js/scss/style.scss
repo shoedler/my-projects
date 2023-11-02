@@ -13,7 +13,8 @@ $color-active: rgb(214 219 31);
 
 body {
   margin: 0;
-  background-image: radial-gradient($color-bg-accent 2px, transparent 0), radial-gradient($color-bg 1px, transparent 0);
+  background-image: radial-gradient($color-bg-accent 2px, transparent 0),
+    radial-gradient($color-bg 1px, transparent 0);
   background-size: 32px 32px, 8px 8px;
   background-position: center;
   background-color: hsl(230deg 5% 9%);
@@ -22,6 +23,11 @@ body {
 
 .wrapper {
   margin: 4vw;
+}
+
+.sketch {
+  height: 80vh;
+  width: 100%;
 }
 
 * {
